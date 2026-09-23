@@ -1,0 +1,15 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "projects": {
+    "orders-web": {
+      "projectType": "application",
+      "root": "",
+      "sourceRoot": "src",
+      "architect": {
+        "build": { "builder": "@angular/build:application" },
+        "test": { "builder": "@angular/build:unit-test" }
+      }
+    }
+  }
+}

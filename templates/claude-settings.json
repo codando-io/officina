@@ -1,0 +1,26 @@
+{
+  "extraKnownMarketplaces": {
+    "engineering-harness": {
+      "source": {
+        "source": "github",
+        "repo": "OWNER/engineering-harness"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "eng@engineering-harness": true
+  },
+  "permissions": {
+    "deny": [
+      "Read(.env)",
+      "Read(.env.*)",
+      "Read(*.pem)",
+      "Read(*.key)",
+      "Read(*.pfx)",
+      "Read(~/.microsoft/usersecrets/**)",
+      "Read(~/.aws/**)",
+      "Read(~/.azure/**)",
+      "Read(~/.kube/**)"
+    ]
+  }
+}

@@ -1,0 +1,154 @@
+#!/bin/sh
+# Prints the engineering-harness session context for a repository as Markdown:
+# harness location and version, core policy, project overrides, active profiles,
+# and the project memory index. Agent adapters deliver this output to the agent
+# (Claude Code: SessionStart hook).
+#
+# Usage: eng-context [--check] [project-dir]
+#   project-dir  defaults to $CLAUDE_PROJECT_DIR, then the current directory.
+#                The nearest ancestor with .engineering/harness.yaml is used.
+#   --check      exit 1 when there are warnings (for CI and the adopt skill).
+
+set -u
+
+check=0
+start=""
+for arg in "$@"; do
+  case "$arg" in
+    --check) check=1 ;;
+    -h|--help) sed -n '2,10p' "$0"; exit 0 ;;
+    *) start="$arg" ;;
+  esac
+done
+[ -z "$start" ] && start="${CLAUDE_PROJECT_DIR:-$(pwd)}"
+
+self="$0"
+while [ -L "$self" ]; do
+  target=$(readlink "$self")
+  case "$target" in /*) self="$target" ;; *) self="$(dirname "$self")/$target" ;; esac
+done
+harness=$(cd "$(dirname "$self")/.." && pwd -P)
+version=$(tr -d ' \r\n' < "$harness/VERSION")
+
+# 0.x releases are identified by major.minor (minor bumps break), 1.0+ by major.
+to_line() {
+  major=${1%%.*}
+  rest=${1#"$major"}
+  rest=${rest#.}
+  minor=${rest%%.*}
+  if [ "$major" = "0" ] && [ -n "$minor" ]; then echo "0.$minor"; else echo "$major"; fi
+}
+current_line=$(to_line "$version")
+
+max_lines=60
+warnings=""
+warn() { warnings="${warnings}- WARNING: $1
+"; }
+
+print_bounded() {
+  total=$(wc -l < "$1" | tr -d ' ')
+  head -n "$max_lines" "$1"
+  if [ "$total" -gt "$max_lines" ]; then
+    printf '\n[truncated: %s of %s lines shown; read %s for the rest]\n' "$max_lines" "$total" "$1"
+  fi
+}
+
+project=""
+dir=$(cd "$start" 2>/dev/null && pwd -P) || dir=""
+while [ -n "$dir" ]; do
+  if [ -f "$dir/.engineering/harness.yaml" ]; then project="$dir"; break; fi
+  [ "$dir" = "/" ] && break
+  dir=$(dirname "$dir")
+done
+
+printf '# Engineering harness %s\n\n' "$version"
+printf 'HARNESS=%s\n' "$harness"
+printf 'Paths written as `$HARNESS/...` in skills and policies resolve against this directory.\n'
+
+if [ -z "$project" ]; then
+  printf '\nThis repository has not adopted the harness (no `.engineering/harness.yaml`). '
+  printf 'Harness skills are available; the engineering policy is not loaded. '
+  printf 'To adopt it, the user can run the `adopt` skill.\n'
+  exit 0
+fi
+
+config="$project/.engineering/harness.yaml"
+bom=$(printf '\357\273\277')
+yaml=$(tr -d '\r' < "$config" | sed "1s/^$bom//")
+
+yaml_value() {
+  printf '%s\n' "$yaml" | sed -n "s/^$1:[[:space:]]*//p" | head -1 \
+    | sed 's/[[:space:]]#.*$//; s/[[:space:]]*$//; s/^"\(.*\)"$/\1/; s/^'"'"'\(.*\)'"'"'$/\1/'
+}
+
+unknown=$(printf '%s\n' "$yaml" | grep -vE '^[[:space:]]*(#|$)' | grep -vE '^(harness|profiles|adr_dir):' | head -3)
+[ -n "$unknown" ] && warn "harness.yaml has unsupported lines (only flat keys harness, profiles, adr_dir): $(echo "$unknown" | tr '\n' ' ')"
+
+declared=$(yaml_value harness)
+[ -n "$declared" ] && declared=$(to_line "$declared")
+profiles=$(yaml_value profiles | tr -d "[]\"'" | tr ',' ' ' | tr -s ' ' | sed 's/^ //; s/ $//')
+adr_dir=$(yaml_value adr_dir)
+[ -z "$adr_dir" ] && adr_dir="docs/adr"
+
+if [ -z "$declared" ]; then
+  warn "harness.yaml does not declare \`harness:\`; cannot check compatibility."
+elif [ "$declared" != "$current_line" ]; then
+  newer=$(printf '%s\n%s\n' "$declared" "$current_line" | sort -t. -k1,1n -k2,2n | tail -1)
+  if [ "$newer" = "$current_line" ]; then
+    warn "project was adopted against harness $declared; installed harness is $version. Read \`\$HARNESS/CHANGELOG.md\` migration notes; the user can run the \`adopt\` skill to upgrade."
+  else
+    warn "project expects harness $declared; installed harness is $version. Update the harness installation."
+  fi
+fi
+
+printf '\nProject: `%s`\n' "$project"
+printf 'Declared harness line: `%s`. Profiles: `%s`. ADRs: `%s`.\n' "${declared:-unset}" "${profiles:-none}" "$adr_dir"
+
+printf '\n'
+cat "$harness/core/policy.md"
+
+overrides="$project/.engineering/overrides"
+if [ -f "$overrides/policy.md" ]; then
+  printf '\n## Project policy overrides (`.engineering/overrides/policy.md`)\n\n'
+  printf 'These add to the policy above and win on conflict, except the security floor.\n\n'
+  print_bounded "$overrides/policy.md"
+fi
+if [ -d "$overrides" ]; then
+  skill_overrides=""
+  for f in "$overrides"/*.md; do
+    [ -f "$f" ] || continue
+    name=$(basename "$f" .md)
+    [ "$name" = "policy" ] && continue
+    [ -f "$harness/skills/$name/SKILL.md" ] || warn "override \`$name.md\` does not match any harness skill."
+    skill_overrides="$skill_overrides $name"
+  done
+  [ -n "$skill_overrides" ] && printf '\nSkill overrides present (read by each skill):%s\n' "$skill_overrides"
+fi
+
+printf '\n## Active profiles\n\n'
+if [ -z "$profiles" ]; then
+  printf 'None declared.\n'
+else
+  for p in $profiles; do
+    if [ -f "$harness/profiles/$p/PROFILE.md" ]; then
+      printf -- '- `%s`: read `$HARNESS/profiles/%s/PROFILE.md` before planning, testing, or changing dependencies.\n' "$p" "$p"
+    else
+      warn "profile \`$p\` does not exist in this harness version."
+    fi
+  done
+fi
+
+index="$project/.engineering/memory/INDEX.md"
+printf '\n## Project memory\n\n'
+if [ -f "$index" ]; then
+  printf 'Entries live in `.engineering/memory/`. Read an entry before changing the area it describes.\n\n'
+  print_bounded "$index"
+else
+  printf 'No `.engineering/memory/INDEX.md` yet.\n'
+fi
+
+if [ -n "$warnings" ]; then
+  printf '\n## Harness warnings\n\n%s' "$warnings"
+  [ "$check" -eq 1 ] && exit 1
+fi
+exit 0

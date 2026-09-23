@@ -1,0 +1,14 @@
+{
+  "name": "engineering-harness",
+  "description": "Personal engineering harness for AI coding agents.",
+  "owner": {
+    "name": "joaolucasdsp"
+  },
+  "plugins": [
+    {
+      "name": "eng",
+      "source": "./",
+      "description": "Engineering harness: skills, policy loader, and stack profiles."
+    }
+  ]
+}

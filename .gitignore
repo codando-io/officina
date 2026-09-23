@@ -1,0 +1,8 @@
+# .NET and npm build output inside examples and fixtures
+examples/**/bin/
+examples/**/obj/
+tests/**/bin/
+tests/**/obj/
+node_modules/
+.engineering/work/
+.DS_Store

@@ -1,0 +1,10 @@
+{
+  "name": "eng",
+  "displayName": "Engineering Harness",
+  "version": "0.1.0",
+  "description": "Evidence-driven engineering process for AI coding agents: investigate, plan, implement, test, review, audits, dependency updates, observability, release.",
+  "author": {
+    "name": "joaolucasdsp"
+  },
+  "hooks": "./adapters/claude-code/hooks.json"
+}

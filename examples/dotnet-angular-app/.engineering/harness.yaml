@@ -1,0 +1,7 @@
+# Engineering harness contract for this repository.
+# Flat keys and inline lists only: tools read this file without a YAML parser.
+# Project facts (architecture, delivery, observability) belong in AGENTS.md.
+
+harness: "0.1"
+profiles: [dotnet-backend, angular, dotnet-angular]
+adr_dir: docs/adr

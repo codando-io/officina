@@ -1,0 +1,13 @@
+# Engineering harness contract for this repository.
+# Flat keys and inline lists only: tools read this file without a YAML parser.
+# Project facts (architecture, delivery, observability) belong in AGENTS.md.
+
+# Harness line this project was adopted or last upgraded against.
+# 0.x: "major.minor" (minor bumps are breaking). From 1.0: "major".
+harness: "0.1"
+
+# Stack profiles, applied in order. See the harness profiles/README.md.
+profiles: [dotnet-backend, angular, dotnet-angular]
+
+# Where this project keeps Architecture Decision Records.
+adr_dir: docs/adr

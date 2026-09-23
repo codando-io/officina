@@ -1,0 +1,174 @@
+#!/usr/bin/env bash
+# Read-only inventory of a repository's .NET, npm/Angular, Docker, and CI setup, as Markdown.
+# Usage: stack-report [--offline] [repo-dir]
+# --offline skips commands that reach package registries.
+# Never edits tracked files. Online mode runs `dotnet list package`, which
+# restores packages and so writes build output under obj/.
+
+set -u
+
+offline=0
+root="."
+for arg in "$@"; do
+  case "$arg" in
+    --offline) offline=1 ;;
+    -h|--help) sed -n '2,5p' "$0"; exit 0 ;;
+    *) root="$arg" ;;
+  esac
+done
+
+cd "$root" || { echo "cannot enter $root" >&2; exit 2; }
+
+find_files() {
+  find . \( -name node_modules -o -name bin -o -name obj -o -name .git -o -name dist -o -name .angular \) -prune \
+    -o -type f \( "$@" \) -print 2>/dev/null | sed 's|^\./||' | sort
+}
+
+have() { command -v "$1" >/dev/null 2>&1; }
+
+section() { printf '\n## %s\n\n' "$1"; }
+
+printf '# Stack report\n\n'
+printf -- '- Directory: `%s`\n' "$(pwd)"
+printf -- '- Mode: %s\n' "$([ "$offline" -eq 1 ] && echo offline || echo online)"
+
+section ".NET"
+solutions=$(find_files -name '*.sln' -o -name '*.slnx')
+projects=$(find_files -name '*.csproj')
+if [ -z "$projects" ]; then
+  echo "No .csproj found."
+else
+  printf 'Solutions: %s\n\n' "$(echo "${solutions:-none}" | tr '\n' ' ')"
+  if [ -f global.json ]; then
+    sdk=$(sed -n 's/.*"version"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' global.json | head -1)
+    roll=$(sed -n 's/.*"rollForward"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' global.json | head -1)
+    printf -- '- global.json SDK: `%s` (rollForward: `%s`)\n' "${sdk:-unset}" "${roll:-default}"
+  else
+    echo "- global.json: absent (SDK not pinned)"
+  fi
+  if have dotnet; then
+    printf -- '- Installed SDKs: %s\n' "$(dotnet --list-sdks 2>/dev/null | awk '{print $1}' | tr '\n' ' ')"
+  else
+    echo "- dotnet CLI: not installed"
+  fi
+  [ -f Directory.Packages.props ] && echo "- Central package management: yes" || echo "- Central package management: no"
+  printf '\n| Project | Target framework(s) |\n|---|---|\n'
+  printf '%s\n' "$projects" | while IFS= read -r p; do
+    tfm=$(sed -n 's/.*<TargetFrameworks\{0,1\}>\([^<]*\)<.*/\1/p' "$p" | head -1)
+    printf '| `%s` | %s |\n' "$p" "${tfm:-inherited}"
+  done
+  find_files -name 'Directory.Build.props' | while IFS= read -r f; do
+    tfm=$(sed -n 's/.*<TargetFrameworks\{0,1\}>\([^<]*\)<.*/\1/p' "$f" | head -1)
+    [ -n "$tfm" ] && printf '| `%s` | %s |\n' "$f" "$tfm"
+  done
+  if [ "$offline" -eq 0 ] && have dotnet; then
+    target=$(echo "$solutions" | head -1)
+    [ -z "$target" ] && target=$(echo "$projects" | head -1)
+    for kind in outdated vulnerable deprecated; do
+      printf '\n### NuGet: %s\n\n```text\n' "$kind"
+      extra=""
+      [ "$kind" = vulnerable ] && extra="--include-transitive"
+      dotnet list "$target" package "--$kind" ${extra:+"$extra"} 2>&1 | grep -v '^\s*$' | head -80
+      printf '```\n'
+    done
+  fi
+fi
+
+section "Angular / npm"
+packages=$(find_files -name package.json)
+pkg=""
+while IFS= read -r candidate; do
+  [ -n "$candidate" ] && grep -q '"@angular/core"' "$candidate" && { pkg="$candidate"; break; }
+done <<EOF_PKG
+$packages
+EOF_PKG
+[ -z "$pkg" ] && pkg=$(printf '%s\n' "$packages" | head -1)
+if [ -z "$pkg" ]; then
+  echo "No package.json found."
+else
+  dir=$(dirname "$pkg")
+  angular=$(sed -n 's/.*"@angular\/core"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' "$pkg" | head -1)
+  printf -- '- package.json: `%s`\n' "$pkg"
+  printf -- '- @angular/core: `%s`\n' "${angular:-not a dependency}"
+  lock="none"
+  for l in package-lock.json pnpm-lock.yaml yarn.lock; do
+    [ -f "$dir/$l" ] && lock="$l"
+  done
+  printf -- '- Lockfile: %s\n' "$lock"
+  [ -f "$dir/.nvmrc" ] && printf -- '- .nvmrc: `%s`\n' "$(cat "$dir/.nvmrc")"
+  have node && printf -- '- Local node: `%s`\n' "$(node --version)"
+  if [ -f "$dir/angular.json" ]; then
+    runner=$(grep -o '"builder"[[:space:]]*:[[:space:]]*"[^"]*:\(karma\|jest\|vitest\|unit-test\)"' "$dir/angular.json" | head -1 | sed 's/.*"\([^"]*\)"$/\1/')
+    printf -- '- Test builder: `%s`\n' "${runner:-unknown}"
+  fi
+  if [ "$offline" -eq 0 ] && have npm; then
+    printf '\n### npm outdated\n\n```text\n'
+    (cd "$dir" && npm outdated 2>&1 | head -60)
+    printf '```\n\n### npm audit (runtime dependencies)\n\n```text\n'
+    (cd "$dir" && npm audit --omit=dev 2>&1 | tail -25)
+    printf '```\n'
+  fi
+fi
+
+section "Docker base images"
+dockerfiles=$(find_files -name 'Dockerfile' -o -name '*.Dockerfile' -o -name 'Dockerfile.*')
+if [ -z "$dockerfiles" ]; then
+  echo "No Dockerfile found."
+else
+  printf '| File | Image | Note |\n|---|---|---|\n'
+  printf '%s\n' "$dockerfiles" | while IFS= read -r f; do
+    awk '
+      toupper($1) == "FROM" {
+        i = 2; while ($i ~ /^--/) i++
+        img = $i
+        for (j = i + 1; j < NF; j++) if (toupper($j) == "AS") alias[$(j + 1)] = 1
+        if (img in stages) next
+        for (a in alias) stages[a] = 1
+        note = ""
+        if (img ~ /@sha256:/) note = "digest pinned"
+        else if (img ~ /:latest$/) note = "floating tag latest"
+        else if (img ~ /^\$/) note = "from build arg"
+        else if (img !~ /:/) note = "no tag (implies latest)"
+        else note = "tag only; pin a digest for production"
+        printf "| `%s` | `%s` | %s |\n", FILENAME, img, note
+      }' "$f"
+  done
+fi
+
+section "GitHub Actions"
+workflows=$(find_files -path './.github/workflows/*' \( -name '*.yml' -o -name '*.yaml' \))
+if [ -z "$workflows" ]; then
+  echo "No workflows found."
+else
+  unpinned=$(printf '%s\n' "$workflows" | while IFS= read -r w; do
+      grep -nHE '^[[:space:]]*-?[[:space:]]*uses:[[:space:]]*["'"'"']?[^.[:space:]"'"'"'][^@[:space:]]*@' "$w"
+    done | grep -vE '@[0-9a-f]{40}["'"'"']?([[:space:]]|$)' | grep -v 'uses:[[:space:]]*["'"'"']\{0,1\}docker://')
+  if [ -z "$unpinned" ]; then
+    echo "All third-party actions are pinned to a commit SHA."
+  else
+    printf 'Actions not pinned to a commit SHA:\n\n```text\n%s\n```\n' "$unpinned"
+  fi
+  printf '%s\n' "$workflows" | while IFS= read -r w; do
+    grep -qE '^[[:space:]]*permissions:' "$w" || printf 'Workflow without a `permissions:` block: %s\n' "$w"
+    grep -qE 'pull_request_target' "$w" && printf 'Uses pull_request_target (review carefully): %s\n' "$w"
+  done
+fi
+
+section "Update automation"
+if [ -f .github/dependabot.yml ] || [ -f .github/dependabot.yaml ]; then
+  cfg=$(ls .github/dependabot.y*ml | head -1)
+  ecosystems=$(sed -n 's/.*package-ecosystem:[[:space:]]*"\{0,1\}\([a-z-]*\)"\{0,1\}.*/\1/p' "$cfg" | sort -u | tr '\n' ' ')
+  printf 'Dependabot ecosystems: %s\n' "$ecosystems"
+  missing=""
+  [ -n "$projects" ] && ! echo "$ecosystems" | grep -qw nuget && missing="$missing nuget"
+  [ -n "$pkg" ] && ! echo "$ecosystems" | grep -qw npm && missing="$missing npm"
+  [ -n "$dockerfiles" ] && ! echo "$ecosystems" | grep -qw docker && missing="$missing docker"
+  [ -n "$workflows" ] && ! echo "$ecosystems" | grep -qw github-actions && missing="$missing github-actions"
+  [ -n "$missing" ] && printf 'Detected but not covered by Dependabot:%s\n' "$missing"
+elif [ -f renovate.json ] || [ -f renovate.json5 ] || [ -f .github/renovate.json ] || [ -f .renovaterc ] || [ -f .renovaterc.json ]; then
+  echo "Renovate configured."
+else
+  echo "No Dependabot or Renovate configuration found."
+fi
+
+exit 0
