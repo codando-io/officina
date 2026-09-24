@@ -14,6 +14,10 @@ steps: what to rename, move, or decide.
 - Pull request structure: `templates/pull-request.md` (What, Why, How to
   verify, Risk, Reviewer focus) and the rules in `core/git.md`. `adopt` offers
   to install it as the forge's template.
+- `bin/check-commit-msg`: checks the Conventional Commits header and rejects AI
+  tool attribution (`--summary-only` also rejects a body). The commit rules in
+  `core/git.md` now state the attribution rule. `adopt` offers it as a
+  `commit-msg` hook.
 
 ## [0.1.0] - 2026-09-23
 

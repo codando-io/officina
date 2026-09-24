@@ -63,7 +63,10 @@ If the working tree has uncommitted changes, stop and ask before starting.
    If the repository has no pull request template, offer to install
    `$HARNESS/templates/pull-request.md` as `.github/pull_request_template.md`
    (GitHub) or `.forgejo/pull_request_template.md` (Forgejo), so pull requests
-   opened by hand follow the same structure.
+   opened by hand follow the same structure. If the project has no commit
+   message check (commitlint, a `commit-msg` hook), offer
+   `$HARNESS/bin/check-commit-msg` as the local `commit-msg` hook, with
+   `--summary-only` when the project's commits are one line.
 7. **Verify.** Run `$HARNESS/bin/eng-context --check` from the repository root
    and show its output. It must exit 0 and list the right version, profiles, and
    memory index. Then check the adapter files against the adapter README.

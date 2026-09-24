@@ -1,0 +1,51 @@
+#!/bin/sh
+# Checks a commit message against the harness commit rules (core/git.md):
+# a Conventional Commits header and no AI tool attribution.
+#
+# Usage: check-commit-msg [--summary-only] <message-file>
+#   --summary-only  also reject any body (for projects whose commits are one line)
+#
+# As a git hook: .git/hooks/commit-msg containing
+#   exec /path/to/harness/bin/check-commit-msg "$1"
+
+set -u
+
+summary_only=0
+file=""
+for arg in "$@"; do
+  case "$arg" in
+    --summary-only) summary_only=1 ;;
+    -h|--help) sed -n '2,9p' "$0"; exit 0 ;;
+    *) file="$arg" ;;
+  esac
+done
+[ -n "$file" ] && [ -f "$file" ] || { echo "check-commit-msg: message file required" >&2; exit 2; }
+
+message=$(tr -d '\r' < "$file" | grep -v '^#')
+header=$(printf '%s\n' "$message" | sed -n '/[^[:space:]]/{p;q;}')
+
+fail() { echo "commit message rejected: $1" >&2; exit 1; }
+
+case "$header" in
+  "Merge "*|"Revert \""*|"fixup! "*|"squash! "*|"amend! "*) exit 0 ;;
+esac
+
+types='feat|fix|refactor|perf|test|docs|build|ci|chore|revert'
+printf '%s\n' "$header" | grep -Eq "^($types)(\([A-Za-z0-9._/-]+\))?!?: [^[:space:]]" \
+  || fail "header must be 'type(scope): summary' with type one of ${types}. Got: $header"
+
+[ "${#header}" -le 100 ] || fail "header is ${#header} characters; keep it at 100 or fewer."
+
+if printf '%s\n' "$message" | grep -Eiq '^co-authored-by:.*(claude|anthropic|copilot|codex|openai|chatgpt|gemini|cursor)'; then
+  fail "remove the AI tool Co-Authored-By trailer."
+fi
+if printf '%s\n' "$message" | grep -Eiq 'generated (with|by) .*(claude|copilot|codex|chatgpt|gemini|cursor)'; then
+  fail "remove the 'Generated with' attribution line."
+fi
+
+if [ "$summary_only" -eq 1 ]; then
+  body=$(printf '%s\n' "$message" | awk 'NF { n++ } n > 1 && NF' | wc -l | tr -d ' ')
+  [ "$body" -eq 0 ] || fail "this project uses a summary line only; remove the body."
+fi
+
+exit 0

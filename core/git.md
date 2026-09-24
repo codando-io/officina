@@ -14,6 +14,11 @@ commitlint config before applying the defaults below.
 - Separate mechanical commits (formatting, renames, generated files) from
   behavior commits.
 - Never commit secrets, local config, build output, or large binaries.
+- No tool or model attribution: no `Co-Authored-By` trailer for an AI tool, no
+  "Generated with" line. Human co-authors are fine.
+- `$HARNESS/bin/check-commit-msg <file>` checks the header format and the
+  attribution rule; `--summary-only` also rejects a body. Use it as the
+  project's `commit-msg` hook or in CI.
 
 ## Branches and history
 
@@ -47,4 +52,4 @@ commitlint config before applying the defaults below.
   empty.
 - Why names the actual problem, links the issue, and says why this approach.
   "Fix bug" or "Fix build" is not a why.
-- Language follows the repository. No tool or model attribution.
+- Language follows the repository. Same attribution rule as commits.
