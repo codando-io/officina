@@ -25,13 +25,31 @@ claude plugin marketplace add <owner>/engineering-harness
 claude plugin install eng@engineering-harness
 ```
 
-For development against a local checkout (edits apply on the next session or
-`/reload-plugins`):
+From a local checkout:
 
 ```bash
 claude plugin marketplace add ~/projects/personal/engineering-harness
 claude plugin install eng@engineering-harness
 ```
+
+Observed on Claude Code 2.1.231 (2026-09-24): the install **copies** the plugin to
+`~/.claude/plugins/cache/engineering-harness/eng/<version>/`, and sessions run
+the copy (`HARNESS=` in the session context shows the cache path). Because
+`plugin.json` sets `version`, `claude plugin update` does not pick up edits until
+the version changes. The documentation describes in-place loading for local
+marketplaces; this version does not do it for a root (`./`) source.
+
+To develop the harness and see edits in the next session, replace the cached
+version directory with a symlink to the checkout. The plugins reference
+documents this: Claude Code never removes a symlinked version entry.
+
+```bash
+rm -rf ~/.claude/plugins/cache/engineering-harness/eng/0.1.0 && ln -s ~/projects/personal/engineering-harness ~/.claude/plugins/cache/engineering-harness/eng/0.1.0
+```
+
+Undo it with `claude plugin uninstall eng@engineering-harness` followed by a new
+install. For everyone else, publish a version bump; that is what `update`
+delivers.
 
 Validate the plugin after changing manifests:
 
@@ -63,9 +81,16 @@ Applied by the `adopt` skill; listed here so it can be done or checked by hand.
    `extraKnownMarketplaces` entry out until the harness is published to a git
    host that teammates can reach. The `deny` rules are useful either way.
 
-3. Optional: if other installed plugins overlap with harness skills (for example
-   other review or security-review skills), consider disabling them in this
-   project's `.claude/settings.json` to reduce routing ambiguity.
+3. Check that the harness skills keep their descriptions. The skill listing has
+   a budget (1% of the context window). When it overflows, Claude Code drops
+   descriptions starting with the least-used skills, and new harness skills are
+   the least used, so the agent stops choosing them on its own. Observed on
+   2026-09-24 with pstack and ripwire installed: 7 of the 9 model-invocable
+   `eng:` skills were listed without a description. Fixes, cheapest first:
+   disable plugins the project does not use (`enabledPlugins` set to `false` in
+   `.claude/settings.json`), set low-value skills to `"name-only"` in
+   `skillOverrides`, or raise `skillListingBudgetFraction`. `/context` shows the
+   listing size after the budget.
 
 Notes:
 

@@ -173,9 +173,13 @@ Na máquina:
 claude plugin marketplace update engineering-harness
 ```
 
-Com o marketplace local, as edições valem na próxima sessão (ou com
-`/reload-plugins`). Como o `plugin.json` tem `version`, uma instalação a partir de
-um repositório remoto só muda quando a versão muda.
+Com o marketplace local no Claude Code 2.1.231, a instalação **copia** o plugin
+para o cache e as sessões usam a cópia, verificado pelo `HARNESS=` do contexto.
+Como o `plugin.json` tem `version`, nem `claude plugin update` leva edições
+adiante sem subir a versão. Para desenvolver o harness e ver as edições na
+sessão seguinte, troque a pasta da versão no cache por um symlink para o
+checkout (passo a passo em `adapters/claude-code/README.md`). Para os outros
+usuários, o caminho é publicar uma versão nova.
 
 No projeto: se a linha declarada em `harness.yaml` for diferente da instalada,
 `eng-context` avisa no início da sessão. Rode `/eng:adopt` (modo upgrade): ele lê
