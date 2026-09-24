@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="Engineering harness">
+  <rect width="512" height="512" fill="#E8DBBE"/>
+  <path d="M397.0 204.7 A150 150 0 1 1 282.0 108.3" fill="none" stroke="#1B1917" stroke-width="56"/>
+  <polygon points="292.1,51.2 343.1,119.0 272.0,165.4" fill="#1B1917"/>
+  <path d="M186 262 L234 310 L328 208" fill="none" stroke="#C0392B" stroke-width="44" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
