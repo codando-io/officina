@@ -101,7 +101,8 @@ alternatives that someone will question later. Most decisions do not need one.
 
 Small commits, one logical change each, Conventional Commits format. Never
 rewrite published history or push to protected branches without being asked.
-Details: `$HARNESS/core/git.md`.
+Pull request descriptions are short blocks of bullets. Details, including the
+PR structure: `$HARNESS/core/git.md`.
 
 ## Communication
 

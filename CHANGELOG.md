@@ -9,6 +9,12 @@ steps: what to rename, move, or decide.
 
 ## [Unreleased]
 
+### Added
+
+- Pull request structure: `templates/pull-request.md` (What, Why, How to
+  verify, Risk, Reviewer focus) and the rules in `core/git.md`. `adopt` offers
+  to install it as the forge's template.
+
 ## [0.1.0] - 2026-09-23
 
 ### Added

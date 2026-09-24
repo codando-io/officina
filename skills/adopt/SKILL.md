@@ -60,6 +60,10 @@ If the working tree has uncommitted changes, stop and ask before starting.
    to the one running this skill), apply the setup in
    `$HARNESS/adapters/<agent>/README.md`, section *Project setup*.
 6. **Ignore working files**: add `.engineering/work/` to `.gitignore`.
+   If the repository has no pull request template, offer to install
+   `$HARNESS/templates/pull-request.md` as `.github/pull_request_template.md`
+   (GitHub) or `.forgejo/pull_request_template.md` (Forgejo), so pull requests
+   opened by hand follow the same structure.
 7. **Verify.** Run `$HARNESS/bin/eng-context --check` from the repository root
    and show its output. It must exit 0 and list the right version, profiles, and
    memory index. Then check the adapter files against the adapter README.

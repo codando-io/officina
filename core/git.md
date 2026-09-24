@@ -38,5 +38,13 @@ commitlint config before applying the defaults below.
 
 - Small, single-purpose. Title in Conventional Commit form when the project
   squashes.
-- Description: problem, approach, evidence (commands and results), risk class
-  (R0/R1/R2), rollback, and anything the reviewer should look at first.
+- Description: the five blocks of `$HARNESS/templates/pull-request.md` (What,
+  Why, How to verify, Risk, Reviewer focus), unless the repository has its own
+  template.
+- Bullets only, one line each, at most five per block. No paragraphs.
+- How to verify and Risk are always present: the commands run and their
+  results, the risk class, and the rollback. Drop any other block that would be
+  empty.
+- Why names the actual problem, links the issue, and says why this approach.
+  "Fix bug" or "Fix build" is not a why.
+- Language follows the repository. No tool or model attribution.
