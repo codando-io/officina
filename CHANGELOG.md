@@ -11,6 +11,16 @@ steps: what to rename, move, or decide.
 
 ### Added
 
+- Failure-scenario catalog (`skills/test/references/failure-scenarios.md`): 53
+  scenarios in 8 categories with verification technique, trigger, and primary
+  source. `test` adds the triggered rows as behaviors; `plan` lists R2 failure
+  modes from it; `review` checks them and the three error-handler patterns.
+- Policy: R2 changes need at least two independent safeguards per identified
+  failure mode.
+- Delivery readiness: `architecture-audit` reports missing minimum-delivery
+  items (CI, staging, flags, rollback, observability); `adopt` marks them as
+  `missing` in `AGENTS.md`.
+- Profiles: `references/failure-testing.md` for .NET and Angular.
 - Pull request structure: `templates/pull-request.md` (What, Why, How to
   verify, Risk, Reviewer focus) and the rules in `core/git.md`. `adopt` offers
   to install it as the forge's template.

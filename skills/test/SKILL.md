@@ -20,7 +20,10 @@ fail if this change were wrong, and did it run?".
 
 1. **Name the behavior that changed.** One line per behavior, from the user's or
    caller's point of view (input → observable result). If you cannot name it,
-   you do not know what to test.
+   you do not know what to test. Then open `references/failure-scenarios.md`,
+   find the rows whose *Mandatory when* matches this change (a new consumer, a
+   new editable entity, a migration, a retry policy...), and add each one as a
+   behavior. A triggered scenario you do not test needs a one-line reason.
 2. **Pick the level for each behavior** with the cheapest level that can fail
    for the real reason:
    - unit: pure logic, branching, mapping, validation;
@@ -29,8 +32,8 @@ fail if this change were wrong, and did it run?".
      messaging, or file system - use real dependencies (e.g. test containers,
      in-memory host) over mocks where the project allows;
    - e2e: only for critical user journeys that lower levels cannot cover.
-   Scenario tests for concurrency, partial failure, retries, and conflicts belong
-   in integration tests when the change touches shared state or R2 areas.
+   Failure scenarios (concurrency, crashes, duplicates, slow dependencies) are
+   usually integration tests against real dependencies.
 3. **Write the test so it fails first.** For bugs, run it against the unfixed code
    and record the failure. For new behavior, make sure the assertion would fail
    if the feature returned a wrong or empty value.
@@ -62,6 +65,7 @@ fail if this change were wrong, and did it run?".
 **Commands run**
 - `<command>` -> <summary: N passed, 0 failed, duration>
 
+**Failure scenarios**: triggered catalog rows, each tested or not applicable (why)
 **Not covered**: behavior, why, and what stands in for it
 **Verdict**: verified / partially verified / not verified
 ```

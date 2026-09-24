@@ -42,6 +42,7 @@ the whole and returns a short, prioritized backlog with evidence, not a lecture.
 | Stale feature flags | Flags fixed at one value for months, flags with no remaining branches |
 | Stale knowledge | `AGENTS.md` commands that fail, memory entries whose evidence no longer exists, ADRs contradicted by code |
 | Growing debt | Areas with high churn and complexity (`git log` frequency on large files), warnings trend, suppressed analyzers |
+| Delivery readiness gaps | Missing items of the minimum delivery setup: unit tests; integration tests for concurrency, partial failure, and conflict; CI that builds and tests every change on the platforms that ship; review before merge; a feature-flag mechanism; a staging gate; fast rollback; production observability; and, in regulated domains, two safeguards per failure mode. Each missing item is a finding; missing rollback or CI ranks first |
 
 3. **Modernization focus** adds: obsolete/deprecated API usage (compiler and
    analyzer warnings), platform and framework versions against support windows,

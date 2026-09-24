@@ -31,8 +31,16 @@ to verify. "Fixed." is not evidence.
      culture, concurrency), error handling, resource disposal, async misuse.
    - **Regressions**: callers of changed code, changed defaults, changed
      ordering, removed branches.
+   - **Error handling**: every new `catch` or error branch. Three patterns cause
+     a large share of catastrophic failures: a handler that is empty or only
+     logs, a catch-all that aborts on any exception, and a handler with a TODO.
+     Each is a blocker unless the code states why ignoring or aborting is safe.
+     Each new error path needs a test that forces it.
    - **Tests**: does a test fail without the change? Were tests weakened,
-     skipped, or rewritten to match new output without a reason?
+     skipped, or rewritten to match new output without a reason? Were the
+     failure scenarios this change triggers
+     (`$HARNESS/skills/test/references/failure-scenarios.md`) tested or
+     explicitly ruled out?
    - **Architecture**: does it follow existing patterns and boundaries? New
      abstractions justified? Logic in the right layer?
    - **Security**: `$HARNESS/core/security.md` §5 on the changed lines.

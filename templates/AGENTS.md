@@ -53,6 +53,7 @@ trace id. "None yet" is a valid answer.>
 
 | Item | Value |
 |---|---|
+| CI on every change | ... |
 | Hosting / provider | ... |
 | Environments | ... |
 | Staging gate | ... |

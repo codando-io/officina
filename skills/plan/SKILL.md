@@ -36,8 +36,10 @@ any repository is not a plan.
    bugs.
 6. Decide observability and security work using the policies. "None needed" is
    fine with a reason.
-7. Write rollback for R1 and R2. For R2, also the approval point and, for data,
-   the expand-contract phases.
+7. Write rollback for R1 and R2. For R2, also the approval point, for data the
+   expand-contract phases, and the failure modes: list each one with its two
+   independent safeguards. The triggered rows of
+   `$HARNESS/skills/test/references/failure-scenarios.md` are the starting list.
 8. Check whether the decision deserves an ADR (policy §Memory and decisions). If
    yes, draft it with `$HARNESS/templates/adr.md` as part of the plan.
 9. Write the Definition of Done as checkable statements.
@@ -69,6 +71,7 @@ any repository is not a plan.
 **Health signal after deploy**: what to check, where, and what "healthy" looks like
 **Security**: concerns and mitigations, or "none on this path" and why
 **Rollback**: how to undo each step (required for R1/R2)
+**Failure modes** (R2): mode -> safeguard 1, safeguard 2
 **ADR**: needed? draft link or "no" and why
 
 **Definition of Done**

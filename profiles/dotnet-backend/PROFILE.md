@@ -132,3 +132,4 @@ Delivery:
 | `references/currency.md` | `dependency-update`, `architecture-audit` (modernization), `security-audit` |
 | `references/modernization.md` | `architecture-audit` (modernization), `plan` for migrations |
 | `references/observability.md` | `observability` |
+| `references/failure-testing.md` | `test`, `review` (tools for the failure-scenario catalog) |

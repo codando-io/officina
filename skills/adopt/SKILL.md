@@ -55,7 +55,10 @@ If the working tree has uncommitted changes, stop and ask before starting.
    - name two or three reference implementations (the best existing examples of
      an endpoint, a component, a test) as file paths;
    - describe the actual architecture, not an ideal one;
-   - leave a clearly marked `(unknown - ask the team)` where you could not verify.
+   - leave a clearly marked `(unknown - ask the team)` where you could not verify;
+   - in *Delivery*, write `missing` for any item the project does not have (CI on
+     every change, staging gate, rollback, feature flags) and list those as
+     readiness gaps in the output.
 5. **Agent adapter.** For each agent the project uses (ask if unclear; default
    to the one running this skill), apply the setup in
    `$HARNESS/adapters/<agent>/README.md`, section *Project setup*.
@@ -96,4 +99,4 @@ Report, without changing anything:
 ## Output
 
 List of files created or changed with one line each, the verification output,
-and open questions for the team.
+readiness gaps (from *Delivery*), and open questions for the team.
