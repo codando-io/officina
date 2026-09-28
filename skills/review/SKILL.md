@@ -37,13 +37,11 @@ to verify. "Fixed." is not evidence.
      Each is a blocker unless the code states why ignoring or aborting is safe.
      Each new error path needs a test that forces it.
    - **Tests**: does a test fail without the change? Were tests weakened,
-     skipped, or rewritten to match new output without a reason? Were the
-     failure scenarios this change triggers
-     (`$HARNESS/skills/test/references/failure-scenarios.md`) tested or
-     explicitly ruled out?
+     skipped, or rewritten to match new output without a reason? Failure
+     scenarios are step 3.
    - **Architecture**: does it follow existing patterns and boundaries? New
      abstractions justified? Logic in the right layer?
-   - **Security**: `$HARNESS/core/security.md` §5 on the changed lines.
+   - **Security**: step 3.
    - **Observability**: can the new behavior be seen in production? Any
      sensitive data added to logs or spans?
    - **Performance**: N+1 queries, unbounded loads, sync-over-async, hot-path
@@ -53,10 +51,18 @@ to verify. "Fixed." is not evidence.
    - **Maintainability**: naming, duplication of existing helpers, dead code,
      TODOs, commented-out code.
    - **Scope creep**: changes unrelated to the stated purpose.
-3. **Run the evidence** when you can: the tests the change adds, the affected
+3. **Walk both catalogs.** Open
+   `$HARNESS/skills/test/references/failure-scenarios.md`, select every row
+   whose *Mandatory when* matches the diff, and record for each the test that
+   covers it or why it does not apply. Then open `$HARNESS/core/security.md`
+   and apply §5 to the changed lines, one entry per area the diff touches.
+   Reading the diff alone does not replace either file: the catalogs hold the
+   failure modes a diff does not show. Each catalog fills its own table in the
+   output; a catalog left unopened goes under *Not reviewed*.
+4. **Run the evidence** when you can: the tests the change adds, the affected
    suite, the build. Record results. If you cannot run them, say so and lower
    your confidence.
-4. **Check reversibility.** Does the claimed risk class match the diff? Is there
+5. **Check reversibility.** Does the claimed risk class match the diff? Is there
    a rollback for R1/R2?
 
 ## External-contribution gate
@@ -87,8 +93,16 @@ available; use an isolated environment.
 **Findings** (most severe first)
 - [blocker|major|minor|nit] `file:line` - problem, evidence, suggested fix
 
+**Failure scenarios** (triggered catalog rows only)
+| Row | Triggered by | Covered by | Result |
+|---|---|---|---|
+
+**Security §5**
+| Area | Changed lines | Result |
+|---|---|---|
+
 **Evidence run**: commands and results, or what could not be run
-**Not reviewed**: parts you skipped and why
+**Not reviewed**: parts you skipped and why, including any catalog not opened
 ```
 
 Blockers: incorrect behavior, missing evidence for the main claim, weakened

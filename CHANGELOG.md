@@ -40,6 +40,11 @@ steps: what to rename, move, or decide.
   declares the source in `~/.claude/settings.json` and Claude Code clones it at
   the next start; README, IMPLEMENTATION and the Claude Code adapter document
   the sequence.
+- `review` walks the failure-scenario catalog and the security checklist
+  (`core/security.md` §5) as a numbered step of its own, and its output carries
+  a table for each. Both were a question inside the Tests and Security
+  dimensions with no slot in the output, and a review ran the whole procedure
+  without opening either file.
 
 ## [0.1.0] - 2026-09-23
 
