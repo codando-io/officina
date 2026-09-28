@@ -41,15 +41,30 @@ as nove primeiras sozinho pela descrição.
 
 ## Adotar num projeto (Claude Code)
 
-1. Uma vez por máquina:
+1. Uma vez por máquina. O marketplace é o próprio repositório no Forgejo, e o
+   `claude plugin marketplace add` não aceita URL `ssh://`, então a fonte entra
+   direto no `~/.claude/settings.json`:
 
-   ```bash
-   claude plugin marketplace add ~/projects/personal/engineering-harness
+   ```json
+   {
+     "extraKnownMarketplaces": {
+       "engineering-harness": {
+         "source": {
+           "source": "git",
+           "url": "ssh://forgejo@src.capivaras.dev:2222/scriptorium/officina.git"
+         }
+       }
+     }
+   }
    ```
+
+   Abra o Claude Code uma vez, para ele clonar o marketplace, e instale:
 
    ```bash
    claude plugin install eng@engineering-harness
    ```
+
+   O repositório é privado: a máquina precisa de chave SSH autorizada no Forgejo.
 
 2. No projeto, peça `/eng:adopt`. A skill inspeciona o repositório, escolhe o
    profile, cria `.engineering/`, preenche o `AGENTS.md` com fatos verificados,

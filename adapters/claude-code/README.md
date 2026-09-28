@@ -18,14 +18,35 @@ repository root, where Claude Code requires them) and `adapters/claude-code/hook
 
 ## Machine setup (once per machine)
 
-From a published repository:
+The marketplace is the harness repository on Forgejo, `scriptorium/officina`.
+`claude plugin marketplace add` rejects `ssh://` URLs (`Invalid marketplace
+source format`), so the source is declared in `~/.claude/settings.json`:
+
+```json
+{
+  "extraKnownMarketplaces": {
+    "engineering-harness": {
+      "source": {
+        "source": "git",
+        "url": "ssh://forgejo@src.capivaras.dev:2222/scriptorium/officina.git"
+      }
+    }
+  }
+}
+```
+
+Claude Code clones it into `~/.claude/plugins/marketplaces/engineering-harness`
+the next time it starts. Then install:
 
 ```bash
-claude plugin marketplace add <owner>/engineering-harness
 claude plugin install eng@engineering-harness
 ```
 
-From a local checkout:
+The repository is private, so the machine needs an SSH key authorized on
+Forgejo. A host reachable over HTTPS takes the one-liner instead:
+`claude plugin marketplace add <https url or owner/repo>`.
+
+From a local checkout, for harness development:
 
 ```bash
 claude plugin marketplace add ~/projects/personal/engineering-harness
@@ -47,8 +68,9 @@ documents this: Claude Code never removes a symlinked version entry.
 rm -rf ~/.claude/plugins/cache/engineering-harness/eng/0.1.0 && ln -s ~/projects/personal/engineering-harness ~/.claude/plugins/cache/engineering-harness/eng/0.1.0
 ```
 
-Undo it with `claude plugin uninstall eng@engineering-harness` followed by a new
-install. For everyone else, publish a version bump; that is what `update`
+`claude plugin install` replaces the symlink with a copy, so redo it after any
+install. Undo it with `claude plugin uninstall eng@engineering-harness` followed
+by a new install. For everyone else, publish a version bump; that is what `update`
 delivers.
 
 Validate the plugin after changing manifests:
@@ -75,11 +97,12 @@ Applied by the `adopt` skill; listed here so it can be done or checked by hand.
 2. `.claude/settings.json` declares the marketplace and enables the plugin for
    everyone who trusts the folder, and denies reads of common secret files. Merge
    `templates/claude-settings.json` into the existing file and keep existing keys.
-   For the marketplace `source`, use the source this machine registered
-   (`claude plugin marketplace list --json`). If that source is a local directory,
-   the setting only works on this machine: say so, and leave the
-   `extraKnownMarketplaces` entry out until the harness is published to a git
-   host that teammates can reach. The `deny` rules are useful either way.
+   The template already carries the Forgejo `git` source, which every machine
+   with an authorized SSH key can fetch. Only replace it when this machine
+   registered a different source (`claude plugin marketplace list --json`); a
+   local directory works on this machine alone, so leave the
+   `extraKnownMarketplaces` entry out in that case. The `deny` rules are useful
+   either way.
 
 3. Check that the harness skills keep their descriptions. The skill listing has
    a budget (1% of the context window). When it overflows, Claude Code drops

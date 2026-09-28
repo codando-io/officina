@@ -80,18 +80,34 @@ o sinal de saúde que o plano ou a release nomeou; é aí que o ciclo fecha.
 
 ### Passo a passo
 
-1. **Instalar na máquina** (uma vez):
+1. **Instalar na máquina** (uma vez). O marketplace é o repositório no Forgejo,
+   `scriptorium/officina`. O `claude plugin marketplace add` rejeita URL
+   `ssh://` (`Invalid marketplace source format`), então a fonte é declarada no
+   `~/.claude/settings.json`:
 
-   ```bash
-   claude plugin marketplace add ~/projects/personal/engineering-harness
+   ```json
+   {
+     "extraKnownMarketplaces": {
+       "engineering-harness": {
+         "source": {
+           "source": "git",
+           "url": "ssh://forgejo@src.capivaras.dev:2222/scriptorium/officina.git"
+         }
+       }
+     }
+   }
    ```
+
+   O clone acontece quando o Claude Code abre pela primeira vez depois disso,
+   em `~/.claude/plugins/marketplaces/engineering-harness`. Com o marketplace
+   no lugar:
 
    ```bash
    claude plugin install eng@engineering-harness
    ```
 
-   Quando o repositório estiver publicado, troque o caminho local por
-   `<owner>/engineering-harness`.
+   O repositório é privado, então a máquina precisa de chave SSH autorizada no
+   Forgejo. Verificado no Claude Code 2.1.274 em 2026-09-28.
 
 2. **Adotar**: abra o Claude Code na raiz do projeto e rode `/eng:adopt`. A skill:
    - detecta a stack e escolhe os profiles (`dotnet-backend`, `angular` e,
@@ -173,13 +189,16 @@ Na máquina:
 claude plugin marketplace update engineering-harness
 ```
 
-Com o marketplace local no Claude Code 2.1.231, a instalação **copia** o plugin
-para o cache e as sessões usam a cópia, verificado pelo `HARNESS=` do contexto.
-Como o `plugin.json` tem `version`, nem `claude plugin update` leva edições
-adiante sem subir a versão. Para desenvolver o harness e ver as edições na
-sessão seguinte, troque a pasta da versão no cache por um symlink para o
-checkout (passo a passo em `adapters/claude-code/README.md`). Para os outros
-usuários, o caminho é publicar uma versão nova.
+A instalação **copia** o plugin para o cache e as sessões usam a cópia,
+verificado pelo `HARNESS=` do contexto. Isso vale tanto para o marketplace
+local quanto para o do Forgejo: com a fonte remota, a cópia sai do clone em
+`~/.claude/plugins/marketplaces/`. Como o `plugin.json` tem `version`, nem
+`claude plugin update` leva edições adiante sem subir a versão. Para
+desenvolver o harness e ver as edições na sessão seguinte, troque a pasta da
+versão no cache por um symlink para o checkout (passo a passo em
+`adapters/claude-code/README.md`); `claude plugin install` desfaz o symlink, e
+ele precisa ser refeito. Para os outros usuários, o caminho é publicar uma
+versão nova.
 
 No projeto: se a linha declarada em `harness.yaml` for diferente da instalada,
 `eng-context` avisa no início da sessão. Rode `/eng:adopt` (modo upgrade): ele lê
@@ -273,10 +292,11 @@ memória virou template próprio. O diretório de ADR só nasce com o primeiro A
 Instalar dependências de um repositório desconhecido agora passa pela
 checagem de supply chain. Comandos que precisam de Docker ou banco ficam
 marcados `(unverified)`. Há regra para um `CLAUDE.md` que já tem conteúdo e para
-árvore de trabalho suja. A verificação usa `--check`. O `OWNER` do marketplace
-sai da fonte registrada na máquina, com o aviso de que caminho local não serve
-para colegas. Um bloqueio continua: enquanto o harness não estiver num git
-remoto, só esta máquina consegue usá-lo.
+árvore de trabalho suja. A verificação usa `--check`. O marketplace sai da fonte
+registrada na máquina, com o aviso de que caminho local não serve para colegas.
+O bloqueio desta fase — enquanto o harness não estiver num git remoto, só esta
+máquina consegue usá-lo — caiu em 2026-09-28: o repositório está no Forgejo e a
+fonte registrada é o clone `git`.
 
 **O harness consegue evoluir sem quebrar projetos?** Em parte. SemVer, a seção
 *Migration* obrigatória no CHANGELOG, o aviso de versão no loader e o modo

@@ -29,6 +29,18 @@ steps: what to rename, move, or decide.
   `core/git.md` now state the attribution rule. `adopt` offers it as a
   `commit-msg` hook.
 
+### Changed
+
+- The marketplace source is the Forgejo repository
+  (`ssh://forgejo@src.capivaras.dev:2222/scriptorium/officina.git`) instead of a
+  local checkout, so any machine with an authorized SSH key can install the
+  plugin. `templates/claude-settings.json` and the example project carry that
+  source in place of the `OWNER/engineering-harness` placeholder.
+  `claude plugin marketplace add` rejects `ssh://` URLs, so machine setup
+  declares the source in `~/.claude/settings.json` and Claude Code clones it at
+  the next start; README, IMPLEMENTATION and the Claude Code adapter document
+  the sequence.
+
 ## [0.1.0] - 2026-09-23
 
 ### Added
