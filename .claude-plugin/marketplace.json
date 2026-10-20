@@ -2,7 +2,8 @@
   "name": "engineering-harness",
   "description": "Personal engineering harness for AI coding agents.",
   "owner": {
-    "name": "joaolucasdsp"
+    "name": "Codando Software",
+    "url": "https://codando.io"
   },
   "plugins": [
     {

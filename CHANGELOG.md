@@ -29,6 +29,10 @@ steps: what to rename, move, or decide.
   `core/git.md` now state the attribution rule. `adopt` offers it as a
   `commit-msg` hook.
 
+- Licensed under Apache-2.0 (`LICENSE`, `NOTICE`), with Codando Software as the
+  copyright holder; the plugin and marketplace manifests name Codando Software
+  as author and owner.
+
 ### Changed
 
 - The marketplace source is the Forgejo repository

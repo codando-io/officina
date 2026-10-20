@@ -97,3 +97,7 @@ claude plugin validate . --strict
 
 Conteúdo para agentes (`core/`, `skills/`, `profiles/`, `templates/`) está em
 inglês. Documentação para pessoas está em português.
+
+## Licença
+
+Apache-2.0. Veja [LICENSE](LICENSE) e [NOTICE](NOTICE). Copyright 2026 Codando Software.
