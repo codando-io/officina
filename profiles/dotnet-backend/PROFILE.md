@@ -117,6 +117,26 @@ Security (the areas in `$HARNESS/core/security.md` §5, as they appear here):
   that applies `[Authorize]`/`RequireAuthorization`; no `FallbackPolicy` when
   the app should be secure by default. Multi-tenant lookups that answer
   "forbidden" instead of "not found" leak existence.
+- Mass assignment: EF entities as endpoint parameters or `[FromBody]` types;
+  bind a request record and copy the allowed fields. `DbContext.Update` on an
+  entity built from the request writes every column.
+- Abuse: auth and costly endpoints without an `AddRateLimiter` policy
+  (`RequireRateLimiting` or `[EnableRateLimiting]`, plus `UseRateLimiter`).
+  Behind a reverse proxy, a limiter partitioned by `RemoteIpAddress` puts every
+  client in one partition unless `UseForwardedHeaders` is configured for it.
+- Transport and headers: no `UseHttpsRedirection` and `UseHsts` (outside
+  Development). Behind a TLS-terminating proxy, redirect at the proxy or run
+  `UseForwardedHeaders` first; otherwise the app sees every request as HTTP and
+  the auth cookie's default `CookieSecurePolicy.SameAsRequest` leaves out
+  `Secure`, so set `CookieSecurePolicy.Always`. ASP.NET Core does not send
+  `Content-Security-Policy` or `X-Content-Type-Options`; add them in a
+  middleware or at the proxy.
+- Crypto: password hashes from anything but `PasswordHasher<TUser>` (PBKDF2,
+  usable without the rest of Identity) or a vetted Argon2id library. Data
+  Protection keys left at the default location in a container are lost on
+  restart and differ per replica: auth cookies and antiforgery tokens break and
+  values stored with `IDataProtector` become unreadable. Persist them
+  (`PersistKeysToDbContext`, a shared volume, or blob storage).
 
 Delivery:
 - Floating base image tags (`latest`); images running as root. .NET 8+ images

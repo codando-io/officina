@@ -49,6 +49,12 @@ steps: what to rename, move, or decide.
   a table for each. Both were a question inside the Tests and Security
   dimensions with no slot in the output, and a review ran the whole procedure
   without opening either file.
+- Security checklist (`core/security.md` §5): new areas for mass assignment,
+  abuse (rate limits, bot protection, account enumeration), and transport and
+  headers (HTTPS, HSTS, CSP). Web covers cookie flags, Crypto names acceptable
+  password hashes and sensitive fields at rest, and Authorization covers clients
+  that query the database directly (row-level security, privileged keys). The
+  .NET profile lists the ASP.NET Core APIs and proxy pitfalls behind each.
 
 ## [0.1.0] - 2026-09-23
 

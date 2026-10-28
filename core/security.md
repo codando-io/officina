@@ -72,11 +72,14 @@ the framework-specific APIs behind each area.
 | SSRF | Server-side HTTP calls to user-supplied URLs; missing allowlist; access to metadata endpoints (169.254.169.254) and internal hosts |
 | Deserialization | Polymorphic or type-embedding deserialization of untrusted input, binary formatters, YAML loaders that construct types |
 | Authentication | Endpoints missing auth, token validation disabled or partial (issuer, audience, lifetime, signature), secrets in JWTs, long-lived tokens |
-| Authorization | Checks in UI only, missing resource-ownership checks (IDOR), role checks by string compare scattered across code, new endpoints without an authorization policy |
+| Authorization | Checks in UI only, missing resource-ownership checks (IDOR), role checks by string compare scattered across code, new endpoints without an authorization policy; a client that queries the database directly (Supabase, Firebase) without row-level security or security rules on every table, or with a privileged key (service role, admin SDK) in client code |
+| Mass assignment | Request bodies bound straight to persistence entities, so the client can set fields it must not (`role`, `isAdmin`, `ownerId`, `tenantId`, `price`); updates that copy every incoming field |
+| Abuse | No rate limit on login, sign-up, password reset, one-time codes, and costly endpoints (email, SMS, AI calls, exports); public forms without bot protection (CAPTCHA, proof of work); responses that reveal whether an account exists |
 | File access | Path traversal (`../`), user-controlled paths, unrestricted upload type/size, serving uploads from the app origin |
-| Web | CORS `*` with credentials, missing CSRF protection with cookie auth, bypassing the framework's HTML sanitization with untrusted data, open redirects |
+| Web | CORS `*` with credentials, missing CSRF protection with cookie auth, session cookies without `HttpOnly`, `Secure`, and `SameSite`, bypassing the framework's HTML sanitization with untrusted data, open redirects |
+| Transport and headers | Plain HTTP accepted (no redirect to HTTPS, no HSTS); missing `Content-Security-Policy`, `X-Content-Type-Options: nosniff`, `frame-ancestors` (or `X-Frame-Options`), `Referrer-Policy` |
 | Data exposure | Personal data or secrets in logs, traces, error messages, or API responses; verbose exceptions in production |
-| Crypto | Custom crypto, MD5/SHA1 for passwords, hardcoded keys, disabled TLS validation |
+| Crypto | Custom crypto, passwords stored with anything but a slow salted hash (Argon2id, scrypt, bcrypt, PBKDF2), hardcoded keys, disabled TLS validation, highly sensitive fields (government IDs, health data, third-party tokens) stored in plain text |
 | Resource limits | Unbounded queries, missing pagination, missing request size limits, regex with catastrophic backtracking |
 
 ## 6. Findings format
