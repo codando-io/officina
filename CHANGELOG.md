@@ -14,6 +14,9 @@ steps: what to rename, move, or decide.
 - `check-commit-msg` accepts the Conventional Commits type `style`; projects
   that had used it (folio, lastro) would have had valid commits rejected by
   the new `commit-msg` hook.
+- The `Stop` hook warns the user instead of blocking when the `stop_check`
+  command is not on Claude Code's PATH (exit 127), so a missing tool cannot
+  stop every turn from finishing.
 
 ## [0.3.1] - 2026-11-06
 

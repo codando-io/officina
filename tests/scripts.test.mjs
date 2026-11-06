@@ -221,6 +221,11 @@ test('eng-stop-check blocks a finish only when the project check fails on a chan
   assert.match(blocked.reason, /ls does-not-exist\n.*does-not-exist/);
   assert.equal(stop('{"stop_hook_active": true}'), '', 'never blocks twice in a row');
 
+  writeFileSync(join(dir, '.engineering/harness.yaml'), `harness: "${line}"\nstop_check: no-such-command-here --version\n`);
+  const missing = JSON.parse(stop());
+  assert.equal(missing.decision, undefined, 'a command missing from PATH warns instead of blocking');
+  assert.match(missing.systemMessage, /no-such-command-here/);
+
   writeFileSync(join(dir, '.engineering/harness.yaml'), `harness: "${line}"\nstop_check: ls .engineering\n`);
   assert.equal(stop(), '');
   writeFileSync(join(dir, '.engineering/harness.yaml'), `harness: "${line}"\n`);

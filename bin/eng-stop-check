@@ -13,7 +13,13 @@ check=$(tr -d '\r' < "$yaml" | sed -n 's/^stop_check:[[:space:]]*//p' | head -1 
 [ -n "$check" ] || exit 0
 [ -n "$(git -C "$dir" status --porcelain 2>/dev/null)" ] || exit 0
 
-output=$(cd "$dir" && sh -c "$check" 2>&1) && exit 0
+output=$(cd "$dir" && sh -c "$check" 2>&1)
+status=$?
+[ "$status" -eq 0 ] && exit 0
+if [ "$status" -eq 127 ]; then
+  printf '{"systemMessage":"The project stop check did not run: a command in `%s` is not on the PATH Claude Code uses. Add it to that PATH or change stop_check."}\n' "$(printf '%s' "$check" | tr -d '"\\')"
+  exit 0
+fi
 
 printf '%s\n' "$output" | tail -40 | awk -v cmd="$check" '
   { gsub(/\033\[[0-9;]*[A-Za-z]/, ""); gsub(/\\/, "\\\\"); gsub(/"/, "\\\""); gsub(/\t/, "    "); gsub(/\r/, ""); body = body $0 "\\n" }
