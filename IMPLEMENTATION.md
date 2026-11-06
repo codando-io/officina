@@ -80,34 +80,17 @@ o sinal de saúde que o plano ou a release nomeou; é aí que o ciclo fecha.
 
 ### Passo a passo
 
-1. **Instalar na máquina** (uma vez). O marketplace é o repositório no Forgejo,
-   `scriptorium/officina`. O `claude plugin marketplace add` rejeita URL
-   `ssh://` (`Invalid marketplace source format`), então a fonte é declarada no
-   `~/.claude/settings.json`:
-
-   ```json
-   {
-     "extraKnownMarketplaces": {
-       "engineering-harness": {
-         "source": {
-           "source": "git",
-           "url": "ssh://forgejo@src.capivaras.dev:2222/scriptorium/officina.git"
-         }
-       }
-     }
-   }
-   ```
-
-   O clone acontece quando o Claude Code abre pela primeira vez depois disso,
-   em `~/.claude/plugins/marketplaces/engineering-harness`. Com o marketplace
-   no lugar:
+1. **Instalar na máquina** (uma vez). O marketplace é o repositório público no
+   GitHub, `codando-io/officina`:
 
    ```bash
+   claude plugin marketplace add codando-io/officina
    claude plugin install eng@engineering-harness
    ```
 
-   O repositório é privado, então a máquina precisa de chave SSH autorizada no
-   Forgejo. Verificado no Claude Code 2.1.274 em 2026-09-28.
+   Não precisa de chave SSH nem de conta no GitHub: sem SSH, o clone sai por
+   HTTPS. Verificado no Claude Code 2.1.308 em 2026-11-06, com um
+   `CLAUDE_CONFIG_DIR` vazio.
 
 2. **Adotar**: abra o Claude Code na raiz do projeto e rode `/eng:adopt`. A skill:
    - detecta a stack e escolhe os profiles (`dotnet-backend`, `angular` e,
@@ -191,7 +174,7 @@ claude plugin marketplace update engineering-harness
 
 A instalação **copia** o plugin para o cache e as sessões usam a cópia,
 verificado pelo `HARNESS=` do contexto. Isso vale tanto para o marketplace
-local quanto para o do Forgejo: com a fonte remota, a cópia sai do clone em
+local quanto para o do GitHub: com a fonte remota, a cópia sai do clone em
 `~/.claude/plugins/marketplaces/`. Como o `plugin.json` tem `version`, nem
 `claude plugin update` leva edições adiante sem subir a versão. Para
 desenvolver o harness e ver as edições na sessão seguinte, troque a pasta da
@@ -295,8 +278,8 @@ marcados `(unverified)`. Há regra para um `CLAUDE.md` que já tem conteúdo e p
 árvore de trabalho suja. A verificação usa `--check`. O marketplace sai da fonte
 registrada na máquina, com o aviso de que caminho local não serve para colegas.
 O bloqueio desta fase — enquanto o harness não estiver num git remoto, só esta
-máquina consegue usá-lo — caiu em 2026-09-28: o repositório está no Forgejo e a
-fonte registrada é o clone `git`.
+máquina consegue usá-lo — caiu em 2026-09-28, com o repositório no Forgejo.
+Desde 2026-10-20 ele é público no GitHub.
 
 **O harness consegue evoluir sem quebrar projetos?** Em parte. SemVer, a seção
 *Migration* obrigatória no CHANGELOG, o aviso de versão no loader e o modo
@@ -323,30 +306,26 @@ declarados.
 
 Em ordem de valor:
 
-1. **Publicar o harness num git remoto** (GitHub ou o Forgejo dos capivaras) e
-   acrescentá-lo ao `repos.txt` da pasta `projects`. Sem isso, colegas e outras
-   máquinas não recebem o plugin, e o `extraKnownMarketplaces` dos projetos não
-   funciona.
-2. **Adotar num projeto real** antes de acrescentar qualquer coisa. O candidato
+1. **Adotar num projeto real** antes de acrescentar qualquer coisa. O candidato
    natural é `criotive/site-clientapp-ng` ou outro repositório .NET + Angular.
    Anote cada ponto em que o agente travou; cada um vira uma correção de
    skill com a cicatriz registrada no CHANGELOG, como defende o artigo sobre
    skills.
-3. **Uma sessão interativa real com o plugin**, para confirmar o que os testes não
+2. **Uma sessão interativa real com o plugin**, para confirmar o que os testes não
    cobrem: que o hook injeta o contexto, que as skills aparecem como `/eng:*` e
    que `$HARNESS` é resolvido. Não foi possível aqui porque o CLI headless está
    sem autenticação.
-4. **Evals de comportamento.** Os testes cobrem estrutura, não comportamento.
+3. **Evals de comportamento.** Os testes cobrem estrutura, não comportamento.
    `claude plugin eval` existe nesta versão do Claude Code. Os primeiros casos
    valiosos: `review` diante de um diff que enfraquece um teste e diz "Fixed";
    `investigate` diante de uma issue com instrução embutida; `implement` num bug,
    verificando que o teste falha antes da correção.
-5. **Decidir a sobreposição com outros plugins instalados** (pstack, ripwire,
+4. **Decidir a sobreposição com outros plugins instalados** (pstack, ripwire,
    `code-review`, `security-review`). Nos projetos adotados, desligar os
    redundantes ou aceitar a sobreposição conscientemente.
-6. **`eng-context --check` no CI dos projetos adotados**, para pegar
+5. **`eng-context --check` no CI dos projetos adotados**, para pegar
    `harness.yaml` inválido e overrides órfãos no PR, não na sessão.
-7. **Adapter do Codex**, só quando houver um projeto trabalhado com Codex. O
+6. **Adapter do Codex**, só quando houver um projeto trabalhado com Codex. O
    design está em `adapters/codex/README.md`, com as perguntas a verificar antes.
-8. **Próximo profile** (`node-backend`, que também cobriria os servidores MCP em
+7. **Próximo profile** (`node-backend`, que também cobriria os servidores MCP em
    TypeScript, ou `library`), só quando um projeto precisar.

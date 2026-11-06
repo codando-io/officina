@@ -18,33 +18,14 @@ repository root, where Claude Code requires them) and `adapters/claude-code/hook
 
 ## Machine setup (once per machine)
 
-The marketplace is the harness repository on Forgejo, `scriptorium/officina`.
-`claude plugin marketplace add` rejects `ssh://` URLs (`Invalid marketplace
-source format`), so the source is declared in `~/.claude/settings.json`:
-
-```json
-{
-  "extraKnownMarketplaces": {
-    "engineering-harness": {
-      "source": {
-        "source": "git",
-        "url": "ssh://forgejo@src.capivaras.dev:2222/scriptorium/officina.git"
-      }
-    }
-  }
-}
-```
-
-Claude Code clones it into `~/.claude/plugins/marketplaces/engineering-harness`
-the next time it starts. Then install:
+The marketplace is the harness repository, public on GitHub as
+`codando-io/officina`. No SSH key or GitHub account is needed; without SSH,
+the clone falls back to HTTPS:
 
 ```bash
+claude plugin marketplace add codando-io/officina
 claude plugin install eng@engineering-harness
 ```
-
-The repository is private, so the machine needs an SSH key authorized on
-Forgejo. A host reachable over HTTPS takes the one-liner instead:
-`claude plugin marketplace add <https url or owner/repo>`.
 
 From a local checkout, for harness development:
 
@@ -97,12 +78,10 @@ Applied by the `adopt` skill; listed here so it can be done or checked by hand.
 2. `.claude/settings.json` declares the marketplace and enables the plugin for
    everyone who trusts the folder, and denies reads of common secret files. Merge
    `templates/claude-settings.json` into the existing file and keep existing keys.
-   The template already carries the Forgejo `git` source, which every machine
-   with an authorized SSH key can fetch. Only replace it when this machine
-   registered a different source (`claude plugin marketplace list --json`); a
-   local directory works on this machine alone, so leave the
-   `extraKnownMarketplaces` entry out in that case. The `deny` rules are useful
-   either way.
+   The template carries the public GitHub source, which any machine can
+   fetch. Keep it even when this machine registered the marketplace another way
+   (an `ssh://` URL, a local directory): those sources work on this machine
+   alone.
 
 3. Check that the harness skills keep their descriptions. The skill listing has
    a budget (1% of the context window). When it overflows, Claude Code drops

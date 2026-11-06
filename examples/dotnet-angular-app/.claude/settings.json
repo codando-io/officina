@@ -2,8 +2,8 @@
   "extraKnownMarketplaces": {
     "engineering-harness": {
       "source": {
-        "source": "git",
-        "url": "ssh://forgejo@src.capivaras.dev:2222/scriptorium/officina.git"
+        "source": "github",
+        "repo": "codando-io/officina"
       }
     }
   },

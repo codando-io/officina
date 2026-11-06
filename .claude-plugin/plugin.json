@@ -7,7 +7,7 @@
     "name": "Codando Software",
     "url": "https://codando.io"
   },
-  "repository": "https://src.capivaras.dev/scriptorium/officina",
+  "repository": "https://github.com/codando-io/officina",
   "license": "Apache-2.0",
   "hooks": "./adapters/claude-code/hooks.json"
 }
