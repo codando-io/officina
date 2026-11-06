@@ -46,7 +46,7 @@ p { margin: 0; }
 .targets small { color: var(--muted); }
 .canvas { background: var(--canvas); background-image: radial-gradient(var(--grid) 1px, transparent 1px); background-size: 16px 16px;
   border: 1px solid var(--line); padding: 1.25rem; overflow-x: auto; }
-.canvas svg { max-width: 100%; height: auto; background: #fff; border-radius: 4px; }
+.canvas .export svg { max-width: 100%; height: auto; background: #fff; border-radius: 4px; }
 .canvas pre.mermaid { margin: 0; background: transparent; }
 figure { margin: 0; display: grid; gap: .6rem; }
 figcaption { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .5rem 1rem; color: var(--muted); font-size: .9rem; }
@@ -91,7 +91,7 @@ footer { color: var(--muted); font-size: .88rem; max-width: 46rem; }
     <figure>
       <div class="canvas">
         <pre class="mermaid">{{mermaid source}}</pre>
-        <!-- or: {{inlined <svg> from slug.drawio.svg}} -->
+        <!-- or: <div class="export">{{inlined <svg> from slug.drawio.svg}}</div> -->
       </div>
       <figcaption>
         <span class="legend"><span><i style="background:var(--accent-soft)"></i>new</span><span><i style="background:var(--warn-soft)"></i>changed</span><span><i style="background:var(--surface)"></i>existing</span><span><i style="background:transparent;border-style:dashed"></i>external</span></span>
