@@ -54,7 +54,9 @@ already shows.
 ## Removing things
 
 A skill, rule, or profile section nobody used for 90 days is a candidate for
-removal. Removal of a skill or change of a project-facing format is breaking:
+removal. When the team moves to a new Claude model, re-test the instructions
+that compensate for model behavior (evals where they exist, otherwise one real
+task per skill) and delete the ones the model now follows without being told. Removal of a skill or change of a project-facing format is breaking:
 bump accordingly and write the Migration section.
 
 ## Release process

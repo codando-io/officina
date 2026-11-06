@@ -1,6 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
+import { inflateRawSync } from 'node:zlib';
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, realpathSync, symlinkSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, dirname, resolve } from 'node:path';
@@ -160,4 +161,26 @@ test('check-commit-msg enforces the header format and the attribution rule', () 
   assert.equal(check('Merge branch main\n'), 0);
   assert.equal(check('fix: x\n\nwhy it changed\n', '--summary-only'), 1);
   assert.equal(check('# comment\nfix: x\n# comment\n', '--summary-only'), 0);
+});
+
+test('drawio-url carries the exact diagram to the draw.io editor', () => {
+  const dir = realpathSync(mkdtempSync(join(tmpdir(), 'eng-harness-')));
+  const unpack = (data) => decodeURIComponent(inflateRawSync(Buffer.from(data, 'base64')).toString());
+
+  const xml = '<mxGraphModel><root><mxCell id="0"/><mxCell id="1" parent="0" value="Ação &amp; fila"/></root></mxGraphModel>\n';
+  writeFileSync(join(dir, 'flow.drawio'), xml);
+  const drawio = run('bin/drawio-url', [join(dir, 'flow.drawio')]);
+  assert.equal(drawio.code, 0);
+  const [base, fragment] = drawio.out.trim().split('#R');
+  assert.equal(base, 'https://app.diagrams.net/?grid=0&pv=0&border=10&edit=_blank');
+  assert.equal(unpack(decodeURIComponent(fragment)), xml);
+
+  const mermaid = 'flowchart LR\n  device[ESP32] -.->|telemetria · MQTT| broker[(EMQX)]\n';
+  writeFileSync(join(dir, 'flow.mmd'), mermaid);
+  const mmd = run('bin/drawio-url', [join(dir, 'flow.mmd')]);
+  const create = JSON.parse(decodeURIComponent(mmd.out.trim().split('#create=')[1]));
+  assert.deepEqual({ type: create.type, compressed: create.compressed, version: create.version }, { type: 'mermaid', compressed: true, version: '12' });
+  assert.equal(unpack(create.data), mermaid);
+
+  assert.equal(run('bin/drawio-url', [join(dir, 'notes.txt')]).code, 2);
 });

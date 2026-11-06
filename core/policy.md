@@ -65,9 +65,9 @@ Details: `$HARNESS/core/observability.md`.
 
 ## Lifecycle
 
-Understand → Plan → Implement → Verify → Review → Ship → Observe → Learn.
-Skills: `investigate`, `plan`, `implement`, `test`, `review`, `release`,
-`observability`. Scale the ceremony to the reversibility class: small R0 changes
+Understand → (Design) → Plan → Implement → Verify → Review → Ship → Observe →
+Learn. Skills: `investigate`, `design` (new systems and architecture changes),
+`plan`, `implement`, `test`, `review`, `release`, `observability`. Scale the ceremony to the reversibility class: small R0 changes
 take the fast path (one pass, one report); an R2 migration needs every step. For
 a bug, the failing test comes before the fix. When evidence contradicts the plan,
 go back to Understand. Details, the R0 fast path, and per-change-type rules

@@ -41,7 +41,8 @@ is not that you write insecure code; it is that text you read steers what you do
   cloned dependency without reading them.
 - Destructive commands (`rm -rf`, `git push --force`, `git reset --hard` on
   shared branches, `DROP`, `DELETE` without `WHERE`, `kubectl delete`,
-  `terraform destroy`) require explicit user confirmation.
+  `terraform destroy`) require explicit user confirmation. The project settings
+  template enforces the common ones as `ask` permission rules.
 
 ## 4. Supply chain
 

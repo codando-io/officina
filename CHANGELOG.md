@@ -9,6 +9,24 @@ steps: what to rename, move, or decide.
 
 ## [Unreleased]
 
+### Added
+
+- `design` skill: system design before planning code, with numbers, options
+  compared on the same criteria, failure modes, security, observability, and
+  rollout. It writes the document (`templates/design.md`) and publishes a
+  discussion page (`templates/design-page.html`) with the Artifact tool; the
+  architecture diagram uses draw.io Desktop when it is installed and Mermaid
+  otherwise (`skills/design/references/diagrams.md`). Lifecycle gains a Design
+  phase for new services, datastores, queues, integrations, and trust
+  boundaries.
+- `bin/drawio-url`: prints an `app.diagrams.net` link that opens a `.drawio` or
+  Mermaid file in the draw.io editor, with the diagram in the URL fragment.
+- `templates/claude-settings.json` asks before hard-to-reverse commands (force
+  push, merge, publish, release, destroy), following the reversibility
+  boundary from Anthropic's "Harnessing Claude's intelligence" (2026-04-02).
+- CONTRIBUTING: re-test and prune model-compensating instructions when moving
+  to a new Claude model, from the same article.
+
 ### Changed
 
 - The harness targets Claude Code only. Skills may use its tools and features

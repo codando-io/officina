@@ -4,10 +4,10 @@ One lifecycle for every change. Change types only add deltas. Read this when
 planning; the summary in `policy.md` is enough for small changes.
 
 ```text
-Understand ─► Plan ─► Implement ─► Verify ─► Review ─► Ship ─► Observe ─► Learn
-investigate   plan    implement    test      review    release observability memory/ADR
-     ▲                                │         │                  │
-     └──────── evidence contradicts the hypothesis ────────────────┘
+Understand ─► Design ─► Plan ─► Implement ─► Verify ─► Review ─► Ship ─► Observe ─► Learn
+investigate   design    plan    implement    test      review    release observability memory/ADR
+     ▲                                          │         │                  │
+     └──────────────── evidence contradicts the hypothesis ─────────────────┘
 ```
 
 ## Phases
@@ -15,6 +15,7 @@ investigate   plan    implement    test      review    release observability mem
 | Phase | Skill | Exit artifact | Scale down when |
 |---|---|---|---|
 | Understand | `investigate` | Investigation report | The cause and location are already proven (e.g. a failing test points at one line): one sentence |
+| Design | `design` | Design document and discussion page; ADR once accepted | Skipped for most changes. Required when the change adds a service, datastore, queue, external integration, or trust boundary, or changes how the system scales |
 | Plan | `plan` | Plan with files, tests, rollback, Definition of Done | R0 with an obvious shape (roughly under 30 changed lines): one sentence |
 | Implement | `implement` | Diff that matches the plan | Never skipped. Bugfix: the failing test comes first (`test` step 3) |
 | Verify | `test` | Behavior → test → command → result | Never skipped. R0: the targeted test and its result, one line |

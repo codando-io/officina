@@ -1,0 +1,140 @@
+<title>{{Design name}}</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<!--
+Discussion page for a design (skill: design). Copy, replace every {{...}},
+delete blocks that do not apply, and translate the visible labels to the
+language of the design document. Diagram: keep ONE of the two figure bodies
+(Mermaid <pre> or the inlined .drawio.svg markup).
+-->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@500;600&family=IBM+Plex+Sans:ital,wght@0,400;0,600;1,400&display=swap">
+<style>
+/* Layout: one reading column; the diagram canvas and tables may run wider. */
+:root {
+  --bg: #f4f6f8; --surface: #ffffff; --ink: #18202b; --muted: #5a6474; --line: #d8dee6;
+  --accent: #0b6e7f; --accent-soft: #e2f1f3; --warn: #9a5b00; --warn-soft: #fbefd9;
+  --grid: #dfe5ec; --canvas: #fbfcfd;
+  --sans: "IBM Plex Sans", system-ui, sans-serif;
+  --label: "IBM Plex Sans Condensed", "Arial Narrow", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #11161d; --surface: #182029; --ink: #e6ebf1; --muted: #9aa5b4; --line: #2b3542;
+  --accent: #5cc2d1; --accent-soft: #15333a; --warn: #f0b45c; --warn-soft: #3a2b12;
+  --grid: #222c38; --canvas: #141b23; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #11161d; --surface: #182029; --ink: #e6ebf1; --muted: #9aa5b4; --line: #2b3542;
+  --accent: #5cc2d1; --accent-soft: #15333a; --warn: #f0b45c; --warn-soft: #3a2b12;
+  --grid: #222c38; --canvas: #141b23; color-scheme: dark; }
+body { background: var(--bg); color: var(--ink); font: 16px/1.6 var(--sans); }
+main { max-width: 68rem; margin: 0 auto; padding-block: 2.5rem 4rem;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: grid; gap: 2.75rem; }
+section { display: grid; gap: 1rem; min-width: 0; }
+.prose { max-width: 42rem; }
+h1, h2, h3 { font-family: var(--label); font-weight: 600; line-height: 1.2; text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(1.9rem, 4vw, 2.6rem); }
+h2 { font-size: 1.35rem; padding-bottom: .4rem; border-bottom: 1px solid var(--line); }
+h3 { font-size: 1.05rem; }
+p { margin: 0; }
+.eyebrow, .tag, th { font-family: var(--label); font-size: .78rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.meta { display: flex; flex-wrap: wrap; gap: .4rem 1.5rem; color: var(--muted); font-size: .9rem; }
+.status { display: inline-block; padding: .1rem .55rem; border-radius: 99px; background: var(--warn-soft); color: var(--warn); font-family: var(--label); font-size: .8rem; }
+.verdict { border-left: 3px solid var(--accent); background: var(--surface); padding: 1rem 1.25rem; max-width: 46rem; }
+.targets { display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+.targets div { background: var(--surface); padding: .9rem 1rem; display: grid; gap: .2rem; }
+.targets b { font-family: var(--mono); font-weight: 500; font-variant-numeric: tabular-nums; }
+.targets small { color: var(--muted); }
+.canvas { background: var(--canvas); background-image: radial-gradient(var(--grid) 1px, transparent 1px); background-size: 16px 16px;
+  border: 1px solid var(--line); padding: 1.25rem; overflow-x: auto; }
+.canvas svg { max-width: 100%; height: auto; background: #fff; border-radius: 4px; }
+.canvas pre.mermaid { margin: 0; background: transparent; }
+figure { margin: 0; display: grid; gap: .6rem; }
+figcaption { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .5rem 1rem; color: var(--muted); font-size: .9rem; }
+.legend { display: flex; flex-wrap: wrap; gap: .4rem 1rem; font-size: .85rem; color: var(--muted); }
+.legend i { display: inline-block; width: .8rem; height: .8rem; border-radius: 2px; margin-right: .35rem; vertical-align: -1px; border: 1px solid var(--line); }
+a { color: var(--accent); }
+a.button { font-family: var(--label); text-decoration: none; border: 1px solid var(--accent); padding: .35rem .8rem; border-radius: 4px; }
+a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.table { overflow-x: auto; border: 1px solid var(--line); background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: .93rem; }
+th, td { text-align: left; vertical-align: top; padding: .6rem .8rem; border-bottom: 1px solid var(--line); }
+tr:last-child td { border-bottom: 0; }
+td:first-child { font-weight: 600; }
+.pick { background: var(--accent-soft); }
+ol.steps { margin: 0; padding-left: 1.4rem; display: grid; gap: .6rem; max-width: 46rem; }
+.questions { display: grid; gap: .75rem; max-width: 46rem; }
+.questions div { background: var(--surface); border: 1px solid var(--line); padding: .8rem 1rem; display: grid; gap: .3rem; }
+.questions b { font-family: var(--mono); color: var(--accent); }
+code { font-family: var(--mono); font-size: .88em; }
+footer { color: var(--muted); font-size: .88rem; max-width: 46rem; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<main>
+  <header style="display:grid;gap:1rem">
+    <span class="eyebrow">Design · {{project}} <span class="status">{{in discussion}}</span></span>
+    <h1>{{Design name}}</h1>
+    <p class="verdict"><strong>Recommendation.</strong> {{one or two sentences: what to build and why}}</p>
+    <div class="meta"><span>{{YYYY-MM-DD}}</span><span>{{authors}}</span><span>Source: <code>{{docs/design/slug.md}}</code></span></div>
+  </header>
+
+  <section>
+    <h2>Problem</h2>
+    <p class="prose">{{problem with evidence}}</p>
+    <div class="targets">
+      <div><span class="tag">{{attribute}}</span><b>{{target}}</b><small>{{source}}</small></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Architecture</h2>
+    <figure>
+      <div class="canvas">
+        <pre class="mermaid">{{mermaid source}}</pre>
+        <!-- or: {{inlined <svg> from slug.drawio.svg}} -->
+      </div>
+      <figcaption>
+        <span class="legend"><span><i style="background:var(--accent-soft)"></i>new</span><span><i style="background:var(--warn-soft)"></i>changed</span><span><i style="background:var(--surface)"></i>existing</span><span><i style="background:transparent;border-style:dashed"></i>external</span></span>
+        <a class="button" href="{{link from bin/drawio-url}}">Edit in draw.io</a>
+      </figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <h2>Options</h2>
+    <div class="table"><table>
+      <thead><tr><th>Criterion</th><th>{{Option A}}</th><th class="pick">{{Recommended}}</th><th>{{Smallest change}}</th></tr></thead>
+      <tbody><tr><td>{{criterion}}</td><td>{{...}}</td><td class="pick">{{...}}</td><td>{{...}}</td></tr></tbody>
+    </table></div>
+    <p class="prose">{{what would make us switch to the runner-up}}</p>
+  </section>
+
+  <section>
+    <h2>Recommended design</h2>
+    <div class="table"><table>
+      <thead><tr><th>Component</th><th>Responsibility</th><th>Technology</th><th>Status</th></tr></thead>
+      <tbody><tr><td>{{component}}</td><td>{{...}}</td><td>{{...}}</td><td>{{new / existing}}</td></tr></tbody>
+    </table></div>
+    <h3>Failure modes</h3>
+    <div class="table"><table>
+      <thead><tr><th>Failure</th><th>Effect</th><th>Detection</th><th>Handling</th></tr></thead>
+      <tbody><tr><td>{{failure}}</td><td>{{...}}</td><td>{{...}}</td><td>{{...}}</td></tr></tbody>
+    </table></div>
+    <h3>Security and observability</h3>
+    <p class="prose">{{trust boundaries, identities, secrets; SLIs and the health signal}}</p>
+  </section>
+
+  <section>
+    <h2>Rollout</h2>
+    <ol class="steps"><li><strong>{{increment}}</strong> {{what it delivers}} <span class="tag">{{R0/R1/R2}}</span></li></ol>
+  </section>
+
+  <section>
+    <h2>Open questions</h2>
+    <div class="questions">
+      <div><b>Q1</b><span>{{question}}</span><small>{{who answers; what changes with each answer}}</small></div>
+    </div>
+  </section>
+
+  <footer>Comment on any part of this page. Claude reads the comments, updates <code>{{docs/design/slug.md}}</code>, and republishes this page.</footer>
+</main>

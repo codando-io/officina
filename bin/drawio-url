@@ -1,0 +1,22 @@
+#!/usr/bin/env node
+// Prints an app.diagrams.net link that opens a diagram in the draw.io editor.
+// The diagram travels compressed in the URL fragment, which browsers keep
+// on the client; draw.io converts Mermaid to an editable diagram on load.
+//
+// Usage: drawio-url <file.drawio | file.mmd>
+
+const { readFileSync } = require('node:fs');
+const { deflateRawSync } = require('node:zlib');
+
+const file = process.argv[2];
+if (!file || !/\.(drawio|mmd)$/.test(file)) {
+  console.error('usage: drawio-url <file.drawio | file.mmd>');
+  process.exit(2);
+}
+
+const data = deflateRawSync(Buffer.from(encodeURIComponent(readFileSync(file, 'utf8')))).toString('base64');
+const hash = file.endsWith('.mmd')
+  ? '#create=' + encodeURIComponent(JSON.stringify({ type: 'mermaid', compressed: true, data, version: '12' }))
+  : '#R' + encodeURIComponent(data);
+
+console.log(`https://app.diagrams.net/?grid=0&pv=0&border=10&edit=_blank${hash}`);

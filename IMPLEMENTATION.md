@@ -8,7 +8,7 @@ que vem depois. O porquê de cada decisão está em [ARCHITECTURE.md](ARCHITECTU
 | Parte | Conteúdo | Tamanho |
 |---|---|---|
 | `core/` | `policy.md` (carregada em toda sessão), `lifecycle.md`, `security.md`, `observability.md`, `git.md` | 5 arquivos |
-| `skills/` | `investigate`, `plan`, `implement`, `test`, `review`, `security-audit`, `architecture-audit`, `dependency-update`, `observability`, `release`, `adopt` | 11 skills, 9 invocáveis pelo modelo |
+| `skills/` | `investigate`, `design`, `plan`, `implement`, `test`, `review`, `security-audit`, `architecture-audit`, `dependency-update`, `observability`, `release`, `adopt` | 12 skills, 10 invocáveis pelo modelo |
 | `profiles/` | `dotnet-backend` (C# 14/15, EF Core 10, plataforma .NET 10), `angular` (APIs por versão, componentes e design system), `dotnet-angular` (só a integração) | 3 profiles |
 | `bin/stack-report` | Inventário de .NET, npm/Angular, Docker e CI, online ou `--offline` | |
 | `templates/` | `AGENTS.md`, `CLAUDE.md`, `harness.yaml`, `claude-settings.json`, `adr.md`, `memory-entry.md`, `memory-index.md`, `override.md` | 8 arquivos |
@@ -193,7 +193,7 @@ pergunta o que exige decisão e atualiza `harness.yaml` num commit.
 |---|---|
 | Marketplace (`.claude-plugin/marketplace.json`) | O próprio repositório, com um plugin `eng` de `source: "./"` |
 | Plugin (`.claude-plugin/plugin.json`) | Skills de `skills/`, hook de `hooks/hooks.json`, `bin/` no PATH |
-| Skills | 11 skills no formato Agent Skills, namespace `eng:` |
+| Skills | 12 skills no formato Agent Skills, namespace `eng:` |
 | Hook `SessionStart` | `bin/eng-context`: policy, overrides, profiles, memória, avisos |
 | `CLAUDE.md` do projeto | `@AGENTS.md` |
 | `.claude/settings.json` do projeto | `extraKnownMarketplaces`, `enabledPlugins`, `permissions.deny` para segredos |

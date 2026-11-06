@@ -78,7 +78,8 @@ Applied by the `adopt` skill; listed here so it can be done or checked by hand.
    its first line. Show the move as a diff.
 
 2. `.claude/settings.json` declares the marketplace and enables the plugin for
-   everyone who trusts the folder, and denies reads of common secret files. Merge
+   everyone who trusts the folder, denies reads of common secret files, and asks
+   before hard-to-reverse commands (force push, merge, publish, release, destroy). Merge
    `templates/claude-settings.json` into the existing file and keep existing keys.
    The template carries the public GitHub source, which any machine can
    fetch. Keep it even when this machine registered the marketplace another way
