@@ -69,6 +69,9 @@ If the working tree has uncommitted changes, stop and ask before starting.
    message check (commitlint, a `commit-msg` hook), offer
    `$HARNESS/bin/check-commit-msg` as the local `commit-msg` hook, with
    `--summary-only` when the project's commits are one line.
+   Offer `$HARNESS/templates/harness-check.yml` as a CI workflow, so a broken
+   `harness.yaml` or an orphaned override fails the pull request instead of the
+   next session.
 7. **Verify.** Run `$HARNESS/bin/eng-context --check` from the repository root
    and show its output. It must exit 0 and list the right version, profiles, and
    memory index. Then check `CLAUDE.md` and `.claude/settings.json` against

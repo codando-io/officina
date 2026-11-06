@@ -49,8 +49,9 @@ the whole and returns a short, prioritized backlog with evidence, not a lecture.
    legacy idioms listed in the profile, and the cost of each migration.
 4. **Prioritize.** For each finding estimate impact (bugs, velocity, security,
    cost) and effort (S/M/L). Recommend at most five items to do next. Prefer
-   items that unblock others and items that stop the problem from growing (e.g.
-   an analyzer rule) over one-off cleanups.
+   items that unblock others and items that stop the problem from growing over one-off cleanups: an analyzer
+   rule, or an architecture test that fails the build when a boundary is
+   crossed again (the profile names the tool).
 
 ## Output
 
@@ -64,7 +65,7 @@ the whole and returns a short, prioritized backlog with evidence, not a lecture.
 |---|---|---|---|---|---|
 
 **Recommended next 5**: ordered, each with change type (refactor/migration) and reversibility
-**Stop the bleeding**: rules, analyzers, or conventions that would prevent regression
+**Stop the bleeding**: analyzer rules and architecture tests that would prevent regression
 **Knowledge fixes**: AGENTS.md, memory entries, or ADRs to update or retire
 ```
 

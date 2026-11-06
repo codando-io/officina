@@ -84,6 +84,10 @@ Defaults:
   `references/platform.md`.
 - Always: `CancellationToken` from the request to every async call; options
   bound with a `SectionName` constant and `ValidateOnStart()`.
+- Boundaries the architecture depends on (layers, vertical slices, modules)
+  have an architecture test run with the unit tests: ArchUnitNET
+  (`TngTech.ArchUnitNET.xUnit`, or its MSTest and NUnit packages) asserting
+  which assemblies and namespaces may depend on which.
 
 ## Pitfalls
 

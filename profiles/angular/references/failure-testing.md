@@ -13,4 +13,5 @@ both.
 | Offline, several tabs, back button | Playwright `context.setOffline(true)`, two pages in one context, `page.goBack()` | offline behavior, logout in one tab, back/forward cache |
 | Time | Playwright `page.clock` (`install`, `fastForward`) in e2e; Vitest `vi.useFakeTimers()` in unit tests | session expiry mid-form, polling, debounce |
 | Generated inputs | fast-check properties (`fc.assert(fc.property(...))`) | Unicode text, large numbers, formatting, boundaries |
+| Tests that would miss a bug | StrykerJS with the project's runner (`@stryker-mutator/vitest-runner` or `@stryker-mutator/karma-runner`), `--mutate` limited to the changed files, `--incremental` to reuse earlier results | weak assertions in changed components, services, and pipes |
 | Precision across the wire | a contract test that round-trips `9007199254740993` and a 28-digit decimal | money and 64-bit ids |

@@ -42,7 +42,12 @@ fail if this change were wrong, and did it run?".
 5. **Run in order of cost**: the new tests, then the tests of the touched module,
    then the full suite or the CI-equivalent command. Record each command and its
    result summary.
-6. **Check what is not covered.** Name any behavior you could not test and why,
+6. **Test the tests on risky logic.** For an R1 or R2 change to branching
+   logic (money, permissions, state machines, parsing), run mutation testing on
+   the changed code only, with the tool in the active profile's
+   `references/failure-testing.md`. A mutant that survives in changed code is a
+   missing assertion: add it, or say why the mutant is equivalent.
+7. **Check what is not covered.** Name any behavior you could not test and why,
    and what manual or runtime check stands in for it.
 
 ## Rules

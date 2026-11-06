@@ -49,7 +49,14 @@ the changes.
 7. **Create an annotated tag** `vX.Y.Z` on that commit only after its CI is green.
    Never move, delete, or recreate a published tag; fix forward with a new
    version.
-8. **Prepare, do not execute, the deploy.** Pushing tags, publishing packages,
+8. **Make what ships verifiable** when the release publishes a package, an
+   image, or an archive: an SBOM in CycloneDX format (`dotnet CycloneDX` for
+   .NET, `@cyclonedx/cyclonedx-npm` for npm, `docker buildx build --sbom=true
+   --provenance=true` for images), a build provenance attestation produced in
+   CI (`actions/attest-build-provenance`, checked with `gh attestation
+   verify`), and a signed tag. An artifact built on a developer machine has no
+   provenance; say so in the release notes.
+9. **Prepare, do not execute, the deploy.** Pushing tags, publishing packages,
    and deploying are outward-facing: show the exact commands and wait for
    explicit confirmation.
 

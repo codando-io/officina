@@ -40,6 +40,9 @@ proves three real ones is useful.
    `pull_request_target`, secret exposure to forks, deploy credentials scope,
    container base images and user (root?), Kubernetes securityContext, public
    buckets or storage.
+   Compare with the OpenSSF Scorecard checks (Pinned-Dependencies,
+   Token-Permissions, Dangerous-Workflow, Branch-Protection, Signed-Releases,
+   SBOM); for a public repository, run the Scorecard action and cite its score.
 8. **Agent exposure.** Where could untrusted text reach an agent working in this
    repo with credentials (issue templates, generated docs, test fixtures, vendored
    READMEs, MCP servers configured in the repo)? Are the agent permission
@@ -56,8 +59,8 @@ proves three real ones is useful.
 **Attack surface summary**: entry points by exposure level
 
 **Findings**
-| # | Severity | Title | Location | Evidence | Exploit scenario | Fix |
-|---|---|---|---|---|---|---|
+| # | Severity | Title | ASVS | Location | Evidence | Exploit scenario | Fix |
+|---|---|---|---|---|---|---|---|
 
 **Suspected (unconfirmed)**: item, why suspected, what would confirm it
 **Good practices observed**: short list, so they are kept

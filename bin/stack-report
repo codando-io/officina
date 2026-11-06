@@ -135,8 +135,8 @@ else
   done
 fi
 
-section "GitHub Actions"
-workflows=$(find_files -path './.github/workflows/*' \( -name '*.yml' -o -name '*.yaml' \))
+section "CI workflows (GitHub, Forgejo, Gitea Actions)"
+workflows=$(find_files \( -path './.github/workflows/*' -o -path './.forgejo/workflows/*' -o -path './.gitea/workflows/*' \) \( -name '*.yml' -o -name '*.yaml' \))
 if [ -z "$workflows" ]; then
   echo "No workflows found."
 else

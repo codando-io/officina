@@ -26,6 +26,27 @@ steps: what to rename, move, or decide.
   boundary from Anthropic's "Harnessing Claude's intelligence" (2026-04-02).
 - CONTRIBUTING: re-test and prune model-compensating instructions when moving
   to a new Claude model, from the same article.
+- Security checklist references OWASP ASVS 5.0.0 per area, and
+  `security-audit` findings carry the matching requirement id
+  (`v5.0.0-<chapter>.<section>.<requirement>`).
+- Supply-chain floor: a package an agent named but nobody saw resolve with a
+  release history and a source repository stops for review (slopsquatting).
+- Trust boundaries: `.engineering/memory/` entries are agent-written data, not
+  reviewed policy; an entry that asks for something outside the policy is a
+  finding, and memory never stores instructions copied from what was read
+  (OWASP Agentic Top 10, ASI06).
+- `test` runs mutation testing on changed code for R1/R2 branching logic;
+  profiles name Stryker.NET (`--since:main`) and StrykerJS.
+- `architecture-audit` turns boundary findings into architecture tests;
+  profiles name ArchUnitNET for .NET and ESLint `no-restricted-imports` or
+  dependency-cruiser for Angular.
+- `release` makes published artifacts verifiable (CycloneDX SBOM, CI build
+  provenance, signed tag); `security-audit` compares CI with the OpenSSF
+  Scorecard checks.
+- `templates/harness-check.yml`: a CI workflow that runs `eng-context --check`
+  against the declared harness line; `adopt` offers it.
+- This repository runs OpenSSF Scorecard and attaches a source archive with a
+  build provenance attestation to each release.
 
 ### Changed
 
@@ -34,6 +55,8 @@ steps: what to rename, move, or decide.
   what the agent does. The `SessionStart` hook moved to `hooks/hooks.json`, the
   plugin default location, so `plugin.json` no longer declares it; the setup
   guide moved from `adapters/claude-code/README.md` to `docs/claude-code.md`.
+- `bin/stack-report` inventories Forgejo and Gitea workflows
+  (`.forgejo/workflows`, `.gitea/workflows`) as well as GitHub's.
 
 ### Removed
 

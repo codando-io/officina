@@ -74,6 +74,9 @@ Defaults:
   markup or behavior repeats, extract a component. Every visual value comes from
   a design token. The full rules are in `references/components.md`; read it
   before building or changing UI.
+- Feature boundaries (no imports from another feature's internals; sharing
+  goes through a shared library or the design system) fail the lint step, with
+  ESLint `no-restricted-imports` or, for graph rules, dependency-cruiser.
 
 ## Pitfalls
 

@@ -129,6 +129,7 @@ test('stack-report handles spaces, quoted SHAs, Renovate, and sibling package.js
     writeFileSync(join(dir, rel), text);
   };
   write('.github/workflows/my ci.yml', 'permissions: {}\njobs:\n  a:\n    steps:\n      - uses: "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1"\n      - uses: actions/cache@v4\n');
+  write('.forgejo/workflows/deploy.yaml', 'jobs:\n  d:\n    steps:\n      - uses: https://code.forgejo.org/actions/checkout@v4\n');
   write('renovate.json', '{}\n');
   write('e2e/package.json', '{"devDependencies":{"playwright":"1"}}\n');
   write('web/package.json', '{"dependencies":{"@angular/core":"^21.0.0"}}\n');
@@ -140,6 +141,8 @@ test('stack-report handles spaces, quoted SHAs, Renovate, and sibling package.js
   assert.ok(out.includes('- @angular/core: `^21.0.0`'));
   assert.ok(out.includes('.github/workflows/my ci.yml:6:      - uses: actions/cache@v4'));
   assert.ok(!out.includes('actions/checkout@3d3c'), 'quoted SHA pins are not reported');
+  assert.ok(out.includes('.forgejo/workflows/deploy.yaml:4:      - uses: https://code.forgejo.org/actions/checkout@v4'), 'Forgejo workflows are inventoried');
+  assert.ok(out.includes('Workflow without a `permissions:` block: .forgejo/workflows/deploy.yaml'));
   assert.ok(out.includes('Renovate configured.'));
 });
 

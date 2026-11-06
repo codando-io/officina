@@ -18,3 +18,4 @@ run against the real database engine.
 | Process death | `docker kill` (SIGKILL) on a Testcontainers-hosted service, or killing the test host process; restart and check invariants | crash mid-write, job killed mid-batch, outbox relay |
 | Rolling deploy | run the previous release's integration suite against the new migration; start several instances at once | N-1 against new schema, startup migrations |
 | Generated inputs | FsCheck properties over strings, sizes, and dates | Unicode and case, boundaries, leap days |
+| Tests that would miss a bug | Stryker.NET (`dotnet tool install dotnet-stryker`); `dotnet stryker --since:main` reports only mutants in code changed since `main` | weak assertions in changed branching logic |
