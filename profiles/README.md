@@ -49,6 +49,7 @@ Rules:
 | `dotnet-backend` | stack | ASP.NET Core services and workers: modern C#, EF Core/Dapper on PostgreSQL or SQL Server, OpenTelemetry, containers |
 | `angular` | stack | Angular apps: modern APIs by version, components and design system, tokens |
 | `dotnet-angular` | integration | Only the concerns between the two: contract, auth, errors, serialization, trace propagation. Listed after `dotnet-backend` and `angular` |
+| `node-backend` | stack | Node.js services in TypeScript or JSDoc-checked JavaScript (`node:http`, Express, Fastify, Hono, NestJS), workers, and MCP servers on the MCP TypeScript SDK; npm or pnpm |
 
 A full-stack .NET + Angular repository declares
 `profiles: [dotnet-backend, angular, dotnet-angular]`; an Angular-only
@@ -60,7 +61,6 @@ Created when a real project needs them, not before.
 
 | Profile | Axis | Scope |
 |---|---|---|
-| `node-backend` | stack | Node.js/NestJS services and MCP servers in TypeScript, npm/pnpm |
 | `library` | project kind | Published packages: SemVer as a gate, public API review, changelog discipline, multi-target builds |
 | `infrastructure` | project kind | Terraform/Bicep/Helm/Kubernetes manifests: plan before apply, drift, blast radius, state safety |
 

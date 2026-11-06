@@ -9,6 +9,17 @@ steps: what to rename, move, or decide.
 
 ## [Unreleased]
 
+## [0.3.1] - 2026-11-06
+
+### Added
+
+- Profile `node-backend`: Node.js services and workers in TypeScript or
+  JSDoc-checked JavaScript (`node:http`, Express, Fastify, Hono, NestJS 12),
+  and MCP servers on the MCP TypeScript SDK (v1 and v2), with npm or pnpm.
+  References for NestJS, MCP servers, currency (Node 26 Active LTS),
+  observability, failure testing, and modernization. Add it to `profiles:` in
+  `harness.yaml` for Node projects; nothing else changes for existing projects.
+
 ## [0.3.0] - 2026-11-06
 
 ### Added

@@ -9,7 +9,7 @@ que vem depois. O porquê de cada decisão está em [ARCHITECTURE.md](ARCHITECTU
 |---|---|---|
 | `core/` | `policy.md` (carregada em toda sessão), `lifecycle.md`, `security.md`, `observability.md`, `git.md` | 5 arquivos |
 | `skills/` | `investigate`, `design`, `plan`, `implement`, `test`, `review`, `security-audit`, `architecture-audit`, `dependency-update`, `observability`, `release`, `adopt` | 12 skills, 10 invocáveis pelo modelo |
-| `profiles/` | `dotnet-backend` (C# 14/15, EF Core 10, plataforma .NET 10), `angular` (APIs por versão, componentes e design system), `dotnet-angular` (só a integração) | 3 profiles |
+| `profiles/` | `dotnet-backend` (C# 14/15, EF Core 10, plataforma .NET 10), `angular` (APIs por versão, componentes e design system), `dotnet-angular` (só a integração), `node-backend` (Node 26 LTS, NestJS 12, servidores MCP) | 4 profiles |
 | `bin/stack-report` | Inventário de .NET, npm/Angular, Docker e CI, online ou `--offline` | |
 | `templates/` | `AGENTS.md`, `CLAUDE.md`, `harness.yaml`, `claude-settings.json`, `adr.md`, `memory-entry.md`, `memory-index.md`, `override.md` | 8 arquivos |
 | `bin/eng-context` | Context loader, POSIX sh | ~150 linhas |
@@ -324,7 +324,7 @@ Em ordem de valor:
 4. **Decidir a sobreposição com outros plugins instalados** (pstack, ripwire,
    `code-review`, `security-review`). Nos projetos adotados, desligar os
    redundantes ou aceitar a sobreposição conscientemente.
-5. **`eng-context --check` no CI dos projetos adotados**, para pegar
-   `harness.yaml` inválido e overrides órfãos no PR, não na sessão.
-6. **Próximo profile** (`node-backend`, que também cobriria os servidores MCP em
-   TypeScript, ou `library`), só quando um projeto precisar.
+5. **`eng-context --check` no CI dos projetos adotados.** O template existe desde
+   a 0.3.0 (`templates/harness-check.yml`); falta instalá-lo nos projetos.
+6. **Próximo profile** (`library` ou `infrastructure`), só quando um projeto
+   precisar.
