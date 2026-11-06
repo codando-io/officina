@@ -1,20 +1,20 @@
-# Claude Code adapter
+# Claude Code setup
 
-Uses only native Claude Code mechanisms: a plugin served from a marketplace, a
+The harness is a Claude Code plugin and uses only native mechanisms: a plugin served from a marketplace, a
 `SessionStart` hook, and project settings.
 
 ## How it works
 
-| Contract item | Mechanism |
+| What | Mechanism |
 |---|---|
 | Expose skills | The harness repository is a marketplace whose single plugin, `eng`, has `source: "./"`. Its `skills/` directory is the harness `skills/`. Skills appear as `/eng:investigate`, `/eng:review`, etc. |
-| Session context | `adapters/claude-code/hooks.json` registers a `SessionStart` hook (all sources: startup, resume, clear, compact) that runs `bin/eng-context`. Its stdout becomes context. |
+| Session context | `hooks/hooks.json` registers a `SessionStart` hook (all sources: startup, resume, clear, compact) that runs `bin/eng-context`. Its stdout becomes context. |
 | `$HARNESS` | Printed by `eng-context` as `HARNESS=<plugin root>`. |
 | Tools on PATH | The plugin's `bin/` is added to the Bash tool's PATH, so `eng-context` can be run by name. |
 | Frontmatter | `disable-model-invocation: true` keeps `release` and `adopt` out of automatic routing. |
 
 Files: `.claude-plugin/plugin.json` and `.claude-plugin/marketplace.json` (at the
-repository root, where Claude Code requires them) and `adapters/claude-code/hooks.json`.
+repository root, where Claude Code requires them) and `hooks/hooks.json`.
 
 ## Machine setup (once per machine)
 
@@ -73,7 +73,7 @@ Applied by the `adopt` skill; listed here so it can be done or checked by hand.
    ```
 
    If `CLAUDE.md` already exists with project content and there is no
-   `AGENTS.md`, move the project facts into `AGENTS.md` (they serve every agent),
+   `AGENTS.md`, move the project facts into `AGENTS.md` (the context `eng-context` and the skills read),
    keep only Claude-specific instructions in `CLAUDE.md`, and put the import on
    its first line. Show the move as a diff.
 

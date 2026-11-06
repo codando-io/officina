@@ -43,8 +43,9 @@ already shows.
 
 - Agent Skills format: `skills/<name>/SKILL.md`, `name` equal to the directory,
   `description` that says what it does, when to use it, and when not to.
-- No agent-specific tool names or variables in `core/`, `skills/`, `profiles/`
-  (checked by tests). Refer to harness files as `$HARNESS/...`.
+- The harness targets Claude Code only. Skills may name its tools and features
+  (subagents, `AskUserQuestion`, the Artifact tool, hooks) when that changes
+  what the agent does. Refer to harness files as `$HARNESS/...`.
 - First step reads `.engineering/overrides/<skill>.md`.
 - An `## Output` section with the artifact's format.
 - Under 200 lines; move detail to a profile reference or `core/` file.

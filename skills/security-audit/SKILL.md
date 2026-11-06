@@ -43,7 +43,8 @@ proves three real ones is useful.
 8. **Agent exposure.** Where could untrusted text reach an agent working in this
    repo with credentials (issue templates, generated docs, test fixtures, vendored
    READMEs, MCP servers configured in the repo)? Are the agent permission
-   settings the adapter installed (see `$HARNESS/adapters/README.md`) sensible?
+   settings the harness installed (`$HARNESS/templates/claude-settings.json`)
+   sensible?
 9. **Prioritize** by exploitability and impact, not by count.
 
 ## Output

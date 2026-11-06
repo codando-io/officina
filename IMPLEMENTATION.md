@@ -12,9 +12,8 @@ que vem depois. O porquê de cada decisão está em [ARCHITECTURE.md](ARCHITECTU
 | `profiles/` | `dotnet-backend` (C# 14/15, EF Core 10, plataforma .NET 10), `angular` (APIs por versão, componentes e design system), `dotnet-angular` (só a integração) | 3 profiles |
 | `bin/stack-report` | Inventário de .NET, npm/Angular, Docker e CI, online ou `--offline` | |
 | `templates/` | `AGENTS.md`, `CLAUDE.md`, `harness.yaml`, `claude-settings.json`, `adr.md`, `memory-entry.md`, `memory-index.md`, `override.md` | 8 arquivos |
-| `bin/eng-context` | Context loader agnóstico, POSIX sh | ~150 linhas |
-| Adapter Claude Code | `.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json`, `adapters/claude-code/hooks.json` | Implementado |
-| Adapters Codex e Copilot | README com o design | Não implementados |
+| `bin/eng-context` | Context loader, POSIX sh | ~150 linhas |
+| Plugin do Claude Code | `.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json`, `hooks/hooks.json`, `docs/claude-code.md` | Implementado |
 | `examples/dotnet-angular-app/` | Projeto adotado mínimo, com overrides, memória e ADR; também é fixture dos testes | |
 | `tests/` | 32 testes `node --test`, sem dependências | |
 | `.github/` | CI com actions fixadas por SHA; Dependabot para actions | |
@@ -111,7 +110,7 @@ o sinal de saúde que o plano ou a release nomeou; é aí que o ciclo fecha.
    `/eng:investigate <problema>`.
 
 Adotar à mão é possível: copie os arquivos de `templates/` seguindo
-`adapters/claude-code/README.md`, seção *Project setup*, e rode
+`docs/claude-code.md`, seção *Project setup*, e rode
 `<harness>/bin/eng-context --check` na raiz do projeto até não haver avisos.
 
 ### Overrides e memória no dia a dia
@@ -179,7 +178,7 @@ local quanto para o do GitHub: com a fonte remota, a cópia sai do clone em
 `claude plugin update` leva edições adiante sem subir a versão. Para
 desenvolver o harness e ver as edições na sessão seguinte, troque a pasta da
 versão no cache por um symlink para o checkout (passo a passo em
-`adapters/claude-code/README.md`); `claude plugin install` desfaz o symlink, e
+`docs/claude-code.md`); `claude plugin install` desfaz o symlink, e
 ele precisa ser refeito. Para os outros usuários, o caminho é publicar uma
 versão nova.
 
@@ -193,15 +192,16 @@ pergunta o que exige decisão e atualiza `harness.yaml` num commit.
 | Mecanismo do Claude Code | O que o harness coloca nele |
 |---|---|
 | Marketplace (`.claude-plugin/marketplace.json`) | O próprio repositório, com um plugin `eng` de `source: "./"` |
-| Plugin (`.claude-plugin/plugin.json`) | Skills de `skills/`, hook de `adapters/claude-code/hooks.json`, `bin/` no PATH |
+| Plugin (`.claude-plugin/plugin.json`) | Skills de `skills/`, hook de `hooks/hooks.json`, `bin/` no PATH |
 | Skills | 11 skills no formato Agent Skills, namespace `eng:` |
 | Hook `SessionStart` | `bin/eng-context`: policy, overrides, profiles, memória, avisos |
 | `CLAUDE.md` do projeto | `@AGENTS.md` |
 | `.claude/settings.json` do projeto | `extraKnownMarketplaces`, `enabledPlugins`, `permissions.deny` para segredos |
 | Auto memory do Claude | Não é usada pelo harness; convive com a memória versionada do projeto |
 
-Nada disso exige que o conteúdo conheça o Claude Code: se o adapter for trocado,
-`core/`, `skills/` e `profiles/` continuam iguais.
+Desde a 0.3.0 o harness é só para o Claude Code. As skills podem usar o que ele
+oferece (subagentes, `AskUserQuestion`, a ferramenta Artifact, hooks) quando
+isso muda o que o agente faz; os adapters do Codex e do Copilot saíram.
 
 ## Autocrítica (Fase 4)
 
@@ -230,7 +230,8 @@ e os outros lugares apontam para ela. RESEARCH.md prometia um teste de
 duplicação que não existia. Agora existe, e uma mutação provou que ele falha
 quando uma frase da policy é copiada numa skill.
 
-**O harness está acoplado ao Claude Code?** Não no conteúdo. O teste de
+**O harness está acoplado ao Claude Code?** Na 0.1, não no conteúdo; desde a
+0.3.0, sim, por decisão (veja *Como o Claude Code usa o harness*). O teste de
 neutralidade cobria só `core/`, `skills/` e `profiles/` e deixava passar
 `.claude/`. `security-audit` citava `.claude/settings.json`. O teste agora cobre
 também `templates/` (exceto os dois templates do adapter) e pega `.claude/`, e a
@@ -325,7 +326,5 @@ Em ordem de valor:
    redundantes ou aceitar a sobreposição conscientemente.
 5. **`eng-context --check` no CI dos projetos adotados**, para pegar
    `harness.yaml` inválido e overrides órfãos no PR, não na sessão.
-6. **Adapter do Codex**, só quando houver um projeto trabalhado com Codex. O
-   design está em `adapters/codex/README.md`, com as perguntas a verificar antes.
-7. **Próximo profile** (`node-backend`, que também cobriria os servidores MCP em
+6. **Próximo profile** (`node-backend`, que também cobriria os servidores MCP em
    TypeScript, ou `library`), só quando um projeto precisar.

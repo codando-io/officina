@@ -8,6 +8,5 @@
     "url": "https://codando.io"
   },
   "repository": "https://github.com/codando-io/officina",
-  "license": "Apache-2.0",
-  "hooks": "./adapters/claude-code/hooks.json"
+  "license": "Apache-2.0"
 }

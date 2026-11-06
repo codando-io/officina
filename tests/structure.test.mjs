@@ -76,7 +76,7 @@ test('core policy stays short enough to load in every session', () => {
 });
 
 test('every $HARNESS path reference resolves', () => {
-  const files = ['core', 'skills', 'profiles', 'templates', 'adapters'].flatMap((d) => walk(d)).filter((f) => f.endsWith('.md'));
+  const files = ['core', 'skills', 'profiles', 'templates', 'docs'].flatMap((d) => walk(d)).filter((f) => f.endsWith('.md'));
   const missing = [];
   for (const file of files) {
     for (const [, ref] of read(file).matchAll(/\$HARNESS\/([A-Za-z0-9_.\/-]+[A-Za-z0-9_])/g)) {
@@ -99,14 +99,6 @@ test('relative markdown links resolve', () => {
     }
   }
   assert.deepEqual(broken, []);
-});
-
-test('agent-neutral layers do not mention a specific agent', () => {
-  const adapterTemplates = new Set(['templates/CLAUDE.md', 'templates/claude-settings.json']);
-  const neutral = ['core', 'skills', 'profiles', 'templates'].flatMap((d) => walk(d)).filter((f) => !adapterTemplates.has(f));
-  const agentSpecific = /CLAUDE_|Claude Code|claude\.md|\.claude\/|\.codex\/|copilot-instructions|TodoWrite|AskUserQuestion|\bBash tool\b|\bRead tool\b|\bAgent tool\b|Copilot|Codex/i;
-  const hits = neutral.filter((f) => agentSpecific.test(read(f).replace(/^---\n[\s\S]*?\n---\n/, '')));
-  assert.deepEqual(hits, []);
 });
 
 test('a rule is written in one place: no sentence repeats across harness files', () => {
@@ -141,13 +133,14 @@ test('version is consistent across VERSION, plugin manifest, and changelog', () 
   }
 });
 
-test('the Claude Code adapter wires the context loader', () => {
+test('the plugin wires the context loader', () => {
   const plugin = JSON.parse(read('.claude-plugin/plugin.json'));
   const marketplace = JSON.parse(read('.claude-plugin/marketplace.json'));
   const entry = marketplace.plugins.find((p) => p.name === plugin.name);
   assert.ok(entry, 'marketplace lists the plugin');
   assert.equal(entry.source, './');
-  const hooks = JSON.parse(read(plugin.hooks));
+  assert.equal(plugin.hooks, undefined, 'hooks/hooks.json is loaded by convention; declaring it too duplicates the hook');
+  const hooks = JSON.parse(read('hooks/hooks.json'));
   const command = hooks.hooks.SessionStart[0].hooks[0].command;
   assert.ok(command.includes('/bin/eng-context'));
   assert.ok(statSync(join(root, 'bin/eng-context')).mode & 0o111, 'bin/eng-context must be executable');

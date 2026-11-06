@@ -9,6 +9,19 @@ steps: what to rename, move, or decide.
 
 ## [Unreleased]
 
+### Changed
+
+- The harness targets Claude Code only. Skills may use its tools and features
+  (subagents, `AskUserQuestion`, the Artifact tool, hooks) when that changes
+  what the agent does. The `SessionStart` hook moved to `hooks/hooks.json`, the
+  plugin default location, so `plugin.json` no longer declares it; the setup
+  guide moved from `adapters/claude-code/README.md` to `docs/claude-code.md`.
+
+### Removed
+
+- The Codex and Copilot adapter designs (`adapters/`) and the test that kept
+  `core/`, `skills/`, `profiles/` and `templates/` free of agent names.
+
 ## [0.2.0] - 2026-11-06
 
 ### Added

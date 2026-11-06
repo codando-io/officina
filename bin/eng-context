@@ -1,8 +1,8 @@
 #!/bin/sh
 # Prints the engineering-harness session context for a repository as Markdown:
 # harness location and version, core policy, project overrides, active profiles,
-# and the project memory index. Agent adapters deliver this output to the agent
-# (Claude Code: SessionStart hook).
+# and the project memory index. The plugin's SessionStart hook delivers this
+# output to Claude Code.
 #
 # Usage: eng-context [--check] [project-dir]
 #   project-dir  defaults to $CLAUDE_PROJECT_DIR, then the current directory.

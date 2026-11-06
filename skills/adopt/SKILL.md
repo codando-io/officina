@@ -1,6 +1,6 @@
 ---
 name: adopt
-description: Adopt the engineering harness in the current repository, upgrade a repository to a newer harness version, or check an adopted repository for drift. Creates or updates AGENTS.md, .engineering/ (config, overrides, memory), and the agent adapter files, filling project context from verified facts. Run only when the user asks.
+description: Adopt the engineering harness in the current repository, upgrade a repository to a newer harness version, or check an adopted repository for drift. Creates or updates AGENTS.md, .engineering/ (config, overrides, memory), CLAUDE.md, and .claude/settings.json, filling project context from verified facts. Run only when the user asks.
 disable-model-invocation: true
 ---
 
@@ -27,7 +27,7 @@ If the working tree has uncommitted changes, stop and ask before starting.
 
 1. **Inspect the repository** (read-only): languages, solution/project files,
    package manifests, Docker and CI files, existing agent instruction files
-   (`AGENTS.md` and those named in `$HARNESS/adapters/README.md`), the ADR
+   (`AGENTS.md`, `CLAUDE.md`, `.claude/`), the ADR
    directory (`docs/adr`, `adr/`, `docs/decisions`), test projects, telemetry
    setup, deploy configuration.
 2. **Choose profiles** from `$HARNESS/profiles/README.md` by matching each
@@ -59,9 +59,8 @@ If the working tree has uncommitted changes, stop and ask before starting.
    - in *Delivery*, write `missing` for any item the project does not have (CI on
      every change, staging gate, rollback, feature flags) and list those as
      readiness gaps in the output.
-5. **Agent adapter.** For each agent the project uses (ask if unclear; default
-   to the one running this skill), apply the setup in
-   `$HARNESS/adapters/<agent>/README.md`, section *Project setup*.
+5. **Claude Code files.** Apply `$HARNESS/docs/claude-code.md`, section
+   *Project setup*.
 6. **Ignore working files**: add `.engineering/work/` to `.gitignore`.
    If the repository has no pull request template, offer to install
    `$HARNESS/templates/pull-request.md` as `.github/pull_request_template.md`
@@ -72,7 +71,8 @@ If the working tree has uncommitted changes, stop and ask before starting.
    `--summary-only` when the project's commits are one line.
 7. **Verify.** Run `$HARNESS/bin/eng-context --check` from the repository root
    and show its output. It must exit 0 and list the right version, profiles, and
-   memory index. Then check the adapter files against the adapter README.
+   memory index. Then check `CLAUDE.md` and `.claude/settings.json` against
+   `$HARNESS/docs/claude-code.md`.
 8. **Deliver** as one commit on a new branch (`chore: adopt engineering harness
    vX.Y`), and summarize: files created, sections left unknown, suggested first
    memory entries. Ask before pushing or opening a PR.
@@ -94,7 +94,8 @@ Report, without changing anything:
 - `AGENTS.md` commands that no longer work (run them);
 - overrides that reference skills or sections that no longer exist;
 - memory entries whose evidence (files, commands) no longer exists;
-- adapter files that drifted from `$HARNESS/adapters/<agent>/README.md`.
+- `CLAUDE.md` or `.claude/settings.json` drifted from
+  `$HARNESS/docs/claude-code.md`, section *Project setup*.
 
 ## Output
 

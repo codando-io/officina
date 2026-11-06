@@ -11,6 +11,10 @@ Fase 2 do `engineering-harness`. O documento tem três partes:
 
 Premissa de leitura: [RESEARCH.md](RESEARCH.md) explica de onde vêm os princípios.
 
+Atualização da 0.3.0: o harness passou a ser só para o Claude Code. As seções
+sobre adapters do Codex e do Copilot e sobre neutralidade de agente registram o
+design original; o que vale hoje está em [IMPLEMENTATION.md](IMPLEMENTATION.md).
+
 ---
 
 ## Fatos verificados sobre os agentes

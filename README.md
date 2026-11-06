@@ -5,7 +5,7 @@ de IA. Otimiza para **software funcionando em produção**, não para geração 
 código: evidência antes de suposição, mudanças pequenas e reversíveis, testes
 como prova, observabilidade, segurança e aprendizado do projeto.
 
-É um repositório de conhecimento, procedimentos, adapters e configuração. Não há
+É um plugin do Claude Code: conhecimento, procedimentos e configuração. Não há
 servidor, banco de dados nem CLI.
 
 ```text
@@ -15,8 +15,8 @@ engineering-harness                       seu projeto
 ├── profiles/    conhecimento de stack    ├── .claude/settings.json  habilita o plugin
 ├── templates/   arquivos de projeto      ├── docs/adr/            decisões
 ├── bin/         context loader           └── .engineering/
-└── adapters/    Claude Code (+ design        ├── harness.yaml     versão + profiles
-                 de Codex e Copilot)          ├── overrides/       regras próprias
+└── hooks/       SessionStart do Claude       ├── harness.yaml     versão + profiles
+                                              ├── overrides/       regras próprias
                                               └── memory/          gotchas, descobertas
 ```
 
