@@ -9,6 +9,12 @@ steps: what to rename, move, or decide.
 
 ## [Unreleased]
 
+### Fixed
+
+- `check-commit-msg` accepts the Conventional Commits type `style`; projects
+  that had used it (folio, lastro) would have had valid commits rejected by
+  the new `commit-msg` hook.
+
 ## [0.3.1] - 2026-11-06
 
 ### Added

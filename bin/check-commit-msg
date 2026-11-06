@@ -30,7 +30,7 @@ case "$header" in
   "Merge "*|"Revert \""*|"fixup! "*|"squash! "*|"amend! "*) exit 0 ;;
 esac
 
-types='feat|fix|refactor|perf|test|docs|build|ci|chore|revert'
+types='feat|fix|refactor|perf|style|test|docs|build|ci|chore|revert'
 printf '%s\n' "$header" | grep -Eq "^($types)(\([A-Za-z0-9._/-]+\))?!?: [^[:space:]]" \
   || fail "header must be 'type(scope): summary' with type one of ${types}. Got: $header"
 

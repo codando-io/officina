@@ -156,6 +156,7 @@ test('check-commit-msg enforces the header format and the attribution rule', () 
   assert.equal(check('feat!: drop the v1 endpoints\n'), 0);
   assert.equal(check('add export\n'), 1);
   assert.equal(check('feature: add export\n'), 1);
+  assert.equal(check('style(web): align the card grid\n'), 0);
   assert.equal(check(`fix: ${'x'.repeat(100)}\n`), 1);
   assert.equal(check('fix: x\n\nCo-Authored-By: Claude <noreply@anthropic.com>\n'), 1);
   assert.equal(check('fix: x\n\nGenerated with Claude Code\n'), 1);

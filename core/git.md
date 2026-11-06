@@ -7,7 +7,7 @@ commitlint config before applying the defaults below.
 
 - One logical change per commit. A reviewer should be able to revert it alone.
 - Conventional Commits: `type(scope): summary`, with types `feat`, `fix`,
-  `refactor`, `perf`, `test`, `docs`, `build`, `ci`, `chore`, `revert`.
+  `refactor`, `perf`, `style`, `test`, `docs`, `build`, `ci`, `chore`, `revert`.
   Breaking change: `type!:` or a `BREAKING CHANGE:` footer.
 - The summary says what changes, in the imperative. The body says why and what
   evidence supports it. Match the repository's language for commit messages.
