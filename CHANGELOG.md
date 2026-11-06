@@ -9,6 +9,8 @@ steps: what to rename, move, or decide.
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-11-06
+
 ### Added
 
 - `design` skill: system design before planning code, with numbers, options
@@ -78,6 +80,25 @@ steps: what to rename, move, or decide.
 
 - The Codex and Copilot adapter designs (`adapters/`) and the test that kept
   `core/`, `skills/`, `profiles/` and `templates/` free of agent names.
+
+### Migration
+
+1. Set `harness: "0.3"` in `.engineering/harness.yaml`.
+2. Merge the `permissions.ask` list from `templates/claude-settings.json` into
+   the project's `.claude/settings.json`, keeping the project's own rules.
+3. Ask the user whether to set `stop_check` in `harness.yaml` (the cheapest
+   rung of the profile's verification ladder that finishes in under a minute)
+   and whether to add `templates/harness-check.yml` as a CI workflow.
+4. Read `.engineering/memory/` once. An entry that tells the agent to do
+   something, instead of stating a fact with evidence, gets rewritten as a
+   fact or removed.
+5. If `AGENTS.md` or `CLAUDE.md` refers to the Codex or Copilot adapters, drop
+   those references; the harness targets Claude Code only.
+
+On each machine: `claude plugin marketplace update engineering-harness`, then
+`claude plugin update eng@engineering-harness` for each scope where it is
+installed. A development checkout linked into the plugin cache needs the link
+redone for the new version (`docs/claude-code.md`).
 
 ## [0.2.0] - 2026-11-06
 

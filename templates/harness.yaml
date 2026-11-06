@@ -4,7 +4,7 @@
 
 # Harness line this project was adopted or last upgraded against.
 # 0.x: "major.minor" (minor bumps are breaking). From 1.0: "major".
-harness: "0.2"
+harness: "0.3"
 
 # Stack profiles, applied in order. See the harness profiles/README.md.
 profiles: [dotnet-backend, angular, dotnet-angular]
