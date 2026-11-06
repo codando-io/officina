@@ -51,6 +51,23 @@ already shows.
 - Under 200 lines; move detail to a profile reference or `core/` file.
 - Write rules as standing guidance with the reason, not as shouting.
 
+## Evals
+
+`evals/` holds behavior cases for `claude plugin eval`: each one builds a small
+repository (`fixture.sh`), gives Claude a prompt, and grades what it did. Run
+them after changing a skill's procedure, and before a release that changes
+behavior:
+
+```bash
+claude plugin eval . --scaffold --allow-tools Bash Edit Write --runs 3
+```
+
+Every run is a real model call billed to the account running it. Cases tagged
+`needs-bash` grant Bash; Claude Code refuses those when `~/.ssh` contains a
+symlink it cannot fence (home-manager setups), so run them in CI or on another
+machine, and the rest with `--case`. A new behavior promise in a skill gets a
+case here; a failing case is a skill bug, not a test to loosen.
+
 ## Removing things
 
 A skill, rule, or profile section nobody used for 90 days is a candidate for

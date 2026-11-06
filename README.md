@@ -82,6 +82,13 @@ node --test tests/*.test.mjs
 claude plugin validate . --strict
 ```
 
+Evals de comportamento das skills (custam chamadas de modelo; veja
+[CONTRIBUTING.md](CONTRIBUTING.md#evals)):
+
+```bash
+claude plugin eval . --scaffold --allow-tools Bash Edit Write --runs 3
+```
+
 Conteúdo para agentes (`core/`, `skills/`, `profiles/`, `templates/`) está em
 inglês. Documentação para pessoas está em português.
 

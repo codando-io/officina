@@ -6,3 +6,6 @@ tests/**/obj/
 node_modules/
 .engineering/work/
 .DS_Store
+
+# Eval run output
+evals/results/

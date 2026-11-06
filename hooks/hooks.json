@@ -22,6 +22,18 @@
         ]
       }
     ],
+    "PostToolUse": [
+      {
+        "matcher": "Read|Grep|Bash|WebFetch",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}\"/bin/eng-flag-injection",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
     "Stop": [
       {
         "hooks": [

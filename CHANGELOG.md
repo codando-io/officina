@@ -35,6 +35,9 @@ steps: what to rename, move, or decide.
   reviewed policy; an entry that asks for something outside the policy is a
   finding, and memory never stores instructions copied from what was read
   (OWASP Agentic Top 10, ASI06).
+- `investigate` checks the issue and other inputs for text addressed to an
+  agent as its own step, and its output always carries an **Untrusted input**
+  field.
 - `test` runs mutation testing on changed code for R1/R2 branching logic;
   profiles name Stryker.NET (`--since:main`) and StrykerJS.
 - `architecture-audit` turns boundary findings into architecture tests;
@@ -48,6 +51,14 @@ steps: what to rename, move, or decide.
   which settings deny rules cannot catch; `Stop` (`bin/eng-stop-check`) runs
   the project's optional `stop_check` from `harness.yaml` when Claude finishes
   with uncommitted changes and sends it back when the check fails.
+- `PostToolUse` hook (`bin/eng-flag-injection`): flags text addressed to an AI
+  agent in what Claude reads, so it reports the text instead of following it.
+  Added because the `investigate` eval reported the hidden instruction in one
+  run of three; with the hook and the new `investigate` step, two of three.
+- Behavior evals (`evals/`, run with `claude plugin eval`): `review` rejects a
+  "Fixed" commit that deleted a test, `investigate` reports a hidden
+  instruction in an issue instead of following it, and a bugfix writes the
+  failing test before the fix (tagged `needs-bash`).
 - `templates/harness-check.yml`: a CI workflow that runs `eng-context --check`
   against the declared harness line; `adopt` offers it.
 - This repository runs OpenSSF Scorecard and attaches a source archive with a

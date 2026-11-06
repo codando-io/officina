@@ -316,11 +316,11 @@ Em ordem de valor:
    cobrem: que o hook injeta o contexto, que as skills aparecem como `/eng:*` e
    que `$HARNESS` é resolvido. Não foi possível aqui porque o CLI headless está
    sem autenticação.
-3. **Evals de comportamento.** Os testes cobrem estrutura, não comportamento.
-   `claude plugin eval` existe nesta versão do Claude Code. Os primeiros casos
-   valiosos: `review` diante de um diff que enfraquece um teste e diz "Fixed";
-   `investigate` diante de uma issue com instrução embutida; `implement` num bug,
-   verificando que o teste falha antes da correção.
+3. **Mais evals de comportamento.** Desde a 0.3.0, `evals/` tem os três
+   primeiros casos: `review` diante de um commit que apaga um teste e diz
+   "Fixed"; `investigate` diante de uma issue com instrução escondida; e um bug
+   em que o teste deve falhar antes da correção. O próximo passo é um caso por
+   skill e rodar a suíte no CI com uma chave de API.
 4. **Decidir a sobreposição com outros plugins instalados** (pstack, ripwire,
    `code-review`, `security-review`). Nos projetos adotados, desligar os
    redundantes ou aceitar a sobreposição conscientemente.
