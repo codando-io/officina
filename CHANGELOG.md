@@ -9,6 +9,8 @@ steps: what to rename, move, or decide.
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-11-06
+
 ### Added
 
 - Failure-scenario catalog (`skills/test/references/failure-scenarios.md`): 53
@@ -28,7 +30,6 @@ steps: what to rename, move, or decide.
   tool attribution (`--summary-only` also rejects a body). The commit rules in
   `core/git.md` now state the attribution rule. `adopt` offers it as a
   `commit-msg` hook.
-
 - Licensed under Apache-2.0 (`LICENSE`, `NOTICE`), with Codando Software as the
   copyright holder; the plugin and marketplace manifests name Codando Software
   as author and owner.
@@ -51,6 +52,29 @@ steps: what to rename, move, or decide.
   password hashes and sensitive fields at rest, and Authorization covers clients
   that query the database directly (row-level security, privileged keys). The
   .NET profile lists the ASP.NET Core APIs and proxy pitfalls behind each.
+
+### Migration
+
+1. In `.claude/settings.json`, set the `engineering-harness` entry of
+   `extraKnownMarketplaces` to the GitHub source from
+   `templates/claude-settings.json`
+   (`{"source": "github", "repo": "codando-io/officina"}`), replacing a
+   placeholder, local directory, or Forgejo URL. If `enabledPlugins` for
+   `eng@engineering-harness` was kept in `.claude/settings.local.json` because
+   the harness was not published, move it to `.claude/settings.json`.
+2. Set `harness: "0.2"` in `.engineering/harness.yaml`.
+3. Ask the user whether to install `templates/pull-request.md` as the forge's
+   pull request template and `bin/check-commit-msg` as a `commit-msg` hook.
+4. Mark the minimum-delivery items the project lacks as `missing` in
+   `AGENTS.md` *Delivery*.
+
+Machines that registered the marketplace from a local checkout or from Forgejo
+switch to GitHub without reinstalling: set the same GitHub source in the
+`engineering-harness` entry of `extraKnownMarketplaces` in
+`~/.claude/settings.json`, run `claude plugin marketplace add
+codando-io/officina`, then `claude plugin update eng@engineering-harness`.
+`claude plugin marketplace remove` uninstalls the plugin and clears its
+`enabledPlugins` entries. Verified on Claude Code 2.1.308.
 
 ## [0.1.0] - 2026-09-23
 

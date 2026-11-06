@@ -46,11 +46,13 @@ version directory with a symlink to the checkout. The plugins reference
 documents this: Claude Code never removes a symlinked version entry.
 
 ```bash
-rm -rf ~/.claude/plugins/cache/engineering-harness/eng/0.1.0 && ln -s ~/projects/personal/engineering-harness ~/.claude/plugins/cache/engineering-harness/eng/0.1.0
+h=~/projects/personal/engineering-harness
+c=~/.claude/plugins/cache/engineering-harness/eng/$(cat "$h/VERSION")
+rm -rf "$c" && ln -s "$h" "$c"
 ```
 
-`claude plugin install` replaces the symlink with a copy, so redo it after any
-install. Undo it with `claude plugin uninstall eng@engineering-harness` followed
+`claude plugin install` and `claude plugin update` replace the symlink with a
+copy, so redo it after either, including after every version bump. Undo it with `claude plugin uninstall eng@engineering-harness` followed
 by a new install. For everyone else, publish a version bump; that is what `update`
 delivers.
 
