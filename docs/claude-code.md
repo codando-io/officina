@@ -9,6 +9,8 @@ The harness is a Claude Code plugin and uses only native mechanisms: a plugin se
 |---|---|
 | Expose skills | The harness repository is a marketplace whose single plugin, `eng`, has `source: "./"`. Its `skills/` directory is the harness `skills/`. Skills appear as `/eng:investigate`, `/eng:review`, etc. |
 | Session context | `hooks/hooks.json` registers a `SessionStart` hook (all sources: startup, resume, clear, compact) that runs `bin/eng-context`. Its stdout becomes context. |
+| Secret files in shell commands | A `PreToolUse` hook on Bash (`bin/eng-guard-secrets`) asks the user before a command touches `.env`, key, certificate, or credential files; `.env.example` and similar templates pass. Deny rules in settings cover only Claude's file tools. |
+| Check before finishing | A `Stop` hook (`bin/eng-stop-check`) runs the project's `stop_check` from `.engineering/harness.yaml` when Claude finishes with uncommitted changes, and sends Claude back with the output when it fails. No `stop_check`, no effect. |
 | `$HARNESS` | Printed by `eng-context` as `HARNESS=<plugin root>`. |
 | Tools on PATH | The plugin's `bin/` is added to the Bash tool's PATH, so `eng-context` can be run by name. |
 | Frontmatter | `disable-model-invocation: true` keeps `release` and `adopt` out of automatic routing. |

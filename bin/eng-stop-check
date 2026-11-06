@@ -1,0 +1,23 @@
+#!/bin/sh
+# Stop hook: when the project sets `stop_check` in .engineering/harness.yaml and
+# the working tree has changes, runs that command before Claude finishes. On
+# failure it blocks the stop and hands Claude the end of the output.
+
+input=$(cat)
+printf '%s' "$input" | grep -qE '"stop_hook_active"[[:space:]]*:[[:space:]]*true' && exit 0
+
+dir=${CLAUDE_PROJECT_DIR:-$(pwd)}
+yaml="$dir/.engineering/harness.yaml"
+[ -f "$yaml" ] || exit 0
+check=$(tr -d '\r' < "$yaml" | sed -n 's/^stop_check:[[:space:]]*//p' | head -1 | sed 's/[[:space:]][[:space:]]*#.*$//; s/[[:space:]]*$//; s/^"\(.*\)"$/\1/; s/^'"'"'\(.*\)'"'"'$/\1/')
+[ -n "$check" ] || exit 0
+[ -n "$(git -C "$dir" status --porcelain 2>/dev/null)" ] || exit 0
+
+output=$(cd "$dir" && sh -c "$check" 2>&1) && exit 0
+
+printf '%s\n' "$output" | tail -40 | awk -v cmd="$check" '
+  { gsub(/\033\[[0-9;]*[A-Za-z]/, ""); gsub(/\\/, "\\\\"); gsub(/"/, "\\\""); gsub(/\t/, "    "); gsub(/\r/, ""); body = body $0 "\\n" }
+  END {
+    gsub(/\\/, "\\\\", cmd); gsub(/"/, "\\\"", cmd)
+    printf "{\"decision\":\"block\",\"reason\":\"The project stop check failed: %s\\n%sFix it before finishing, or tell the user why it cannot pass.\"}\n", cmd, body
+  }'

@@ -11,3 +11,9 @@ profiles: [dotnet-backend, angular, dotnet-angular]
 
 # Where this project keeps Architecture Decision Records.
 adr_dir: docs/adr
+
+# Optional: the fastest check that proves the tree builds (one project's build,
+# a typecheck). The plugin's Stop hook runs it when Claude finishes with
+# uncommitted changes and sends Claude back when it fails. Keep it under a
+# minute; leave a space before any trailing comment.
+# stop_check: dotnet build src/App/App.csproj --no-restore

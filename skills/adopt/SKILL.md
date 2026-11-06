@@ -69,6 +69,8 @@ If the working tree has uncommitted changes, stop and ask before starting.
    message check (commitlint, a `commit-msg` hook), offer
    `$HARNESS/bin/check-commit-msg` as the local `commit-msg` hook, with
    `--summary-only` when the project's commits are one line.
+   Offer a `stop_check` in `harness.yaml`: the cheapest rung of the profile's
+   verification ladder that finishes in under a minute.
    Offer `$HARNESS/templates/harness-check.yml` as a CI workflow, so a broken
    `harness.yaml` or an orphaned override fails the pull request instead of the
    next session.

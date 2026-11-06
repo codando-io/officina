@@ -43,6 +43,11 @@ steps: what to rename, move, or decide.
 - `release` makes published artifacts verifiable (CycloneDX SBOM, CI build
   provenance, signed tag); `security-audit` compares CI with the OpenSSF
   Scorecard checks.
+- Plugin hooks that enforce rules without exceptions: `PreToolUse` on Bash
+  (`bin/eng-guard-secrets`) asks before a shell command touches a secret file,
+  which settings deny rules cannot catch; `Stop` (`bin/eng-stop-check`) runs
+  the project's optional `stop_check` from `harness.yaml` when Claude finishes
+  with uncommitted changes and sends it back when the check fails.
 - `templates/harness-check.yml`: a CI workflow that runs `eng-context --check`
   against the declared harness line; `adopt` offers it.
 - This repository runs OpenSSF Scorecard and attaches a source archive with a

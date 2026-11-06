@@ -30,6 +30,8 @@ is not that you write insecure code; it is that text you read steers what you do
 - Do not read `.env*`, `*.pem`, `*.key`, `*.pfx`, `secrets.json`, user-secrets
   stores, cloud credential files, or kubeconfigs unless the user names the file.
 - Never print secret values, even partially. Refer to them by name.
+- The plugin's `PreToolUse` hook asks the user before a shell command touches
+  one of these files; an approval covers that command only.
 - Never commit secrets. Before committing, check the staged diff for keys,
   tokens, connection strings with passwords, and private URLs.
 - Secrets in config files are a finding. The fix is a secret store (Key Vault,

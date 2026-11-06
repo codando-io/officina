@@ -81,14 +81,15 @@ yaml_value() {
     | sed 's/[[:space:]]#.*$//; s/[[:space:]]*$//; s/^"\(.*\)"$/\1/; s/^'"'"'\(.*\)'"'"'$/\1/'
 }
 
-unknown=$(printf '%s\n' "$yaml" | grep -vE '^[[:space:]]*(#|$)' | grep -vE '^(harness|profiles|adr_dir):' | head -3)
-[ -n "$unknown" ] && warn "harness.yaml has unsupported lines (only flat keys harness, profiles, adr_dir): $(echo "$unknown" | tr '\n' ' ')"
+unknown=$(printf '%s\n' "$yaml" | grep -vE '^[[:space:]]*(#|$)' | grep -vE '^(harness|profiles|adr_dir|stop_check):' | head -3)
+[ -n "$unknown" ] && warn "harness.yaml has unsupported lines (only flat keys harness, profiles, adr_dir, stop_check): $(echo "$unknown" | tr '\n' ' ')"
 
 declared=$(yaml_value harness)
 [ -n "$declared" ] && declared=$(to_line "$declared")
 profiles=$(yaml_value profiles | tr -d "[]\"'" | tr ',' ' ' | tr -s ' ' | sed 's/^ //; s/ $//')
 adr_dir=$(yaml_value adr_dir)
 [ -z "$adr_dir" ] && adr_dir="docs/adr"
+stop_check=$(yaml_value stop_check)
 
 if [ -z "$declared" ]; then
   warn "harness.yaml does not declare \`harness:\`; cannot check compatibility."
@@ -139,6 +140,8 @@ else
 fi
 
 index="$project/.engineering/memory/INDEX.md"
+[ -n "$stop_check" ] && printf '\nStop check: `%s` runs when you finish with changes in the working tree; a failure sends you back to fix it.\n' "$stop_check"
+
 printf '\n## Project memory\n\n'
 if [ -f "$index" ]; then
   printf 'Entries live in `.engineering/memory/`. Read an entry before changing the area it describes.\n\n'
