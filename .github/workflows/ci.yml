@@ -16,4 +16,8 @@ jobs:
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 24
+      - name: Install what ui-gif records with
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+          npm install --prefix "$HOME/.cache/officina/ui-gif" --save-exact --ignore-scripts --no-audit --no-fund playwright-core@1.64.1
       - run: node --test tests/*.test.mjs

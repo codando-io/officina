@@ -1,9 +1,12 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { spawnSync } from 'node:child_process';
+import { spawn, spawnSync } from 'node:child_process';
+import { once } from 'node:events';
+import { createServer } from 'node:http';
+import { createRequire } from 'node:module';
 import { inflateRawSync } from 'node:zlib';
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, realpathSync, symlinkSync } from 'node:fs';
-import { tmpdir } from 'node:os';
+import { homedir, tmpdir } from 'node:os';
 import { join, dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -244,4 +247,90 @@ test('eng-flag-injection flags text addressed to an agent in tool results', () =
   assert.equal(flag({ file: { content: 'export function exportCsv(rows) { return rows; }' } }), null);
   assert.equal(flag({ file: { content: 'The agent runs nightly and sends a report.' } }), null);
   assert.equal(flag({ stdout: 'ok' }, { command: 'echo "ignore previous instructions"' }), null, "Claude's own command is not scanned");
+});
+
+function runAsync(script, args, env = {}) {
+  return new Promise((done) => {
+    const child = spawn(join(root, script), args, { env: { ...process.env, ...env } });
+    let out = '';
+    let err = '';
+    child.stdout.on('data', (chunk) => { out += chunk; });
+    child.stderr.on('data', (chunk) => { err += chunk; });
+    child.on('close', (code) => done({ code, out, err }));
+  });
+}
+
+const playwright = [process.cwd(), join(process.env.XDG_CACHE_HOME || join(homedir(), '.cache'), 'officina/ui-gif')]
+  .some((from) => { try { createRequire(join(from, 'package.json')).resolve('playwright-core'); return true; } catch { return false; } });
+const ffmpeg = spawnSync('ffmpeg', ['-version']).status === 0;
+
+function averageColor(png) {
+  const rgb = spawnSync('ffmpeg', ['-loglevel', 'error', '-i', png, '-vf', 'scale=1:1', '-f', 'rawvideo', '-pix_fmt', 'rgb24', '-']).stdout;
+  return [...rgb];
+}
+
+test('ui-gif records a journey from its first painted page to its last state', { skip: !(playwright && ffmpeg) && 'needs playwright-core, Chrome and ffmpeg' }, async () => {
+  const dir = realpathSync(mkdtempSync(join(tmpdir(), 'eng-ui-gif-')));
+  const page = '<!doctype html><body style="margin:0;height:100vh;background:#1d4ed8"><button id="go" style="font-size:40px;margin:40px">Go</button>'
+    + '<script>go.onclick = () => document.body.style.background = "#16a34a"</script></body>';
+  writeFileSync(join(dir, 'journey.mjs'), "export default async (page) => { await page.goto('/'); await page.waitForTimeout(600); await page.click('#go'); await page.waitForTimeout(600); };\n");
+  const server = createServer((req, res) => res.end(page)).listen(0, '127.0.0.1');
+  await once(server, 'listening');
+  try {
+    const out = join(dir, 'after.gif');
+    const result = await runAsync('bin/ui-gif', ['record', '--url', `http://127.0.0.1:${server.address().port}`, '--journey', join(dir, 'journey.mjs'), '--out', out, '--viewport', '640x400']);
+    assert.equal(result.code, 0, result.err);
+    const summary = JSON.parse(result.out);
+    assert.equal(readFileSync(out).subarray(0, 6).toString(), 'GIF89a');
+    assert.equal(summary.frames.length, 3);
+    const [first, , last] = summary.frames.map(averageColor);
+    assert.ok(first[2] > 150 && first[1] < 120, `first frame is the page before the click, not a blank one: ${first}`);
+    assert.ok(last[1] > 140 && last[2] < 120, `last frame is the state after the click: ${last}`);
+  } finally {
+    server.close();
+  }
+});
+
+test('ui-gif forgejo-attach uploads the local images a body references and links them', async () => {
+  const dir = realpathSync(mkdtempSync(join(tmpdir(), 'eng-ui-gif-')));
+  writeFileSync(join(dir, 'before.gif'), 'GIF89a-before');
+  writeFileSync(join(dir, 'after.gif'), 'GIF89a-after');
+  writeFileSync(join(dir, 'body.md'), '## Antes e depois\n\n| Antes | Depois |\n|---|---|\n| ![Antes](./before.gif) | ![Depois](after.gif) |\n\n![logo](https://example.com/logo.png)\n');
+  const uploads = [];
+  const server = createServer(async (req, res) => {
+    const chunks = [];
+    for await (const chunk of req) chunks.push(chunk);
+    const raw = Buffer.concat(chunks).toString('latin1');
+    const name = raw.match(/filename="([^"]+)"/)?.[1];
+    uploads.push({ url: req.url, auth: req.headers.authorization, name, sent: raw.includes(`GIF89a-${name?.replace('.gif', '')}`) });
+    res.writeHead(201, { 'content-type': 'application/json' });
+    res.end(JSON.stringify({ browser_download_url: `https://forge.example/attachments/${name}-uuid` }));
+  }).listen(0, '127.0.0.1');
+  await once(server, 'listening');
+  try {
+    const repo = `http://127.0.0.1:${server.address().port}/capivaras/agora`;
+    const args = ['forgejo-attach', '--repo', repo, '--pr', '7', '--body-file', join(dir, 'body.md')];
+    const result = await runAsync('bin/ui-gif', args, { FORGEJO_TOKEN: 'test-token' });
+    assert.equal(result.code, 0, result.err);
+    assert.equal(result.out, '## Antes e depois\n\n| Antes | Depois |\n|---|---|\n| ![Antes](https://forge.example/attachments/before.gif-uuid) | ![Depois](https://forge.example/attachments/after.gif-uuid) |\n\n![logo](https://example.com/logo.png)\n');
+    assert.deepEqual(uploads, [
+      { url: '/api/v1/repos/capivaras/agora/issues/7/assets', auth: 'token test-token', name: 'before.gif', sent: true },
+      { url: '/api/v1/repos/capivaras/agora/issues/7/assets', auth: 'token test-token', name: 'after.gif', sent: true },
+    ]);
+
+    const missing = await runAsync('bin/ui-gif', args, { FORGEJO_TOKEN: '' });
+    assert.equal(missing.code, 3);
+    assert.match(missing.err, /FORGEJO_TOKEN is not set/);
+  } finally {
+    server.close();
+  }
+});
+
+test('ui-gif refuses an incomplete command with its usage', () => {
+  const none = run('bin/ui-gif', []);
+  assert.equal(none.code, 2);
+  assert.match(none.err, /ui-gif record --url/);
+  const partial = run('bin/ui-gif', ['record', '--url', 'http://127.0.0.1:1']);
+  assert.equal(partial.code, 2);
+  assert.match(partial.err, /missing --out/);
 });

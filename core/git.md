@@ -52,4 +52,9 @@ commitlint config before applying the defaults below.
   empty.
 - Why names the actual problem, links the issue, and says why this approach.
   "Fix bug" or "Fix build" is not a why.
+- A change to what users see adds a Before and after block: a GIF of the same
+  journey on the base and on the branch, side by side in a table, uploaded as an
+  attachment and never committed. Procedure:
+  `$HARNESS/skills/test/references/ui-evidence.md`. When capture is impossible,
+  the block says why in one line.
 - Language follows the repository. Same attribution rule as commits.

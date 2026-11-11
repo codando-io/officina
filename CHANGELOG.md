@@ -9,6 +9,17 @@ steps: what to rename, move, or decide.
 
 ## [Unreleased]
 
+### Added
+
+- Before and after GIFs for pull requests that change what users see. The
+  policy and `core/git.md` ask for them, the `test` skill records them
+  (step 7, `skills/test/references/ui-evidence.md`), and the pull request
+  template has the block. `bin/ui-gif record` drives the installed Chrome
+  headless through a pinned `playwright-core` and converts with `ffmpeg`;
+  `bin/ui-gif forgejo-attach` uploads the GIFs to a Forgejo pull request. On
+  GitHub, `gh pr create --attach` uploads them. Eval case
+  `pr-ui-change-shows-before-after`.
+
 ### Fixed
 
 - `check-commit-msg` accepts the Conventional Commits type `style`; projects

@@ -1,6 +1,6 @@
 ---
 name: test
-description: Produce test evidence that a change works - identify the changed behavior, the test that proves it, the regression test, the existing suites to run, and the right level (unit, integration, e2e); then write and run them. Use after implementing, when fixing a bug (test first), or when asked whether something is tested. A passing build is never accepted as proof.
+description: Produce test evidence that a change works - identify the changed behavior, the test that proves it, the regression test, the existing suites to run, and the right level (unit, integration, e2e); then write and run them; for a change to what users see, record before and after GIFs for the pull request. Use after implementing, when fixing a bug (test first), before opening a pull request that touches UI, or when asked whether something is tested. A passing build is never accepted as proof.
 ---
 
 # Test
@@ -47,7 +47,11 @@ fail if this change were wrong, and did it run?".
    the changed code only, with the tool in the active profile's
    `references/failure-testing.md`. A mutant that survives in changed code is a
    missing assertion: add it, or say why the mutant is equivalent.
-7. **Check what is not covered.** Name any behavior you could not test and why,
+7. **Show what users see.** When the diff changes rendered UI, record the same
+   journey on the base and on the branch as GIFs, read their frames, and keep
+   them for the pull request (`references/ui-evidence.md`). Identical before and
+   after frames are a finding, not evidence.
+8. **Check what is not covered.** Name any behavior you could not test and why,
    and what manual or runtime check stands in for it.
 
 ## Rules
@@ -71,6 +75,7 @@ fail if this change were wrong, and did it run?".
 - `<command>` -> <summary: N passed, 0 failed, duration>
 
 **Failure scenarios**: triggered catalog rows, each tested or not applicable (why)
+**Before and after**: GIF paths and what each shows, or why there are none (no UI change, capture impossible)
 **Not covered**: behavior, why, and what stands in for it
 **Verdict**: verified / partially verified / not verified
 ```

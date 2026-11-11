@@ -102,8 +102,10 @@ alternatives that someone will question later. Most decisions do not need one.
 
 Small commits, one logical change each, Conventional Commits format. Never
 rewrite published history or push to protected branches without being asked.
-Pull request descriptions are short blocks of bullets. Details, including the
-PR structure: `$HARNESS/core/git.md`.
+Pull request descriptions are short blocks of bullets. A pull request that
+changes what users see carries before and after GIFs of the same journey
+(`$HARNESS/skills/test/references/ui-evidence.md`), or one line saying why it
+cannot. Details, including the PR structure: `$HARNESS/core/git.md`.
 
 ## Communication
 
