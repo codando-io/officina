@@ -9,6 +9,8 @@ steps: what to rename, move, or decide.
 
 ## [Unreleased]
 
+## [0.3.2] - 2026-11-12
+
 ### Added
 
 - Before and after GIFs for pull requests that change what users see. The

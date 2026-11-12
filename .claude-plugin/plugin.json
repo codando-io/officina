@@ -1,7 +1,7 @@
 {
   "name": "eng",
   "displayName": "Engineering Harness",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Evidence-driven engineering process for AI coding agents: investigate, plan, implement, test, review, audits, dependency updates, observability, release.",
   "author": {
     "name": "Codando Software",
