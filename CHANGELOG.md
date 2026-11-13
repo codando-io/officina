@@ -9,6 +9,8 @@ steps: what to rename, move, or decide.
 
 ## [Unreleased]
 
+## [0.3.3] - 2026-11-13
+
 Review practices from the Claude Code team's account of its own code review
 (RESEARCH.md, A4).
 
