@@ -54,6 +54,7 @@ trace id. "None yet" is a valid answer.>
 | Item | Value |
 |---|---|
 | CI on every change | ... |
+| Merge gate (required checks and reviewers, resolved threads, stale approvals dismissed) | ... |
 | Hosting / provider | ... |
 | Environments | ... |
 | Staging gate | ... |

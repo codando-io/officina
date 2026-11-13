@@ -20,6 +20,11 @@ Fontes lidas na íntegra em 2026-09-23:
   plugins e instruções de projeto. Os fatos usados no design estão em
   [ARCHITECTURE.md](ARCHITECTURE.md#fatos-verificados-sobre-os-agentes).
 
+Lida na íntegra em 2026-11-13 (ver o [adendo](#adendo-code-review-no-time-do-claude-code-a4)):
+
+- A4: Addy Osmani, *How the Claude Code team does code review.* 2026-10-26.
+  <https://x.com/addyosmani/status/2114604912520921136>
+
 ---
 
 ## 1. Ideias principais do artigo sobre deploy (A1)
@@ -271,3 +276,64 @@ resultado" (A2, citando a Anthropic).
    humano pediu.
 7. O projeto é dono do próprio contexto e memória, versionados junto com o código.
 8. O harness é software: versão, changelog, testes de estrutura, exemplos.
+
+## Adendo: code review no time do Claude Code (A4)
+
+**[Artigo]**
+
+1. A pergunta da revisão deixa de ser "alguém leu o código?" e passa a ser "o
+   que pode dar errado e qual verificação, automática ou humana, pega isso?".
+   A maior parte da revisão acontece antes do PR, enquanto o código é escrito.
+2. A mudança passa por camadas: verificação antes do PR (o agente mostra um
+   resultado executável e um subagente com contexto limpo revisa o diff),
+   review por IA em todo PR, security review que bloqueia, CI, aprovação
+   humana proporcional ao risco, merge queue com flags e rollout em etapas, e
+   rollback rápido.
+3. Achados são filtrados antes de chegar ao autor: vários agentes procuram,
+   uma votação separada confirma, e achados só de estilo saem. Os que ficam
+   são marcados como importante, nit ou *pre-existing*, para não cobrar do
+   autor um defeito que ele não introduziu.
+4. Todo achado termina corrigido ou respondido com um motivo.
+5. O risco é definido pela mudança, não pelo autor. Caminhos sensíveis (CI,
+   billing, auto-updater) sempre passam por uma pessoa, aprovação de agente
+   não conta como humana, e uma aprovação vale para um commit só.
+6. Os incidentes viram o eval do revisor: PRs que causaram incidente, com a
+   correção conferida por quem conhece o código. O ruído é medido pelo que o
+   autor fez com cada comentário e por rodadas em PRs sabidamente limpos.
+7. A revisão precisa convergir. Um PR passou de 50 ciclos entre agente autor e
+   agente revisor, e cerca de 59% do que o revisor apontava era código antigo.
+   A correção: no máximo três ciclos, re-review só do diff novo, reportar a
+   classe do bug e não repetir achados já tratados.
+8. Achado recorrente se corrige na fonte: skill, lint, CLAUDE.md ou REVIEW.md.
+
+**[Proposta]**
+
+| Ideia | Destino | Mudança |
+|---|---|---|
+| Revisor com contexto limpo | `review`, *Before you start* | Quem escreveu a mudança na sessão revisa por um subagente que recebe só o range, as alegações e a skill |
+| Profundidade por risco | `review`, *Before you start* | R1 com um revisor; R2 com revisores paralelos, cada um numa fatia das dimensões |
+| Confirmar antes de reportar | `review`, passo 6 | Blocker e major precisam de prova; em R2 um subagente tenta refutar cada blocker |
+| *Pre-existing* | `review`, passo 7 e saída | Defeito em linha que o diff não tocou é reportado e não bloqueia, salvo se o diff o torna alcançável |
+| Classe do bug | `review`, passo 8 | Uma rodada de correção cobre todas as ocorrências |
+| Convergência | `review`, seção *Re-review* | Só os commits novos, achados respondidos ficam fechados, parada na terceira rodada |
+| Corrigir na fonte | Saída *Encode* de `review`; delta *Bugfix* em `core/lifecycle.md` | O bug que passou pela review aponta a verificação que faltou |
+| Incidentes como eval | `CONTRIBUTING.md`, *Evals* | Defeito que a `review` deixou passar num projeto vira caso em `evals/` |
+| Todo achado resolvido | `core/git.md` | Corrigido ou respondido antes do merge |
+| Onde a pessoa lê | `core/git.md` e template de PR | *Reviewer focus* diz o que testes e review automática não julgam |
+| Caminhos sensíveis | `core/policy.md`, R2 | Workflows de CI e release, instaladores e auto-updaters; veredito de agente não é aprovação humana |
+| REVIEW.md | Já existia: `.engineering/overrides/review.md` | `adopt` oferece o override para caminhos caros e sugere CODEOWNERS |
+| Proteção de merge | Linha *Merge gate* em *Delivery* do `AGENTS.md` | Vira lacuna de prontidão no `adopt` quando falta |
+
+Já existiam no harness: template de PR com verificação, risco e rollback;
+classes de reversibilidade definidas pela mudança; flags e rollback em
+*Delivery*; reteste das instruções ao trocar de modelo.
+
+**[Rejeitado ou adiado]**
+
+| Ideia | Status | Motivo |
+|---|---|---|
+| Review por IA no CI em todo PR | **[Adiado]** | Custa por PR e exige um segredo de API em cada repositório. É decisão de cada projeto; a skill `review` local cobre o caso até lá |
+| Votação com vários agentes em todo PR | **[Adaptado]** | O custo não se paga em R0 e R1. Vira prova obrigatória para blocker e major, com refutação por subagente só em R2 |
+| Medir ruído pela reação aos comentários | **[Adiado]** | Precisa de dados do forge e de volume que os projetos atuais não têm. Os casos de eval cobrem parte disso |
+| Merge automático de mudança de baixo risco | **[Rejeitado por ora]** | O harness trata merge e deploy como decisão humana. Reabrir com evidência de taxa de revert nos projetos |
+| Explicações geradas para aprender o código | **[Sem mudança]** | `investigate` já cobre |

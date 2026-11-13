@@ -74,6 +74,10 @@ pass and one report:
 - Fix the root cause, not the symptom. A null check that hides the crash is not
   a fix unless null is a legitimate state; say which.
 - Keep the failing test as the regression test.
+- A bug that got through review is evidence about the review. Name the check
+  that should have caught it (a test level, a failure-scenario row, a lint
+  rule, a line in `.engineering/overrides/review.md`) and add it, or say why
+  none could.
 - Look for the same defect pattern in sibling code; report other instances,
   fix them only if in scope.
 

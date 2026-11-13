@@ -52,6 +52,11 @@ commitlint config before applying the defaults below.
   empty.
 - Why names the actual problem, links the issue, and says why this approach.
   "Fix bug" or "Fix build" is not a why.
+- Reviewer focus names what the tests and automated review cannot judge
+  (product fit, architecture, a risky path). That is where a person reads; a
+  pull request that names nothing there is asking for a rubber stamp.
+- Every review finding, from a person or a bot, ends fixed or answered with a
+  one-line reason before merge. Silence is not an answer.
 - A change to what users see adds a Before and after block: a GIF of the same
   journey on the base and on the branch, side by side in a table, uploaded as an
   attachment and never committed. Procedure:
