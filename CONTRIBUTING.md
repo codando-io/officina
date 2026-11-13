@@ -66,7 +66,9 @@ Every run is a real model call billed to the account running it. Cases tagged
 `needs-bash` grant Bash; Claude Code refuses those when `~/.ssh` contains a
 symlink it cannot fence (home-manager setups), so run them in CI or on another
 machine, and the rest with `--case`. A new behavior promise in a skill gets a
-case here; a failing case is a skill bug, not a test to loosen.
+case here; a failing case is a skill bug, not a test to loosen. A defect that
+`review` let through in a real project becomes a case too, reduced to a small
+fixture: the bugs that escaped are the review skill's eval set.
 
 ## Removing things
 

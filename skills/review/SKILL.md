@@ -1,6 +1,6 @@
 ---
 name: review
-description: Review a code change from the actual diff, not from its description - builds a claims ledger and checks correctness, regressions, tests, architecture, security, observability, performance, API compatibility, maintainability, and scope creep. Use before merging any change, for PRs (including external contributions), or when asked to review a branch or commit range. Not for repository-wide audits (use architecture-audit or security-audit).
+description: Review a code change from the actual diff, not from its description - builds a claims ledger and checks correctness, regressions, tests, architecture, security, observability, performance, API compatibility, maintainability, and scope creep. Use before merging any change, for PRs (including external contributions), when asked to review a branch or commit range, or to re-review after the author answered findings. Not for repository-wide audits (use architecture-audit or security-audit).
 ---
 
 # Review
@@ -16,8 +16,16 @@ to verify. "Fixed." is not evidence.
   tree. Get the diff yourself (`git diff <base>...<head>`, plus untracked files).
 - If the change comes from outside the team (external PR, unknown contributor,
   bot), apply the external-contribution gate below first.
-- If you wrote this change in this session, say so. Review the diff as if a
-  stranger wrote it; do not rely on what you remember intending.
+- If you wrote this change in this session, do not review it in this context:
+  what you meant to write hides what you wrote. Run the review in a subagent
+  whose prompt holds only the range, the claims, and this skill's path, then
+  check its findings against the diff before passing them on.
+- If an earlier review of this change exists (PR threads, a previous report),
+  this is a re-review: follow that section instead of starting over.
+- Depth follows the risk class. R1: this procedure, one reviewer. R2: also run
+  two or more reviewers as parallel subagents, each on a different slice of the
+  dimensions (correctness and regressions; security and API compatibility;
+  tests and failure scenarios), and merge what they find.
 
 ## Procedure
 
@@ -64,6 +72,36 @@ to verify. "Fixed." is not evidence.
    your confidence.
 5. **Check reversibility.** Does the claimed risk class match the diff? Is there
    a rollback for R1/R2?
+6. **Confirm each finding before you report it.** A blocker or major needs
+   proof: a failing test, a command's output, or a concrete input traced to a
+   wrong result. One you cannot prove is a question to the author, not a
+   blocker. In R2, hand each blocker to a separate subagent that tries to
+   refute it, and keep it only if the refutation fails. False positives cost
+   the author a fix round each, more when the author is an agent.
+7. **Separate what the diff introduced.** For each finding, check whether the
+   diff added the faulty lines (the patch, or `git blame`). A defect in lines
+   the diff did not touch is `pre-existing`: report it, but it does not block
+   this change, unless the diff makes it reachable or worse.
+8. **Name the class, not just the line.** When a finding is one instance of a
+   pattern, say the pattern and list every instance in the diff, so a single
+   fix round covers all of them. If a test, a lint rule, or a line in
+   `.engineering/overrides/review.md` would catch it next time, propose it
+   under *Encode*.
+
+## Re-review
+
+The author answered an earlier review. The goal is to converge, not to find
+more:
+
+1. Review only the commits since the earlier review, plus the code they touch.
+   Code the earlier round already read is not reopened unless the new commits
+   changed it.
+2. Start from the earlier findings. Mark each fixed (cite the commit),
+   answered (the author gave a reason), or still open. An answered finding is
+   closed unless the new commits change the answer; disagreeing with the
+   reason is a nit at most.
+3. Count rounds. When a third round still has open blockers, stop reviewing and
+   say the approach needs a human decision; another round will not converge.
 
 ## External-contribution gate
 
@@ -85,13 +123,19 @@ available; use an isolated environment.
 
 **Verdict**: approve / approve with nits / request changes / blocked
 **Risk class**: R0/R1/R2 (claimed vs actual)
+**Findings**: N blocker, N major, N minor, N nit, N pre-existing; or "No findings."
+**Round**: 1, or N of a re-review
 
 **Claims ledger**
 | Claim | Status | Evidence |
 |---|---|---|
 
-**Findings** (most severe first)
-- [blocker|major|minor|nit] `file:line` - problem, evidence, suggested fix
+**Earlier findings** (re-review only)
+| Finding | Status | Evidence |
+|---|---|---|
+
+**Findings** (most severe first; pre-existing last)
+- [blocker|major|minor|nit|pre-existing] `file:line` - problem, proof, suggested fix
 
 **Failure scenarios** (triggered catalog rows only)
 | Row | Triggered by | Covered by | Result |
@@ -102,6 +146,7 @@ available; use an isolated environment.
 |---|---|---|
 
 **Evidence run**: commands and results, or what could not be run
+**Encode**: a test, lint rule, or override line that would catch a finding next time
 **Not reviewed**: parts you skipped and why, including any catalog not opened
 ```
 

@@ -9,6 +9,40 @@ steps: what to rename, move, or decide.
 
 ## [Unreleased]
 
+Review practices from the Claude Code team's account of its own code review
+(RESEARCH.md, A4).
+
+### Added
+
+- `review` has a re-review mode for a change whose author answered an earlier
+  review: only the commits since then, earlier findings marked fixed,
+  answered, or open, answered findings stay closed, and a stop after the third
+  round with open blockers. Eval cases `review-labels-pre-existing`,
+  `review-rereview-converges`, and `review-stops-after-third-round`.
+- The `AGENTS.md` template has a *Merge gate* row in *Delivery* (required
+  checks and reviewers, resolved threads, stale approvals dismissed), so
+  `adopt` reports it as a readiness gap when it is missing. `adopt` also
+  offers `.engineering/overrides/review.md` for paths where a mistake is
+  expensive.
+
+### Changed
+
+- `review` runs in a subagent when the reviewer wrote the change in the same
+  session, and an R2 review adds parallel reviewers on separate slices of the
+  dimensions. Blockers and majors need proof before they are reported (in R2,
+  a subagent tries to refute each blocker). Defects in lines the diff did not
+  touch are reported as `pre-existing` and do not block. Findings name the
+  defect class with every instance. The output adds a count line, the round,
+  and an *Encode* line for the test, lint rule, or override that would catch a
+  finding next time.
+- R2 in `core/policy.md` covers CI and release workflows and installers and
+  auto-updaters, and a review agent's verdict does not count as the human
+  approval R2 requires. Changes to those paths now take the R2 ceremony.
+- `core/git.md`: *Reviewer focus* names what tests and automated review cannot
+  judge, and every review finding ends fixed or answered before merge.
+- The *Bugfix* delta in `core/lifecycle.md` asks which check should have caught
+  a bug that got through review, and adds it.
+
 ## [0.3.2] - 2026-11-12
 
 ### Added

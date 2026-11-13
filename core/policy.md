@@ -36,7 +36,7 @@ Classify every change before shipping it. Ceremony scales with the class.
 |---|---|---|
 | R0 | Undone by revert + redeploy, no residue | None |
 | R1 | Reversible with effort: config, flags, additive migrations, new dependency | Written rollback plan |
-| R2 | Irreversible or visible outside the system: destructive migration, data loss, money, emails, public API or package, auth changes | Phased rollout or expand-contract, failure-scenario tests, at least two independent safeguards per identified failure mode (e.g. a database constraint and an application check), explicit human approval, ADR when it is a decision |
+| R2 | Irreversible or visible outside the system: destructive migration, data loss, money, emails, public API or package, auth changes, CI and release workflows (they run with secrets a revert cannot take back), installers and auto-updaters (a broken updater cannot ship its own fix) | Phased rollout or expand-contract, failure-scenario tests, at least two independent safeguards per identified failure mode (e.g. a database constraint and an application check), explicit human approval (a review agent's verdict is not one), ADR when it is a decision |
 
 Small reversible changes should ship fast. Irreversible ones should not ship fast.
 

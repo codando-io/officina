@@ -57,8 +57,8 @@ If the working tree has uncommitted changes, stop and ask before starting.
    - describe the actual architecture, not an ideal one;
    - leave a clearly marked `(unknown - ask the team)` where you could not verify;
    - in *Delivery*, write `missing` for any item the project does not have (CI on
-     every change, staging gate, rollback, feature flags) and list those as
-     readiness gaps in the output.
+     every change, merge gate, staging gate, rollback, feature flags) and list
+     those as readiness gaps in the output.
 5. **Claude Code files.** Apply `$HARNESS/docs/claude-code.md`, section
    *Project setup*.
 6. **Ignore working files**: add `.engineering/work/` to `.gitignore`.
@@ -74,6 +74,11 @@ If the working tree has uncommitted changes, stop and ask before starting.
    Offer `$HARNESS/templates/harness-check.yml` as a CI workflow, so a broken
    `harness.yaml` or an orphaned override fails the pull request instead of the
    next session.
+   If the repository has paths where a mistake is expensive (auth, billing,
+   money, CI and release workflows, installers), offer
+   `.engineering/overrides/review.md` naming them and what failure means
+   there, so `review` weighs them; for the forge side, suggest CODEOWNERS on
+   the same paths.
 7. **Verify.** Run `$HARNESS/bin/eng-context --check` from the repository root
    and show its output. It must exit 0 and list the right version, profiles, and
    memory index. Then check `CLAUDE.md` and `.claude/settings.json` against
