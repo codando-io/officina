@@ -1,0 +1,67 @@
+#!/bin/sh
+# Reports project verification skills whose covered files changed after the
+# commit they were last confirmed against. Read-only.
+#
+# A skill under .claude/skills/*/SKILL.md opts in with two lines:
+#   Covers: src/billing/ledger.ts, src/billing/retry.ts
+#   Sync commit: 3f9c2ab
+#
+# Usage: verify-drift [--check] [project-dir]
+#   project-dir  defaults to $CLAUDE_PROJECT_DIR, then the current directory.
+#   --check      exit 1 when a skill has drifted or its sync commit is unknown.
+
+set -u
+
+check=0
+start=""
+for arg in "$@"; do
+  case "$arg" in
+    --check) check=1 ;;
+    -h|--help) sed -n '2,12p' "$0"; exit 0 ;;
+    *) start="$arg" ;;
+  esac
+done
+[ -z "$start" ] && start="${CLAUDE_PROJECT_DIR:-$(pwd)}"
+
+root=$(git -C "$start" rev-parse --show-toplevel 2>/dev/null) || { echo "verify-drift: $start is not in a git repository" >&2; exit 2; }
+
+drifted=0
+seen=0
+for skill in "$root"/.claude/skills/*/SKILL.md; do
+  [ -f "$skill" ] || continue
+  text=$(tr -d '\r' < "$skill")
+  covers=$(printf '%s\n' "$text" | sed -n 's/^Covers:[[:space:]]*//p' | head -1)
+  sync=$(printf '%s\n' "$text" | sed -n 's/^Sync commit:[[:space:]]*//p' | head -1 | tr -d '[:space:]`')
+  [ -n "$covers" ] && [ -n "$sync" ] || continue
+  seen=$((seen + 1))
+  name=$(basename "$(dirname "$skill")")
+
+  if ! git -C "$root" cat-file -e "$sync^{commit}" 2>/dev/null; then
+    printf -- '- `%s`: sync commit `%s` does not exist in this repository\n' "$name" "$sync"
+    drifted=1
+    continue
+  fi
+
+  oldifs=$IFS
+  IFS=','
+  set --
+  for path in $covers; do
+    path=$(printf '%s' "$path" | sed 's/^[[:space:]]*//; s/[[:space:]]*$//; s/^`//; s/`$//')
+    [ -n "$path" ] && set -- "$@" "$path"
+  done
+  IFS=$oldifs
+  [ "$#" -gt 0 ] || continue
+
+  changed=$(git -C "$root" diff --name-only "$sync" -- "$@" 2>/dev/null)
+  if [ -n "$changed" ]; then
+    printf -- '- `%s`: covered files changed since `%s`:\n' "$name" "$sync"
+    printf '%s\n' "$changed" | sed 's/^/    /'
+    drifted=1
+  else
+    printf -- '- `%s`: no covered file changed since `%s`\n' "$name" "$sync"
+  fi
+done
+
+[ "$seen" -eq 0 ] && echo "No verification skill declares Covers and Sync commit."
+[ "$check" -eq 1 ] && [ "$drifted" -eq 1 ] && exit 1
+exit 0

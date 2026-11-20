@@ -104,20 +104,10 @@ table per journey when each needs its own label:
 | ![Before: <state>](./<journey>-before.gif) | ![After: <state>](./<journey>-after.gif) |
 ```
 
-- **GitHub**: `gh pr create --body-file "$EVIDENCE/body.md" --attach "$EVIDENCE/<journey>-before.gif" --attach "$EVIDENCE/<journey>-after.gif"`
-  (or `gh pr edit <number>` for an open pull request). `gh` uploads the files
-  and rewrites the relative references. It needs a `gh` whose
-  `gh pr create --help` lists `--attach`.
-- **Forgejo**: create the pull request first, then upload and rewrite with a
-  token that has the `write:issue` scope in `FORGEJO_TOKEN`:
-
-  ```bash
-  $HARNESS/bin/ui-gif forgejo-attach --repo https://<host>/<owner>/<repo> --pr <number> --body-file "$EVIDENCE/body.md" > "$EVIDENCE/body-final.md"
-  fj pr edit <number> body "$(cat "$EVIDENCE/body-final.md")"
-  ```
-
-  Without a token, give the user the GIF paths to drag into the pull request
-  and say so.
+Attach the GIFs with `gh pr create --body-file "$EVIDENCE/body.md" --attach "$EVIDENCE/<journey>-before.gif" --attach "$EVIDENCE/<journey>-after.gif"`
+(or `gh pr edit <number>` for an open pull request). `gh` uploads the files and
+rewrites the relative references. It needs a `gh` whose `gh pr create --help`
+lists `--attach`.
 
 Open the published pull request and confirm both GIFs render and no relative
 path is left.

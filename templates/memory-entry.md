@@ -7,7 +7,9 @@ and add one line to .engineering/memory/INDEX.md:
 Write an entry only if ALL are true:
 1. it cost real time to discover;
 2. it is not derivable from the code or git history;
-3. it will matter again.
+3. it will matter again;
+4. no lint rule, type, or test could hold it instead (if one could, write that
+   and link it under Encoding).
 
 gotchas/     unexpected behavior that bit someone (infra, framework, database, API)
 discoveries/ investigated knowledge (API limits, deployment details, data quirks)
@@ -37,3 +39,8 @@ Never store secrets, personal data, conversation summaries, or task logs.
 ## How to apply
 
 <What to do (or avoid) because of this.>
+
+## Encoding
+
+<The lint rule, type, or test that would enforce this, as a link or a proposal,
+or one line on why no check can hold it. A fact with no encoding stays prose.>

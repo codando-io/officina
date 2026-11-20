@@ -30,6 +30,11 @@ Optional, between *Conventions to discover* and *Pitfalls*:
 creates. They must say how they yield: to the project's `AGENTS.md`, to the
 style of the file being edited, and to what the project's version supports.
 
+Also optional, directly before *Pitfalls*: `## Guardrails to encode` - the
+lint rules, analyzers, architecture tests, or generated-code checks that turn a
+repeated correction on this stack into a failing check (policy, *Fix at the
+highest layer*). Each rule's message says what to write instead.
+
 Rules:
 
 - Profiles compose. A project lists several in `harness.yaml`

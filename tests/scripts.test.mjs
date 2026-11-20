@@ -132,7 +132,7 @@ test('stack-report handles spaces, quoted SHAs, Renovate, and sibling package.js
     writeFileSync(join(dir, rel), text);
   };
   write('.github/workflows/my ci.yml', 'permissions: {}\njobs:\n  a:\n    steps:\n      - uses: "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1"\n      - uses: actions/cache@v4\n');
-  write('.forgejo/workflows/deploy.yaml', 'jobs:\n  d:\n    steps:\n      - uses: https://code.forgejo.org/actions/checkout@v4\n');
+  write('.github/workflows/deploy.yaml', 'jobs:\n  d:\n    steps:\n      - uses: actions/checkout@v4\n');
   write('renovate.json', '{}\n');
   write('e2e/package.json', '{"devDependencies":{"playwright":"1"}}\n');
   write('web/package.json', '{"dependencies":{"@angular/core":"^21.0.0"}}\n');
@@ -144,8 +144,8 @@ test('stack-report handles spaces, quoted SHAs, Renovate, and sibling package.js
   assert.ok(out.includes('- @angular/core: `^21.0.0`'));
   assert.ok(out.includes('.github/workflows/my ci.yml:6:      - uses: actions/cache@v4'));
   assert.ok(!out.includes('actions/checkout@3d3c'), 'quoted SHA pins are not reported');
-  assert.ok(out.includes('.forgejo/workflows/deploy.yaml:4:      - uses: https://code.forgejo.org/actions/checkout@v4'), 'Forgejo workflows are inventoried');
-  assert.ok(out.includes('Workflow without a `permissions:` block: .forgejo/workflows/deploy.yaml'));
+  assert.ok(out.includes('.github/workflows/deploy.yaml:4:      - uses: actions/checkout@v4'));
+  assert.ok(out.includes('Workflow without a `permissions:` block: .github/workflows/deploy.yaml'));
   assert.ok(out.includes('Renovate configured.'));
 });
 
@@ -291,41 +291,6 @@ test('ui-gif records a journey from its first painted page to its last state', {
   }
 });
 
-test('ui-gif forgejo-attach uploads the local images a body references and links them', async () => {
-  const dir = realpathSync(mkdtempSync(join(tmpdir(), 'eng-ui-gif-')));
-  writeFileSync(join(dir, 'before.gif'), 'GIF89a-before');
-  writeFileSync(join(dir, 'after.gif'), 'GIF89a-after');
-  writeFileSync(join(dir, 'body.md'), '## Antes e depois\n\n| Antes | Depois |\n|---|---|\n| ![Antes](./before.gif) | ![Depois](after.gif) |\n\n![logo](https://example.com/logo.png)\n');
-  const uploads = [];
-  const server = createServer(async (req, res) => {
-    const chunks = [];
-    for await (const chunk of req) chunks.push(chunk);
-    const raw = Buffer.concat(chunks).toString('latin1');
-    const name = raw.match(/filename="([^"]+)"/)?.[1];
-    uploads.push({ url: req.url, auth: req.headers.authorization, name, sent: raw.includes(`GIF89a-${name?.replace('.gif', '')}`) });
-    res.writeHead(201, { 'content-type': 'application/json' });
-    res.end(JSON.stringify({ browser_download_url: `https://forge.example/attachments/${name}-uuid` }));
-  }).listen(0, '127.0.0.1');
-  await once(server, 'listening');
-  try {
-    const repo = `http://127.0.0.1:${server.address().port}/capivaras/agora`;
-    const args = ['forgejo-attach', '--repo', repo, '--pr', '7', '--body-file', join(dir, 'body.md')];
-    const result = await runAsync('bin/ui-gif', args, { FORGEJO_TOKEN: 'test-token' });
-    assert.equal(result.code, 0, result.err);
-    assert.equal(result.out, '## Antes e depois\n\n| Antes | Depois |\n|---|---|\n| ![Antes](https://forge.example/attachments/before.gif-uuid) | ![Depois](https://forge.example/attachments/after.gif-uuid) |\n\n![logo](https://example.com/logo.png)\n');
-    assert.deepEqual(uploads, [
-      { url: '/api/v1/repos/capivaras/agora/issues/7/assets', auth: 'token test-token', name: 'before.gif', sent: true },
-      { url: '/api/v1/repos/capivaras/agora/issues/7/assets', auth: 'token test-token', name: 'after.gif', sent: true },
-    ]);
-
-    const missing = await runAsync('bin/ui-gif', args, { FORGEJO_TOKEN: '' });
-    assert.equal(missing.code, 3);
-    assert.match(missing.err, /FORGEJO_TOKEN is not set/);
-  } finally {
-    server.close();
-  }
-});
-
 test('ui-gif refuses an incomplete command with its usage', () => {
   const none = run('bin/ui-gif', []);
   assert.equal(none.code, 2);
@@ -333,4 +298,45 @@ test('ui-gif refuses an incomplete command with its usage', () => {
   const partial = run('bin/ui-gif', ['record', '--url', 'http://127.0.0.1:1']);
   assert.equal(partial.code, 2);
   assert.match(partial.err, /missing --out/);
+});
+
+test('verify-drift reports covered files that changed after the sync commit', () => {
+  const dir = realpathSync(mkdtempSync(join(tmpdir(), 'eng-drift-')));
+  const git = (...args) => spawnSync('git', ['-C', dir, '-c', 'user.email=t@example.com', '-c', 'user.name=t', '-c', 'commit.gpgsign=false', ...args], { encoding: 'utf8' });
+  const write = (rel, text) => {
+    mkdirSync(dirname(join(dir, rel)), { recursive: true });
+    writeFileSync(join(dir, rel), text);
+  };
+  git('init', '-q');
+  write('src/ledger.ts', 'v1\n');
+  write('src/other.ts', 'v1\n');
+  git('add', '-A');
+  git('commit', '-qm', 'init');
+  const sync = git('rev-parse', '--short', 'HEAD').stdout.trim();
+  write('.claude/skills/verify-ledger/SKILL.md', `---\nname: verify-ledger\ndescription: x\n---\nCovers: src/ledger.ts, src/missing/\nSync commit: ${sync}\n`);
+  write('.claude/skills/verify-plain/SKILL.md', '---\nname: verify-plain\ndescription: x\n---\nNo drift lines.\n');
+  git('add', '-A');
+  git('commit', '-qm', 'add skills');
+
+  let result = run('bin/verify-drift', ['--check', dir]);
+  assert.equal(result.code, 0, result.out);
+  assert.ok(result.out.includes('`verify-ledger`: no covered file changed'));
+  assert.ok(!result.out.includes('verify-plain'));
+
+  write('src/other.ts', 'v2\n');
+  git('commit', '-qam', 'unrelated');
+  assert.equal(run('bin/verify-drift', ['--check', dir]).code, 0);
+
+  write('src/ledger.ts', 'v2\n');
+  git('commit', '-qam', 'change covered file');
+  result = run('bin/verify-drift', ['--check', dir]);
+  assert.equal(result.code, 1);
+  assert.ok(result.out.includes('covered files changed'));
+  assert.ok(result.out.includes('src/ledger.ts'));
+  assert.equal(run('bin/verify-drift', [dir]).code, 0, 'without --check drift is reported, not failed');
+
+  write('.claude/skills/verify-ledger/SKILL.md', '---\nname: verify-ledger\ndescription: x\n---\nCovers: src/ledger.ts\nSync commit: deadbeef\n');
+  result = run('bin/verify-drift', ['--check', dir]);
+  assert.equal(result.code, 1);
+  assert.ok(result.out.includes('sync commit `deadbeef` does not exist'));
 });

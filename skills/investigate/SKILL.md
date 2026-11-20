@@ -48,7 +48,9 @@ report first, then continue with `plan` or `implement`.
    What are the boundaries (API, domain, data, UI)? Which conventions does the
    area follow? Check `AGENTS.md` and ADRs for decisions that constrain it.
 8. **Trace impact.** Callers, consumers of any contract involved (HTTP, events,
-   DB schema, shared packages, frontend clients), jobs, and configuration.
+   DB schema, shared packages, frontend clients), jobs, and configuration. When
+   the brief asserts something about existing code, treat it as a hypothesis
+   and follow `$HARNESS/skills/review/references/blast-radius.md`.
 9. **Security.** Does this path handle untrusted input, auth, secrets, files,
    outbound calls, or queries? Note concrete concerns only.
 10. **Observability.** What telemetry exists on this path? Could you see this

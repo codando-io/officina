@@ -78,6 +78,18 @@ Defaults:
   goes through a shared library or the design system) fail the lint step, with
   ESLint `no-restricted-imports` or, for graph rules, dependency-cruiser.
 
+## Guardrails to encode
+
+- Risky APIs allowed in one wrapper only (raw `effect()`, `bypassSecurityTrust*`,
+  `[innerHTML]`): ESLint `no-restricted-syntax` or `no-restricted-imports`,
+  with the wrapper file exempted.
+- Subscriptions and nesting: `rxjs-x/no-nested-subscribe` and a rule requiring
+  `takeUntilDestroyed`.
+- Hard-coded colors and spacing: Stylelint `color-no-hex` and a disallow-list
+  of literal lengths outside the token files.
+- Layering: dependency-cruiser rules in CI, one rule per boundary the
+  architecture names.
+
 ## Pitfalls
 
 - `effect()` for state propagation. Prefer `computed` or `linkedSignal`; use

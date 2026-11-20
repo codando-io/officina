@@ -9,6 +9,78 @@ steps: what to rename, move, or decide.
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-11-19
+
+Practices from Lauren Tan's talk "All Code Is Slop (Except Mine)": a codebase
+that enforces its own rules lets agents ship at volume.
+
+### Added
+
+- `core/policy.md` has *Fix at the highest layer*: a mistake that repeats is
+  fixed in structure, then types and lint, then verification, and only last in
+  prose. Memory entries need a fourth criterion (no check could hold the fact)
+  and an *Encoding* section.
+- Profiles have an optional `## Guardrails to encode` section with starter
+  lint rules, analyzers, and architecture tests for Angular, .NET, Node, and
+  the .NET + Angular contract.
+- `test` has runtime verification (`references/runtime-verification.md`: probes
+  that print one assertable line) and, for R2 changes, invariants
+  (`references/invariants.md`: property-based tests, TLA+ model checks,
+  proofs).
+- The `AGENTS.md` template has a *Feature map* section, filled by `adopt`, so
+  agents, tests, and people name features the same way.
+- Eval case `recurring-fix-becomes-guardrail`.
+- Procedures adapted from pstack (credited in `NOTICE`): a comment pass
+  (`skills/implement/references/comment-pass.md`) run by `implement` and
+  `review`; `skills/review/references/blast-radius.md` with a proof ladder for
+  the one fact a change is safe because of; `lead-judgment.md` for R2 reviews
+  with several reviewers on different models; and, in `skills/test/references/`,
+  `formal-verification.md` and `verification-skill.md` for generating and
+  maintaining project-local verify skills.
+- The formal-verification and verification-skill references include the upstream
+  upkeep loops (outcomes in sync, updated, bug, blocked; clean, changed,
+  blocked), launch from an empty data directory, and stand-in disclosure.
+  `lead-judgment.md` has the proof-by-run adversary brief.
+- `bin/verify-drift` lists verify skills whose covered files changed after
+  their recorded sync commit; the `adopt` check mode runs it.
+
+### Changed
+
+- *Scope* in the policy says not to copy a workaround or known debt even when
+  it is the nearest pattern, and that a comment never justifies a workaround.
+  `implement` skips such examples.
+- `plan` writes the verification before the steps and, for R2, lists the
+  invariants and how each is checked. `core/lifecycle.md` adds "Encode the
+  second occurrence".
+- `test` steps are renumbered: runtime check (6) and invariants (7) come
+  before mutation testing (8).
+
+### Removed
+
+- Forgejo and Gitea support: `bin/ui-gif forgejo-attach` and `FORGEJO_TOKEN`,
+  the `.forgejo` and `.gitea` workflow inventory in `bin/stack-report`, and
+  the Forgejo paths in `adopt`, `templates/harness-check.yml`, and
+  `skills/test/references/ui-evidence.md`. The harness now targets GitHub only.
+
+### Migration
+
+1. Set `harness: "0.4"` in `.engineering/harness.yaml`.
+2. Add a `## Feature map` section to `AGENTS.md` from
+   `templates/AGENTS.md` (the `adopt` skill fills it from routes, screens, and
+   public endpoints; mark rows `(unverified)` that you did not see run).
+3. Read `.engineering/memory/` once. An entry that a lint rule, type, or test
+   could hold instead gets that check written, and the entry links it under an
+   `Encoding` heading (`templates/memory-entry.md`).
+4. Ask the user whether to generate a verification skill for the app's main
+   surface (`skills/test/references/verification-skill.md`). Skip it when they
+   decline.
+5. A project hosted on Forgejo or Gitea attaches before and after GIFs by hand,
+   and keeps its pull request template and workflows in its own host's paths.
+
+On each machine: `claude plugin marketplace update engineering-harness`, then
+`claude plugin update eng@engineering-harness` for each scope where it is
+installed.
+
 ## [0.3.3] - 2026-11-13
 
 Review practices from the Claude Code team's account of its own code review

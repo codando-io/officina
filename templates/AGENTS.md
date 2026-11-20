@@ -31,6 +31,16 @@ business rules live, how the frontend talks to the backend. Link ADRs.>
 get wrong: error handling, result types, DTO naming, folder layout, state
 management, test naming.>
 
+## Feature map
+
+<The system as a user sees it: one row per feature, named in the words users and
+the team use. Agents and people point at features by these names, and `test`
+evidence cites them.>
+
+| Feature | Where it lives | How to see it running |
+|---|---|---|
+| ... | `path/or/module` | URL, command, or test |
+
 ## Reference implementations
 
 Copy these when adding something similar:

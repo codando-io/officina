@@ -51,6 +51,10 @@ pass and one report:
   The profile's *Verification ladder* lists the order for each stack.
 - **Deploy is a human decision.** Prepare and verify; do not trigger a production
   deploy on your own.
+- **Encode the second occurrence.** When the same mistake or correction comes
+  up twice, add the guardrail at the highest layer that can hold it (policy,
+  *Fix at the highest layer*) and name it in the report. A note in `AGENTS.md`
+  is the last resort.
 - **Close the loop.** A plan or release names the health signal that shows the
   change working. After deploy, someone checks it (`observability`, post-deploy
   mode). A change nobody looked at in production is shipped, not done.
