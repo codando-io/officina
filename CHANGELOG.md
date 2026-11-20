@@ -9,6 +9,35 @@ steps: what to rename, move, or decide.
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-11-20
+
+One entry point, `start`, and a Stop hook that keeps its security gate from
+being skipped.
+
+### Added
+
+- `start` skill: one entry point. The user describes the problem, the skill
+  reads the code, asks only what the code cannot answer, restates the problem
+  for approval, classifies R0/R1/R2, routes through the lifecycle, and closes
+  every change, R0 included, with a security gate and a best-practices gate.
+  The skill cap goes from 12/10 to 13/11 for it.
+- `bin/eng-gate-check`, a `Stop` hook: in a session that ran `start`, with code
+  changes in the tree, it blocks the finish once when the final message has no
+  "Security gate" section. It stays silent in other sessions and never blocks
+  twice in a row.
+- Evals `start-asks-before-acting` and `start-security-gate-blocks-sql-concat`.
+
+### Migration
+
+1. Set `harness: "0.5"` in `.engineering/harness.yaml`.
+2. Nothing else is required. `start` and the `Stop` hook arrive with the
+   plugin update. A project that wants a different security gate or best-practices
+   gate adds `.engineering/overrides/start.md`.
+
+On each machine: `claude plugin marketplace update engineering-harness`, then
+`claude plugin update eng@engineering-harness` for each scope where it is
+installed.
+
 ## [0.4.1] - 2026-11-20
 
 Review of every prompt, hook, and script for Claude Opus 5.5, which follows

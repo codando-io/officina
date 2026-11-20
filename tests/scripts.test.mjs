@@ -247,6 +247,45 @@ test('eng-stop-check blocks a finish only when the project check fails on a chan
   assert.equal(stop(), '');
 });
 
+test('eng-gate-check blocks a start session that changed code without a security gate', () => {
+  const dir = realpathSync(mkdtempSync(join(tmpdir(), 'eng-gate-')));
+  const git = (...args) => spawnSync('git', ['-C', dir, '-c', 'user.email=t@example.com', '-c', 'user.name=t', '-c', 'commit.gpgsign=false', ...args], { encoding: 'utf8' });
+  const outside = realpathSync(mkdtempSync(join(tmpdir(), 'eng-gate-transcript-')));
+  const transcript = (skill, final) => {
+    const path = join(outside, 'transcript.jsonl');
+    const entries = [];
+    if (skill) entries.push({ type: 'assistant', message: { content: [{ type: 'tool_use', name: 'Skill', input: { skill } }] } });
+    entries.push({ type: 'assistant', message: { content: [{ type: 'text', text: final }] } });
+    writeFileSync(path, entries.map((e) => JSON.stringify(e)).join('\n'));
+    return path;
+  };
+  const stop = (path, extra = {}) => {
+    const out = spawnSync(join(root, 'bin/eng-gate-check'), [], {
+      input: JSON.stringify({ transcript_path: path, stop_hook_active: false, ...extra }),
+      encoding: 'utf8', env: { ...process.env, CLAUDE_PROJECT_DIR: dir },
+    }).stdout.trim();
+    return out ? JSON.parse(out) : null;
+  };
+  git('init', '-q'); writeFileSync(join(dir, 'a.md'), 'x'); git('add', '-A'); git('commit', '-qm', 'init');
+
+  assert.equal(stop(transcript('eng:start', 'done')), null, 'a clean tree is not gated');
+  writeFileSync(join(dir, 'notes.md'), 'x');
+  assert.equal(stop(transcript('eng:start', 'done')), null, 'docs-only changes are not gated');
+  writeFileSync(join(dir, 'app.js'), 'x');
+  assert.equal(stop(transcript(null, 'done')), null, 'sessions that never ran start are left alone');
+  assert.equal(stop(transcript('eng:review', 'done')), null, 'other skills are left alone');
+
+  const blocked = stop(transcript('eng:start', 'Changed app.js. Tests pass.'));
+  assert.equal(blocked.decision, 'block');
+  assert.match(blocked.reason, /Security gate/);
+  assert.equal(stop(transcript('start', '## Security gate\n- Secrets: none added')), null, 'a report with the gate passes');
+  assert.equal(stop(transcript('eng:start', 'x'), { last_assistant_message: '**Security gate**: ok' }), null, 'the hook input message wins');
+
+  const again = stop(transcript('eng:start', 'done'), { stop_hook_active: true });
+  assert.equal(again.decision, undefined, 'never blocks twice in a row');
+  assert.match(again.systemMessage, /security gate is still missing/i);
+});
+
 test('eng-flag-injection flags text addressed to an agent in tool results', () => {
   const flag = (tool_response, tool_input = {}) => {
     const input = JSON.stringify({ tool_name: 'Read', tool_input, tool_response });

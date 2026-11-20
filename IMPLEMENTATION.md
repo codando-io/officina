@@ -8,7 +8,7 @@ que vem depois. O porquê de cada decisão está em [ARCHITECTURE.md](ARCHITECTU
 | Parte | Conteúdo | Tamanho |
 |---|---|---|
 | `core/` | `policy.md` (carregada em toda sessão), `lifecycle.md`, `security.md`, `observability.md`, `git.md` | 5 arquivos |
-| `skills/` | `investigate`, `design`, `plan`, `implement`, `test`, `review`, `security-audit`, `architecture-audit`, `dependency-update`, `observability`, `release`, `adopt` | 12 skills, 10 invocáveis pelo modelo |
+| `skills/` | `start`, `investigate`, `design`, `plan`, `implement`, `test`, `review`, `security-audit`, `architecture-audit`, `dependency-update`, `observability`, `release`, `adopt` | 13 skills, 11 invocáveis pelo modelo |
 | `profiles/` | `dotnet-backend` (C# 14/15, EF Core 10, plataforma .NET 10), `angular` (APIs por versão, componentes e design system), `dotnet-angular` (só a integração), `node-backend` (Node 26 LTS, NestJS 12, servidores MCP) | 4 profiles |
 | `bin/stack-report` | Inventário de .NET, npm/Angular, Docker e CI, online ou `--offline` | |
 | `bin/ui-gif` | Grava uma jornada no Chrome como GIF de antes e depois para o PR; para o PR do GitHub | |
@@ -194,8 +194,9 @@ pergunta o que exige decisão e atualiza `harness.yaml` num commit.
 |---|---|
 | Marketplace (`.claude-plugin/marketplace.json`) | O próprio repositório, com um plugin `eng` de `source: "./"` |
 | Plugin (`.claude-plugin/plugin.json`) | Skills de `skills/`, hook de `hooks/hooks.json`, `bin/` no PATH |
-| Skills | 12 skills no formato Agent Skills, namespace `eng:` |
+| Skills | 13 skills no formato Agent Skills, namespace `eng:` |
 | Hook `SessionStart` | `bin/eng-context`: policy, overrides, profiles, memória, avisos |
+| Hook `Stop` (portão) | `bin/eng-gate-check`: numa sessão que rodou `start` e alterou código, bloqueia o fim uma vez se o relatório final não tem a seção "Security gate" |
 | `CLAUDE.md` do projeto | `@AGENTS.md` |
 | `.claude/settings.json` do projeto | `extraKnownMarketplaces`, `enabledPlugins`, `permissions.deny` para segredos |
 | Auto memory do Claude | Não é usada pelo harness; convive com a memória versionada do projeto |
@@ -219,7 +220,7 @@ com 8. Não aceitei. `test` também atende pedidos sem implementação ("isso es
 testado?", "escreva testes para este código"), e `observability` ganhou o modo
 post-deploy, que é o único procedimento do ciclo de feedback. O que era real na
 crítica eu corrigi: `implement` repetia a policy e agora só acrescenta
-procedimento. O teto (12 no total, 10 invocáveis) é verificado por teste, e a
+procedimento. O teto (13 no total, 11 invocáveis; `start` o elevou) é verificado por teste, e a
 contradição com o "dez skills" do RESEARCH.md foi corrigida.
 
 **Há regras duplicadas?** Havia, e três já tinham divergido: o piso de supply

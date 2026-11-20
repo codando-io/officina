@@ -2,7 +2,7 @@
 set -e
 # An adopted Angular project whose last commit changes what users see.
 mkdir -p .engineering src/app/hero
-printf 'harness: "0.4"\nprofiles: [angular]\nadr_dir: docs/adr\n' > .engineering/harness.yaml
+printf 'harness: "0.5"\nprofiles: [angular]\nadr_dir: docs/adr\n' > .engineering/harness.yaml
 printf '{ "name": "site", "private": true, "scripts": { "start": "ng serve", "test": "ng test" } }\n' > package.json
 git init -q
 git config user.email eval@example.com

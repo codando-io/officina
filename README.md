@@ -11,7 +11,7 @@ servidor, banco de dados nem CLI.
 ```text
 engineering-harness                       seu projeto
 ├── core/        policy e ciclo de vida   ├── AGENTS.md            contexto do projeto
-├── skills/      12 procedimentos         ├── CLAUDE.md            @AGENTS.md
+├── skills/      13 procedimentos         ├── CLAUDE.md            @AGENTS.md
 ├── profiles/    conhecimento de stack    ├── .claude/settings.json  habilita o plugin
 ├── templates/   arquivos de projeto      ├── docs/adr/            decisões
 ├── bin/         context loader           └── .engineering/
@@ -24,6 +24,7 @@ engineering-harness                       seu projeto
 
 | Skill | Para quê |
 |---|---|
+| `start` | Ponto de entrada único: você descreve o problema, ele pergunta o que o código não responde, classifica o risco, roteia pelo ciclo e fecha com portão de segurança e de boas práticas |
 | `investigate` | Entender o problema e juntar evidência antes de mexer no código (read-only) |
 | `design` | System design com números, opções e trade-offs, publicado como página de discussão com diagrama (draw.io ou Mermaid) |
 | `plan` | Plano verificável: arquivos, passos, testes, rollback, Definition of Done |
@@ -38,7 +39,7 @@ engineering-harness                       seu projeto
 | `adopt` | Adotar, atualizar ou checar o harness num projeto (só quando pedido) |
 
 No Claude Code: `/eng:investigate`, `/eng:review`, etc. O agente também escolhe
-as dez primeiras sozinho pela descrição.
+as onze primeiras sozinho pela descrição.
 
 ## Adotar num projeto (Claude Code)
 

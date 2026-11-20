@@ -12,6 +12,7 @@ The harness is a Claude Code plugin and uses only native mechanisms: a plugin se
 | Secret files in shell commands | A `PreToolUse` hook on Bash (`bin/eng-guard-secrets`) asks the user before a command touches `.env`, key, certificate, or credential files; `.env.example` and similar templates pass. Deny rules in settings cover only Claude's file tools. |
 | Instructions hidden in what Claude reads | A `PostToolUse` hook on Read, Grep, Bash, and WebFetch (`bin/eng-flag-injection`) adds a note when a result contains text addressed to an AI agent ("note for AI agents", "ignore previous instructions", `curl ... \| sh`), so Claude reports it instead of following it. |
 | Check before finishing | A `Stop` hook (`bin/eng-stop-check`) runs the project's `stop_check` from `.engineering/harness.yaml` when Claude finishes with uncommitted changes, and sends Claude back with the output when it fails. No `stop_check`, no effect. |
+| Security gate in `start` sessions | A second `Stop` hook (`bin/eng-gate-check`) blocks the finish once when the session ran `start`, the tree has code changes, and the final message has no "Security gate" section. Other sessions are unaffected. |
 | `$HARNESS` | Printed by `eng-context` as `HARNESS=<plugin root>`. |
 | Tools on PATH | The plugin's `bin/` is added to the Bash tool's PATH, so `eng-context` can be run by name. |
 | Frontmatter | `disable-model-invocation: true` keeps `release` and `adopt` out of automatic routing. |

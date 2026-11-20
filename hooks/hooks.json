@@ -41,6 +41,11 @@
             "type": "command",
             "command": "\"${CLAUDE_PLUGIN_ROOT}\"/bin/eng-stop-check",
             "timeout": 300
+          },
+          {
+            "type": "command",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}\"/bin/eng-gate-check",
+            "timeout": 10
           }
         ]
       }
