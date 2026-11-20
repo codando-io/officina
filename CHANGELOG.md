@@ -9,6 +9,11 @@ steps: what to rename, move, or decide.
 
 ## [Unreleased]
 
+## [0.5.1] - 2026-11-20
+
+Fewer tokens per session and an injection hook that stops flagging the harness's
+own docs.
+
 ### Changed
 
 - The R0 fast path moved from `core/lifecycle.md` to `core/fast-path.md`, so a
