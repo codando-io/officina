@@ -39,7 +39,7 @@ engineering-harness                       seu projeto
 | `adopt` | Adotar, atualizar ou checar o harness num projeto (só quando pedido) |
 
 No Claude Code: `/eng:investigate`, `/eng:review`, etc. O agente também escolhe
-as onze primeiras sozinho pela descrição.
+as nove primeiras sozinho pela descrição.
 
 ## Adotar num projeto (Claude Code)
 

@@ -1,6 +1,6 @@
 ---
 name: observability
-description: Add, fix, or audit telemetry (OpenTelemetry traces, metrics, logs) so a feature or service can be seen working and failing in production, and check a deployed change's health signal. Covers resource attributes, spans at boundaries, low-cardinality metrics, correlated structured logs, propagation, and sensitive-data checks. Use when a change adds server behavior, when asked "how would we know if this breaks" or "is the deploy healthy", when instrumenting a service, or when auditing telemetry quality. Not for performance tuning without telemetry questions.
+description: Add, fix, or audit telemetry (OpenTelemetry traces, metrics, logs) so a feature or service can be seen working and failing in production, and check a deployed change's health signal. Use when a change adds server behavior, when asked "how would we know if this breaks" or "is the deploy healthy", or when instrumenting or auditing telemetry. Not for performance tuning without telemetry questions.
 ---
 
 # Observability

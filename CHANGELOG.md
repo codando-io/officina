@@ -9,6 +9,26 @@ steps: what to rename, move, or decide.
 
 ## [Unreleased]
 
+### Changed
+
+- The R0 fast path moved from `core/lifecycle.md` to `core/fast-path.md`, so a
+  small change reads about 0.6 KB instead of the whole 6.5 KB lifecycle.
+- `architecture-audit` and `dependency-update` are manual-only
+  (`disable-model-invocation: true`): they run on request, so their
+  descriptions no longer load in every session. The model-invocable cap goes
+  back to 10; the total stays 13.
+- Shorter descriptions for `design`, `start`, and `observability`.
+
+### Fixed
+
+- `eng-flag-injection` no longer flags reads of the plugin's own files (`Read`
+  or `Grep` under `CLAUDE_PLUGIN_ROOT`), whose docs quote the trigger phrases as
+  examples. Shell commands are still always scanned.
+
+### Migration
+
+None. Projects pick up the changes with the plugin update.
+
 ## [0.5.0] - 2026-11-20
 
 One entry point, `start`, and a Stop hook that keeps its security gate from

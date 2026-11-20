@@ -235,7 +235,7 @@ resultado" (A2, citando a Anthropic).
 
 1. **Teto explícito**, verificado por teste: 12 skills no total e 10 invocáveis
    pelo modelo. A v0 usa 11 e 9; as duas manuais (`release`, `adopt`) não
-   disputam roteamento. Subir o teto exige um PR próprio com o motivo.
+   disputam roteamento. Subir o teto exige um PR próprio com o motivo. (Valores da época: hoje o teto é 13 no total e 10 invocáveis, veja `CONTRIBUTING.md`.)
 2. **Critério de admissão escrito** (em `CONTRIBUTING.md`): processo repetido,
    com saída verificável, que falhou pelo menos uma vez sem a skill.
 3. **Uma regra, um lugar.** Policies contêm as regras; skills referenciam a policy

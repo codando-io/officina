@@ -1,6 +1,6 @@
 ---
 name: design
-description: Design a system or a significant capability before planning code - requirements with numbers, load estimates, components and data flow, options compared on the same criteria, failure modes, security, observability, rollout - and publish it as a discussion page with an architecture diagram (draw.io when installed, otherwise Mermaid). Use for a new service or product, a new integration, datastore, queue, or trust boundary, a scale or reliability problem, or when asked for a system design, a solution architecture, or a diagram to discuss. Not for a change inside existing modules (use plan) or for auditing existing code (use architecture-audit).
+description: Design a system or significant capability before planning code: requirements with numbers, options compared on the same criteria, failure modes, security, rollout, published as a discussion page with an architecture diagram (draw.io or Mermaid). Use for a new service, integration, datastore, queue, or trust boundary, a scale or reliability problem, or when asked for a system design or a diagram to discuss. Not for a change inside existing modules (use plan) or for auditing existing code (use architecture-audit).
 ---
 
 # Design

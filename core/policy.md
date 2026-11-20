@@ -85,8 +85,8 @@ Understand → (Design) → Plan → Implement → Verify → Review → Ship �
 Learn. Scale the ceremony to the reversibility class: small R0 changes take the
 fast path (one pass, one report); an R2 migration needs every step. For a bug,
 the failing test comes before the fix. When evidence contradicts the plan, go
-back to Understand. The skills, the R0 fast path, and per-change-type rules:
-`$HARNESS/core/lifecycle.md`.
+back to Understand. The skills and per-change-type rules:
+`$HARNESS/core/lifecycle.md`; the R0 fast path: `$HARNESS/core/fast-path.md`.
 
 ## Project knowledge
 

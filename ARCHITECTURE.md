@@ -494,7 +494,7 @@ em `CONTRIBUTING.md`.
 | `adopt` | **só manual** | Arquivos de projeto + PR | Adoção e upgrade do harness num projeto |
 
 Onze skills, nove competindo por roteamento. O teto (12 no total, 10 invocáveis
-pelo modelo) está em `CONTRIBUTING.md` e é verificado por teste.
+pelo modelo) está em `CONTRIBUTING.md` e é verificado por teste. (Números da época; os atuais estão em `CONTRIBUTING.md`.)
 
 ---
 

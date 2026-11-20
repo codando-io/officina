@@ -29,7 +29,7 @@ A new skill must meet all of these, stated in the PR:
 - The work has gone wrong at least once without it: name the incident.
 - It does not overlap an existing skill; if it does, extend that skill instead.
 - The skill count stays within the cap enforced by `tests/structure.test.mjs`
-  (13 total, 11 model-invocable; `start` raised it from 12 and 10 to give the
+  (13 total, 10 model-invocable; `start` raised the total from 12 to give the
   user one entry point). Raising the cap needs its own PR with the reason.
 
 Rarely used or outward-facing skills set `disable-model-invocation: true` so they

@@ -1,6 +1,6 @@
 ---
 name: start
-description: Single entry point for a change. The user describes a problem in their own words; this skill reads the code first, asks only what the code cannot answer, classifies reversibility, runs the right lifecycle skills (investigate, plan, implement, test, review), and ends every change, including R0, with a security gate and a best-practices gate. Use when the user describes work to do and has not named a skill, or says "start", "I need to", "fix", "add", "change". Not for pure questions about the code (answer them), audits (use security-audit or architecture-audit), or releases (use release).
+description: Single entry point for a change. Reads the code first, asks only what the code cannot answer, classifies reversibility (R0/R1/R2), routes through the lifecycle skills, and closes every change, R0 included, with a security gate and a best-practices gate. Use when the user describes work to do without naming a skill ("I need to", "fix", "add", "change"). Not for pure questions about the code, audits (use security-audit or architecture-audit), or releases (use release).
 ---
 
 # Start
@@ -44,7 +44,7 @@ reason. Then route:
 
 | Situation | Path |
 |---|---|
-| R0 with an obvious shape (roughly under 30 changed lines) | Fast path: `$HARNESS/core/lifecycle.md` § R0 |
+| R0 with an obvious shape (roughly under 30 changed lines) | Fast path: `$HARNESS/core/fast-path.md` |
 | R1 or R2, or the shape is not obvious | `investigate` → `plan` → `implement` → `test` → `review` |
 | New service, datastore, queue, integration, or trust boundary; or a scale problem | `design` first, then the full path |
 | Evidence turns out bigger or riskier than the class given | Stop, say so, reclassify, and switch path |

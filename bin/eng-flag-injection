@@ -2,10 +2,25 @@
 # PostToolUse hook: when a tool result (a file, a page, command output) holds
 # text addressed to an AI agent, tells Claude to treat it as data and report
 # it. Heuristic on purpose: a false match costs one extra line of context.
+# Reads of the plugin's own files (Read or Grep under CLAUDE_PLUGIN_ROOT) are
+# skipped: the harness docs quote these phrases as examples. Shell commands are
+# never skipped, so command text cannot borrow the plugin path to hide.
 
 pattern='ignore (all |any |the )?(previous|prior|above) (instructions|rules)|disregard (your|the|all) (rules|instructions|policy)|(note|message|instructions?) (for|to) (the )?(ai|assistant|agent|claude|llm|copilot)|(ai|coding|llm) (coding )?agents?[^.]{0,60}(run|execute|delete|remove|ignore|disable|push|send|install)|curl [^|]{0,200}[|][[:space:]]*(ba|z)?sh'
 
-hits=$(tr '\n' ' ' | sed 's/^.*"tool_response"[[:space:]]*://; s/\\n/ /g' | grep -oiE ".{0,60}($pattern).{0,80}" | head -3 | tr -d '\\"{}' | sed 's/[[:cntrl:]]//g; s/^ *//; s/ *$//')
+input=$(cat)
+
+root=${CLAUDE_PLUGIN_ROOT%/}
+if [ -n "$root" ]; then
+  request=$(printf '%s' "$input" | tr '\n' ' ' | sed 's/"tool_response".*//')
+  tool=$(printf '%s' "$request" | sed -nE 's/.*"tool_name"[[:space:]]*:[[:space:]]*"([A-Za-z]*)".*/\1/p')
+  target=$(printf '%s' "$request" | sed -nE 's/.*"(file_path|path)"[[:space:]]*:[[:space:]]*"([^"]*)".*/\2/p')
+  case "$tool" in
+    Read|Grep) case "$target" in "$root"/*) exit 0 ;; esac ;;
+  esac
+fi
+
+hits=$(printf '%s' "$input" | tr '\n' ' ' | sed 's/^.*"tool_response"[[:space:]]*://; s/\\n/ /g' | grep -oiE ".{0,60}($pattern).{0,80}" | head -3 | tr -d '\\"{}' | sed 's/[[:cntrl:]]//g; s/^ *//; s/ *$//')
 [ -n "$hits" ] || exit 0
 
 quoted=$(printf '%s\n' "$hits" | sed 's/.*/«&»/' | tr '\n' ' ' | sed 's/ $//')

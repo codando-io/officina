@@ -1,6 +1,7 @@
 ---
 name: architecture-audit
 description: Audit the architecture of a repository for problems no single PR review catches - architectural duplication, conflicting abstractions, circular dependencies, broken boundaries, dead code, overloaded components, duplicate APIs, old and new patterns coexisting, growing technical debt, backend/frontend inconsistency, stale feature flags, and stale project memory. Also runs modernization audits with the stack profile. Produces a prioritized backlog. Use periodically or when asked about codebase health, tech debt, or modernization. Not for reviewing one diff.
+disable-model-invocation: true
 ---
 
 # Architecture audit

@@ -1,6 +1,7 @@
 ---
 name: dependency-update
 description: Update dependencies safely and in batches - packages (NuGet, npm), SDK and framework versions, Docker base images, and CI actions - with a supply-chain floor, one verification pass, and fix-forward. Also handles platform upgrades (e.g. .NET or Angular major) as separate planned changes. Use when asked to update, bump, or audit outdated or vulnerable dependencies, to consolidate Dependabot/Renovate PRs, or to upgrade the platform.
+disable-model-invocation: true
 ---
 
 # Dependency update

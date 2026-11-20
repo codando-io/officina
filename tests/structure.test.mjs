@@ -9,7 +9,7 @@ const read = (p) => readFileSync(join(root, p), 'utf8');
 const lines = (p) => read(p).split('\n').length;
 
 const MAX_SKILLS = 13;
-const MAX_MODEL_INVOCABLE = 11;
+const MAX_MODEL_INVOCABLE = 10;
 const MAX_SKILL_LINES = 200;
 const MAX_POLICY_LINES = 150;
 const SKILL_NAME = /^[a-z0-9]+(-[a-z0-9]+)*$/;
