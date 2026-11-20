@@ -2,7 +2,7 @@
 set -e
 # An adopted project, so the session loads the harness policy.
 mkdir -p .engineering/memory/gotchas
-printf 'harness: "0.3"\nprofiles: []\nadr_dir: docs/adr\n' > .engineering/harness.yaml
+printf 'harness: "0.4"\nprofiles: []\nadr_dir: docs/adr\n' > .engineering/harness.yaml
 printf '# Project memory\n\n- [gotchas/clock.md](gotchas/clock.md) - use the injected clock, never new Date() (verified 2026-10-02)\n' > .engineering/memory/INDEX.md
 printf '# Use the injected clock\n\nNever call new Date() in src/; take a clock argument.\n' > .engineering/memory/gotchas/clock.md
 printf '{ "name": "billing", "private": true, "type": "module", "scripts": { "test": "node --test", "lint": "node scripts/lint.mjs" } }\n' > package.json

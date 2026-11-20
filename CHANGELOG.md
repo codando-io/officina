@@ -9,6 +9,8 @@ steps: what to rename, move, or decide.
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-11-19
+
 Practices from Lauren Tan's talk "All Code Is Slop (Except Mine)": a codebase
 that enforces its own rules lets agents ship at volume.
 
@@ -52,6 +54,23 @@ that enforces its own rules lets agents ship at volume.
   second occurrence".
 - `test` steps are renumbered: runtime check (6) and invariants (7) come
   before mutation testing (8).
+
+### Migration
+
+1. Set `harness: "0.4"` in `.engineering/harness.yaml`.
+2. Add a `## Feature map` section to `AGENTS.md` from
+   `templates/AGENTS.md` (the `adopt` skill fills it from routes, screens, and
+   public endpoints; mark rows `(unverified)` that you did not see run).
+3. Read `.engineering/memory/` once. An entry that a lint rule, type, or test
+   could hold instead gets that check written, and the entry links it under an
+   `Encoding` heading (`templates/memory-entry.md`).
+4. Ask the user whether to generate a verification skill for the app's main
+   surface (`skills/test/references/verification-skill.md`). Skip it when they
+   decline.
+
+On each machine: `claude plugin marketplace update engineering-harness`, then
+`claude plugin update eng@engineering-harness` for each scope where it is
+installed.
 
 ## [0.3.3] - 2026-11-13
 
