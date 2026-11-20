@@ -12,7 +12,10 @@ from the source tags and changelogs of Angular 21.2 and 22.2, and from
 | 21 | LTS | 2025-11-19 | 2026-06-03 | 2027-06 |
 | 20 | LTS | 2025-05-28 | 2025-11-19 | 2026-11-28 |
 
-Verify on <https://angular.dev/reference/releases> before planning an upgrade.
+Angular 20's LTS ends 2026-11-28. After 22, Angular is reported to move to one
+major a year, with 23 targeted for June 2027 (secondary sources, checked
+2026-11-20), which may change the windows above. Verify on
+<https://angular.dev/reference/releases> before planning an upgrade.
 Upgrade one major at a time with `ng update`.
 
 ## API status
@@ -46,7 +49,8 @@ Upgrade one major at a time with `ng update`.
   `$safeNavigationMigration(...)`; remove those wrappers deliberately, one area
   at a time.
 - Router `paramsInheritanceStrategy` defaults to `'always'`.
-- TypeScript 6.0+ and Node 22.22+ or 24.13+ are required.
+- TypeScript 6.0.x (`>=6.0 <6.1`; TypeScript 7 is out of range) and Node
+  22.22.3+, 24.15+, or 26+ are required.
 
 ## Template syntax
 

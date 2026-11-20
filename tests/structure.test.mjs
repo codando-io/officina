@@ -173,3 +173,13 @@ test('harness.yaml files use only the flat keys the loader reads', () => {
     assert.deepEqual(keys, ['harness', 'profiles', 'adr_dir'], file);
   }
 });
+
+test('eval fixtures declare the current harness line', () => {
+  const version = read('VERSION').trim();
+  const [major, minor] = version.split('.');
+  const current = major === '0' ? `0.${minor}` : major;
+  const stale = walk('evals')
+    .filter((f) => f.endsWith('fixture.sh'))
+    .filter((f) => !read(f).includes(`harness: "${current}"`));
+  assert.deepEqual(stale, [], `bump harness: "${current}" in these fixtures`);
+});

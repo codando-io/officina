@@ -99,6 +99,13 @@ async function record(parsed) {
     if (page.url() !== 'about:blank') shots.push({ data, at: Date.now() });
     cdp.send('Page.screencastFrameAck', { sessionId }).catch(() => {});
   });
+  // The screencast sends a frame only when the compositor paints; on a loaded machine the first paint can be
+  // skipped, so the first page the journey shows is also captured directly.
+  page.once('load', async () => {
+    if (shots.length || page.url() === 'about:blank') return;
+    const seed = await page.screenshot({ type: 'jpeg', quality: 90 }).catch(() => null);
+    if (seed && !shots.length) shots.push({ data: seed.toString('base64'), at: Date.now() });
+  });
   await cdp.send('Page.startScreencast', { format: 'jpeg', quality: 90, maxWidth: width, maxHeight: height });
   try {
     await journey(page);

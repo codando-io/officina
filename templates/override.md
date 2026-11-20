@@ -1,6 +1,7 @@
 <!--
 Project override. Save as:
   .engineering/overrides/policy.md    added to the harness policy in every session
+                                      (only its first 60 lines are loaded)
   .engineering/overrides/<skill>.md   read by that skill before it starts
 
 Semantics:

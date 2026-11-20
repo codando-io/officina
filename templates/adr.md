@@ -27,11 +27,6 @@ conventions, monitoring). Include reversibility: how we would undo this and at
 what cost.>
 
 <!--
-When to write an ADR (from the harness policy):
-- the decision is hard to reverse, or
-- it affects more than one module or team, or
-- it chooses between real alternatives someone will question later.
-Do not write ADRs for choices the code already makes obvious, for library
-upgrades without trade-offs, or for decisions local to one function.
+When to write an ADR: the policy, section Memory and decisions.
 Number sequentially; never renumber. Supersede instead of editing an accepted ADR.
 -->

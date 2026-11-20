@@ -50,12 +50,10 @@ the changes.
    Never move, delete, or recreate a published tag; fix forward with a new
    version.
 8. **Make what ships verifiable** when the release publishes a package, an
-   image, or an archive: an SBOM in CycloneDX format (`dotnet CycloneDX` for
-   .NET, `@cyclonedx/cyclonedx-npm` for npm, `docker buildx build --sbom=true
-   --provenance=true` for images), a build provenance attestation produced in
-   CI (`actions/attest-build-provenance`, checked with `gh attestation
-   verify`), and a signed tag. An artifact built on a developer machine has no
-   provenance; say so in the release notes.
+   image, or an archive: an SBOM in CycloneDX format, a build provenance
+   attestation produced in CI and checked with `gh attestation verify`, and a
+   signed tag. The active profile names the tools. An artifact built on a
+   developer machine has no provenance; say so in the release notes.
 9. **Prepare, do not execute, the deploy.** Pushing tags, publishing packages,
    and deploying are outward-facing: show the exact commands and wait for
    explicit confirmation.

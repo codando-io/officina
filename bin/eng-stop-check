@@ -4,7 +4,8 @@
 # failure it blocks the stop and hands Claude the end of the output.
 
 input=$(cat)
-printf '%s' "$input" | grep -qE '"stop_hook_active"[[:space:]]*:[[:space:]]*true' && exit 0
+retry=0
+printf '%s' "$input" | grep -qE '"stop_hook_active"[[:space:]]*:[[:space:]]*true' && retry=1
 
 dir=${CLAUDE_PROJECT_DIR:-$(pwd)}
 yaml="$dir/.engineering/harness.yaml"
@@ -18,6 +19,11 @@ status=$?
 [ "$status" -eq 0 ] && exit 0
 if [ "$status" -eq 127 ]; then
   printf '{"systemMessage":"The project stop check did not run: a command in `%s` is not on the PATH Claude Code uses. Add it to that PATH or change stop_check."}\n' "$(printf '%s' "$check" | tr -d '"\\')"
+  exit 0
+fi
+
+if [ "$retry" -eq 1 ]; then
+  printf '{"systemMessage":"The project stop check still fails after the fix attempt: %s. Tell the user it is not verified."}\n' "$(printf '%s' "$check" | tr -d '"\\')"
   exit 0
 fi
 

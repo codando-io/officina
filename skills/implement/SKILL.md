@@ -15,9 +15,7 @@ repository, does exactly what the plan says, and nothing else.
   cannot state which files you will change and how you will verify it, go back
   to `plan`.
 - Check `.engineering/memory/INDEX.md` for gotchas in the area.
-- **Bugfix: test first.** Write the test that reproduces the bug and run it
-  against the unchanged code (`test`, step 3). Record the failure. Only then
-  change the code.
+- **Bugfix: test first** (`test`, step 3).
 
 The policy's *Scope* and *Security floor* sections apply throughout. This skill
 adds the procedure.
@@ -29,18 +27,15 @@ adds the procedure.
    repository and follow its structure, naming, error handling, and test style.
    Skip examples that are themselves workarounds (policy, *Scope*). Name the
    example you followed.
-2. **Search before creating.** Before adding a helper, service, interface, base
-   class, or utility, search for one that already does the job. Add a new
-   abstraction only when two concrete uses need it now, or the plan says why.
-3. **Work in verifiable steps.** After each step, run the cheapest check that can
+2. **Work in verifiable steps.** After each step, run the cheapest check that can
    fail: build the affected project, run the targeted test. Fix before moving on.
-4. **Stop on a contract change.** If the change turns out to need a breaking
+3. **Stop on a contract change.** If the change turns out to need a breaking
    change to an API, schema, event, or config key that the plan did not list,
    stop and confirm: it is R2.
-5. **A failing existing test is information.** Either your change is wrong, or
+4. **A failing existing test is information.** Either your change is wrong, or
    the test encodes behavior the plan explicitly changes. Say which, with
    evidence, before touching the test.
-6. **Security and telemetry as you go.** Parameterize queries, validate input at
+5. **Security and telemetry as you go.** Parameterize queries, validate input at
    boundaries, add the telemetry the plan lists (`$HARNESS/core/security.md`,
    `$HARNESS/core/observability.md`).
 7. **Finish clean.** No debug output, unused imports, or temporary files. Run
@@ -58,7 +53,8 @@ done:
 
 ## Output
 
-- The diff, as small commits following `$HARNESS/core/git.md`.
+- The diff. When the user has asked for commits, small ones following
+  `$HARNESS/core/git.md`; otherwise leave the change uncommitted.
 - A short report: what changed (per file), the pattern each piece followed,
   verification commands and results, deviations from the plan and why, anything
   left undone.

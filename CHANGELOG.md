@@ -9,6 +9,52 @@ steps: what to rename, move, or decide.
 
 ## [Unreleased]
 
+## [0.4.1] - 2026-11-20
+
+Review of every prompt, hook, and script for Claude Opus 5.5, which follows
+instructions closely and needs fewer restated rules.
+
+### Fixed
+
+- The Angular profile states the real Angular 22 requirements, checked against
+  the npm registry: Node 22.22.3+, 24.15+, or 26+, and TypeScript 6.0.x (7 is
+  out of range).
+- `eng-context --check` prints only the header, profiles, memory count, and
+  warnings (about 9 KB less), and exits 1 in a repository that has not adopted
+  the harness, so `adopt` and CI can tell a missing `harness.yaml` from a
+  healthy one.
+- The Stop hook re-runs the project check after the fix attempt and warns when
+  it still fails, instead of silently allowing the finish.
+- The injection hook no longer tells the model to quote every hit as a finding;
+  it asks for a report only when the text reads as an attempt to instruct it.
+- `templates/claude-settings.json` denies named secret files instead of
+  `Read(.env.*)`, which blocked the `.env.example` that the secrets hook lets
+  through.
+- The `recurring-fix-becomes-guardrail` eval kept its options in `case.yaml`
+  and so ran with default tools and turns; they are in `prompt.md` now. The
+  grader patterns of two cases are tighter.
+- `review` states its depth for R0, asks for a subagent only on R1 and above,
+  and maps `lead-judgment.md`'s buckets to its severities. `design` names its
+  output path once, and `test` and `release` drop stack-specific tool names that
+  now live in the profiles (StrykerJS gets a row in `node-backend`).
+- Profiles: .NET 8 and 9 support ended on 2026-11-10, .NET 11 reached GA, and
+  Angular moves to one major a year (23 targeted for June 2027, from secondary
+  sources).
+
+### Changed
+
+- `core/policy.md` drops lines that restated the policy or other files (never
+  weaken a test, the lifecycle skill list, the nearest-pattern rule, the
+  feature-map name rule). `core/lifecycle.md` drops three bullets that repeated
+  the policy. `implement` drops its search-before-creating step and commits only
+  when asked. The ADR and memory templates point to the policy instead of
+  copying its criteria.
+- The plugin manifest has an icon.
+
+### Added
+
+- A structure test fails when an eval fixture declares an old harness line.
+
 ## [0.4.0] - 2026-11-19
 
 Practices from Lauren Tan's talk "All Code Is Slop (Except Mine)": a codebase

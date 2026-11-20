@@ -1,12 +1,13 @@
 {
   "name": "eng",
   "displayName": "Engineering Harness",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Evidence-driven engineering process for AI coding agents: investigate, plan, implement, test, review, audits, dependency updates, observability, release.",
   "author": {
     "name": "Codando Software",
     "url": "https://codando.io"
   },
   "repository": "https://github.com/codando-io/officina",
-  "license": "Apache-2.0"
+  "license": "Apache-2.0",
+  "icon": "assets/avatar.png"
 }

@@ -4,12 +4,7 @@ and add one line to .engineering/memory/INDEX.md:
 
 - [gotchas/<slug>.md](gotchas/<slug>.md) - <one-line hook> (verified YYYY-MM-DD)
 
-Write an entry only if ALL are true:
-1. it cost real time to discover;
-2. it is not derivable from the code or git history;
-3. it will matter again;
-4. no lint rule, type, or test could hold it instead (if one could, write that
-   and link it under Encoding).
+When to write an entry: the policy, section Memory and decisions.
 
 gotchas/     unexpected behavior that bit someone (infra, framework, database, API)
 discoveries/ investigated knowledge (API limits, deployment details, data quirks)

@@ -85,8 +85,8 @@ If the working tree has uncommitted changes, stop and ask before starting.
    there, so `review` weighs them; suggest GitHub CODEOWNERS on
    the same paths.
 7. **Verify.** Run `$HARNESS/bin/eng-context --check` from the repository root
-   and show its output. It must exit 0 and list the right version, profiles, and
-   memory index. Then check `CLAUDE.md` and `.claude/settings.json` against
+   and show its output (the header, profiles, memory count, and any warnings). It
+   must exit 0, and a repository that has not adopted the harness exits 1. Then check `CLAUDE.md` and `.claude/settings.json` against
    `$HARNESS/docs/claude-code.md`.
 8. **Deliver** as one commit on a new branch (`chore: adopt engineering harness
    vX.Y`), and summarize: files created, sections left unknown, suggested first

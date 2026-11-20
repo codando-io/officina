@@ -40,8 +40,6 @@ pass and one report:
 
 ## Rules that hold across phases
 
-- **Scale ceremony to reversibility.** R0: fast path. R1: rollback written in the
-  plan. R2: every phase, human approval before Ship, ADR when it is a decision.
 - **Loop back on contradiction.** If a test, log, or measurement contradicts the
   investigation, return to Understand. Do not bend the evidence to fit the plan.
 - **One change type per diff.** Do not mix a refactor with a behavior change. If
@@ -49,12 +47,6 @@ pass and one report:
 - **Fast feedback first.** Run the cheapest check that can falsify your change
   (targeted test, build of one project) before the expensive one (full suite, e2e).
   The profile's *Verification ladder* lists the order for each stack.
-- **Deploy is a human decision.** Prepare and verify; do not trigger a production
-  deploy on your own.
-- **Encode the second occurrence.** When the same mistake or correction comes
-  up twice, add the guardrail at the highest layer that can hold it (policy,
-  *Fix at the highest layer*) and name it in the report. A note in `AGENTS.md`
-  is the last resort.
 - **Close the loop.** A plan or release names the health signal that shows the
   change working. After deploy, someone checks it (`observability`, post-deploy
   mode). A change nobody looked at in production is shipped, not done.

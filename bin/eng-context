@@ -7,7 +7,9 @@
 # Usage: eng-context [--check] [project-dir]
 #   project-dir  defaults to $CLAUDE_PROJECT_DIR, then the current directory.
 #                The nearest ancestor with .engineering/harness.yaml is used.
-#   --check      exit 1 when there are warnings (for CI and the adopt skill).
+#   --check      print only the header, profiles, memory count, and warnings; exit 1
+#                when there are warnings or the project has not adopted the harness
+#                (for CI and the adopt skill).
 
 set -u
 
@@ -16,7 +18,7 @@ start=""
 for arg in "$@"; do
   case "$arg" in
     --check) check=1 ;;
-    -h|--help) sed -n '2,10p' "$0"; exit 0 ;;
+    -h|--help) sed -n '2,12p' "$0"; exit 0 ;;
     *) start="$arg" ;;
   esac
 done
@@ -69,6 +71,7 @@ if [ -z "$project" ]; then
   printf '\nThis repository has not adopted the harness (no `.engineering/harness.yaml`). '
   printf 'Harness skills are available; the engineering policy is not loaded. '
   printf 'To adopt it, the user can run the `adopt` skill.\n'
+  [ "$check" -eq 1 ] && exit 1
   exit 0
 fi
 
@@ -105,11 +108,13 @@ fi
 printf '\nProject: `%s`\n' "$project"
 printf 'Declared harness line: `%s`. Profiles: `%s`. ADRs: `%s`.\n' "${declared:-unset}" "${profiles:-none}" "$adr_dir"
 
-printf '\n'
-cat "$harness/core/policy.md"
+if [ "$check" -eq 0 ]; then
+  printf '\n'
+  cat "$harness/core/policy.md"
+fi
 
 overrides="$project/.engineering/overrides"
-if [ -f "$overrides/policy.md" ]; then
+if [ "$check" -eq 0 ] && [ -f "$overrides/policy.md" ]; then
   printf '\n## Project policy overrides (`.engineering/overrides/policy.md`)\n\n'
   printf 'These add to the policy above and win on conflict, except the security floor.\n\n'
   print_bounded "$overrides/policy.md"
@@ -132,7 +137,7 @@ if [ -z "$profiles" ]; then
 else
   for p in $profiles; do
     if [ -f "$harness/profiles/$p/PROFILE.md" ]; then
-      printf -- '- `%s`: read `$HARNESS/profiles/%s/PROFILE.md` before planning, testing, or changing dependencies.\n' "$p" "$p"
+      [ "$check" -eq 0 ] && printf -- '- `%s`: read `$HARNESS/profiles/%s/PROFILE.md` before planning, testing, or changing dependencies.\n' "$p" "$p"
     else
       warn "profile \`$p\` does not exist in this harness version."
     fi
@@ -143,7 +148,9 @@ index="$project/.engineering/memory/INDEX.md"
 [ -n "$stop_check" ] && printf '\nStop check: `%s` runs when you finish with changes in the working tree; a failure sends you back to fix it.\n' "$stop_check"
 
 printf '\n## Project memory\n\n'
-if [ -f "$index" ]; then
+if [ -f "$index" ] && [ "$check" -eq 1 ]; then
+  printf 'Index: %s entries.\n' "$(grep -c '^- ' "$index")"
+elif [ -f "$index" ]; then
   printf 'Entries live in `.engineering/memory/`. Read an entry before changing the area it describes.\n\n'
   print_bounded "$index"
 else

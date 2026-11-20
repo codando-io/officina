@@ -42,7 +42,9 @@ it is unclear.
 - **Noted**: valid and not actionable now.
 - **Dismissed**: wrong, or missing context, with one line saying why.
 
-Name which reviewers raised each finding. Show the Dismissed list: it lets the
+Act on is a blocker or major in the review's output, Consider a minor, Noted a
+nit; Dismissed items go under *Not reviewed*, one line each. The rerun above is
+step 6's refutation. Name which reviewers raised each finding. Show the Dismissed list: it lets the
 author overrule you.
 
 ## Filters

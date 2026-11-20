@@ -16,8 +16,8 @@ would change it.
   the conversation): the code, configuration, ADRs, and docs the design builds
   on. A design for a system you have not read is a guess. For a large codebase,
   send the mapping to an Explore subagent and keep its summary.
-- Read `$HARNESS/skills/design/references/checklist.md` and
-  `$HARNESS/skills/design/references/diagrams.md`.
+- Read `$HARNESS/skills/design/references/checklist.md`; read `diagrams.md` in
+  the same folder when you reach the diagrams step.
 - Find where the project keeps designs (`docs/design`, `docs/architecture`,
   `docs/rfcs`) and follow its naming. Default: `docs/design/<slug>.md`.
 - Ask with `AskUserQuestion` only what the repository cannot tell you: goals,
@@ -47,10 +47,8 @@ would change it.
 7. **Rollout.** Increments that each end in a shippable, verifiable state, with
    the reversibility class and rollback of each. The first increment is what
    `plan` receives.
-8. **Diagrams.** A container diagram always; add a sequence diagram for the
-   critical flow when it crosses more than two components or has async steps.
-   Follow `references/diagrams.md`. Every box in a diagram appears in the text
-   with its responsibility.
+8. **Diagrams**, as `references/diagrams.md` says (read it now). Every box in a
+   diagram appears in the text with its responsibility.
 9. **Open questions.** Number them (Q1, Q2...) so the discussion can refer to
    them. For each, say who can answer and what changes depending on the answer.
 10. **Write the document** from `$HARNESS/templates/design.md`, in the
@@ -79,7 +77,7 @@ would change it.
 
 ## Output
 
-- `docs/design/<slug>.md`, plus the diagram sources listed in
+- The design document at the path chosen above, plus the diagram sources listed in
   `references/diagrams.md` (`<slug>.drawio` and `<slug>.drawio.svg`, or
   `<slug>.mmd`).
 - The discussion page link, or its path when the Artifact tool is unavailable.

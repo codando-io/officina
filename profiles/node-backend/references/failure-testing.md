@@ -18,4 +18,5 @@ cannot show locking, isolation levels, collation, or what raw SQL does.
 | Rolling deploy | `SIGTERM` to a spawned server under load; in-flight requests finish, the process exits, nothing is half done | pod killed mid-request, shutdown hooks |
 | stdio MCP lifecycle | spawn the built server, close its stdin, assert it exits and released its handles; parse every stdout line | client closes the pipe, stray stdout output |
 | Generated inputs | fast-check properties over strings, sizes, dates, and JSON with `__proto__`/`constructor` keys | Unicode and case, boundaries, prototype pollution |
+| Tests that would miss a bug | StrykerJS with the project's runner (`@stryker-mutator/vitest-runner` or `@stryker-mutator/jest-runner`), `--mutate` limited to the changed files, `--incremental` to reuse earlier results | weak assertions in changed handlers, services, and parsers |
 | Precision across the wire | a round-trip test with `9007199254740993` and a 28-digit decimal through `JSON.parse` and the driver | money and 64-bit ids (`bigint` columns read as strings or `BigInt`) |
