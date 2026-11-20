@@ -56,6 +56,9 @@ Each project settles these in `AGENTS.md`; read its answer before writing:
 - Tests: node:test, Vitest, or Jest; beside the source or under `test/`; a real
   server on port 0, `supertest`, or `Test.createTestingModule`.
 - Monorepo: pnpm workspaces with `catalog:` versions and `workspace:*` links.
+- Release artifacts: the SBOM comes from `@cyclonedx/cyclonedx-npm`, an image's
+  from `docker buildx build --sbom=true --provenance=true`, and CI attests
+  builds with `actions/attest-build-provenance`.
 
 ## House defaults for new code
 

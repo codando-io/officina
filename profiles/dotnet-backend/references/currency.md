@@ -6,16 +6,18 @@ actions.
 
 ## Support windows (verify before acting)
 
-Checked 2026-09-23 on <https://dotnet.microsoft.com/platform/support/policy/dotnet-core>:
+Checked 2026-11-20 against the .NET 11 release announcements; confirm on
+<https://dotnet.microsoft.com/platform/support/policy/dotnet-core>:
 
 | Version | Type | End of support |
 |---|---|---|
+| .NET 11 | STS | 2028-11-14 |
 | .NET 10 | LTS | 2028-11-14 |
-| .NET 9 | STS | 2026-11-10 |
-| .NET 8 | LTS | 2026-11-10 |
+| .NET 9 | STS | ended 2026-11-10 |
+| .NET 8 | LTS | ended 2026-11-10 |
 
-A project on .NET 8 or 9 is weeks from losing security patches: plan the move
-to .NET 10 now. Projects targeting `netstandard2.x` for shared contracts can
+A project on .NET 8 or 9 no longer receives security patches: move it to
+.NET 10 (LTS) now. Projects targeting `netstandard2.x` for shared contracts can
 usually move to `net10.0` unless a non-.NET-10 consumer still needs them.
 
 ## What to check

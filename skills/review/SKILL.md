@@ -16,13 +16,15 @@ to verify. "Fixed." is not evidence.
   tree. Get the diff yourself (`git diff <base>...<head>`, plus untracked files).
 - If the change comes from outside the team (external PR, unknown contributor,
   bot), apply the external-contribution gate below first.
-- If you wrote this change in this session, do not review it in this context:
-  what you meant to write hides what you wrote. Run the review in a subagent
+- If you wrote this change in this session and it is R1 or above, do not review
+  it in this context: what you meant to write hides what you wrote. Run the
+  review in a subagent
   whose prompt holds only the range, the claims, and this skill's path, then
   check its findings against the diff before passing them on.
 - If an earlier review of this change exists (PR threads, a previous report),
   this is a re-review: follow that section instead of starting over.
-- Depth follows the risk class. R1: this procedure, one reviewer. R2: also run
+- Depth follows the risk class. R0: read your own full diff against the plan
+  (`$HARNESS/core/lifecycle.md`). R1: this procedure, one reviewer. R2: also run
   two or more reviewers as parallel subagents, each on a different slice of the
   dimensions (correctness and regressions; security and API compatibility;
   tests and failure scenarios), and merge what they find

@@ -15,7 +15,7 @@ engineering-harness                       seu projeto
 ├── profiles/    conhecimento de stack    ├── .claude/settings.json  habilita o plugin
 ├── templates/   arquivos de projeto      ├── docs/adr/            decisões
 ├── bin/         context loader           └── .engineering/
-└── hooks/       SessionStart do Claude       ├── harness.yaml     versão + profiles
+└── hooks/       SessionStart, guardas, Stop       ├── harness.yaml     versão + profiles
                                               ├── overrides/       regras próprias
                                               └── memory/          gotchas, descobertas
 ```

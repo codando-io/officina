@@ -19,17 +19,15 @@ repository's own evidence contradicts a rule here, say so and follow the evidenc
 ## Scope
 
 - Make the smallest coherent change that solves the stated problem.
-- Follow the existing architecture and the nearest existing pattern. Before
-  creating an abstraction, search for one that already does the job. Agents
-  repeat what they find nearby: when the nearest pattern is a workaround or
+- Follow the existing architecture and the nearest existing pattern, in
+  preference to generic knowledge. Before creating an abstraction, search for one
+  that already does the job. Agents repeat what they find nearby: when the nearest pattern is a workaround or
   known debt, use the pattern the architecture intends, or report the debt.
 - A comment never justifies a workaround, such as a timer that hides an
   ordering bug or a retry that hides a race. Fix the cause, or say in the
   report that you could not.
 - No speculative abstractions, drive-by refactors, leftover TODOs, or commented-
   out code. Unrelated improvements go in a separate change.
-- Never weaken, skip, or delete a test to make a change pass. If a test is wrong,
-  fix it in its own step and say why.
 - Preserve public contracts (HTTP APIs, message schemas, DB schemas, package
   APIs) unless the task is to change them.
 
@@ -84,12 +82,11 @@ Details: `$HARNESS/core/observability.md`.
 ## Lifecycle
 
 Understand → (Design) → Plan → Implement → Verify → Review → Ship → Observe →
-Learn. Skills: `investigate`, `design` (new systems and architecture changes),
-`plan`, `implement`, `test`, `review`, `release`, `observability`. Scale the ceremony to the reversibility class: small R0 changes
-take the fast path (one pass, one report); an R2 migration needs every step. For
-a bug, the failing test comes before the fix. When evidence contradicts the plan,
-go back to Understand. Details, the R0 fast path, and per-change-type rules
-(feature, bugfix, refactor, migration, dependency): `$HARNESS/core/lifecycle.md`.
+Learn. Scale the ceremony to the reversibility class: small R0 changes take the
+fast path (one pass, one report); an R2 migration needs every step. For a bug,
+the failing test comes before the fix. When evidence contradicts the plan, go
+back to Understand. The skills, the R0 fast path, and per-change-type rules:
+`$HARNESS/core/lifecycle.md`.
 
 ## Project knowledge
 
@@ -99,11 +96,6 @@ go back to Understand. Details, the R0 fast path, and per-change-type rules
   the area you are touching.
 - Project overrides in `.engineering/overrides/` add to these rules and win when
   they conflict, except the security floor. Say which override you applied.
-- Prefer the living example over generic knowledge: if the repository already
-  solved a similar problem, copy that pattern, unless it is a workaround
-  (*Scope*).
-- Name features as the feature map in `AGENTS.md` does, so you and the team
-  mean the same thing.
 
 ## Memory and decisions
 
@@ -125,9 +117,9 @@ alternatives that someone will question later. Most decisions do not need one.
 Small commits, one logical change each, Conventional Commits format. Never
 rewrite published history or push to protected branches without being asked.
 Pull request descriptions are short blocks of bullets. A pull request that
-changes what users see carries before and after GIFs of the same journey
-(`$HARNESS/skills/test/references/ui-evidence.md`), or one line saying why it
-cannot. Details, including the PR structure: `$HARNESS/core/git.md`.
+changes what users see carries before and after GIFs
+(`$HARNESS/skills/test/references/ui-evidence.md`), or one line saying why not.
+Details, including the PR structure: `$HARNESS/core/git.md`.
 
 ## Communication
 

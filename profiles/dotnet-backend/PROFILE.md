@@ -4,8 +4,8 @@ ASP.NET Core services in C#: APIs, workers, and modular monoliths, with EF Core
 (and sometimes Dapper) on PostgreSQL or SQL Server, shipped as containers,
 instrumented with OpenTelemetry.
 
-Last reviewed: 2026-09-23 (.NET 10 LTS current; .NET 11 at RC1, GA expected
-November 2026).
+Last reviewed: 2026-09-23 for .NET 10 LTS. .NET 11 reached GA on 2026-11-10; its
+APIs are not reviewed here, so check the release notes before using them.
 
 ## Detection
 
@@ -51,6 +51,9 @@ before writing code; never switch a project from one to the other in passing:
   `TestServer`; real database container or in-memory.
 - Formatting: `.editorconfig` (tabs or spaces, brace style) and naming of
   private members.
+- Release artifacts: the SBOM comes from `dotnet CycloneDX`, an image's from
+  `docker buildx build --sbom=true --provenance=true`, and CI attests builds
+  with `actions/attest-build-provenance`.
 
 ## House defaults for new code
 

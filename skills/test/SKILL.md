@@ -1,6 +1,6 @@
 ---
 name: test
-description: Produce test evidence that a change works - identify the changed behavior, the test that proves it, the regression test, the existing suites to run, and the right level (unit, integration, e2e); then write and run them; for a change to what users see, record before and after GIFs for the pull request. Use after implementing, when fixing a bug (test first), before opening a pull request that touches UI, or when asked whether something is tested. A passing build is never accepted as proof.
+description: Produce test evidence that a change works - the behavior that changed, the test that proves it, the level (unit, integration, e2e), the suites to run, and for UI changes before and after GIFs. Use after implementing, when a bug needs its reproducing test, or when asked whether something is tested. A passing build is never accepted as proof.
 ---
 
 # Test
@@ -67,8 +67,8 @@ fail if this change were wrong, and did it run?".
 
 ## Rules
 
-- The policy forbids weakening tests. When an existing test must change because
-  the plan changes that behavior on purpose, cite the plan line.
+- An existing test changes only when the plan changes that behavior on purpose;
+  cite the plan line.
 - A flaky test is a finding, not something to retry until green.
 - Snapshot updates need a reason per snapshot.
 - Coverage percentage is not evidence of correctness; the behavior list is.
