@@ -16,6 +16,9 @@ instructions closely and needs fewer restated rules.
 
 ### Fixed
 
+- The Angular profile states the real Angular 22 requirements, checked against
+  the npm registry: Node 22.22.3+, 24.15+, or 26+, and TypeScript 6.0.x (7 is
+  out of range).
 - `eng-context --check` prints only the header, profiles, memory count, and
   warnings (about 9 KB less), and exits 1 in a repository that has not adopted
   the harness, so `adopt` and CI can tell a missing `harness.yaml` from a

@@ -106,8 +106,8 @@ Defaults:
   stylesheet longer than its template usually means a missing component.
 - Angular 22 upgrade defaults: components are OnPush unless marked
   `ChangeDetectionStrategy.Eager`, `HttpClient` uses `FetchBackend`, `?.` in
-  templates now returns `undefined` like JavaScript, and TypeScript 6 and Node
-  22.22+/24.13+ are required.
+  templates now returns `undefined` like JavaScript, and TypeScript 6.0.x (7 is not
+  supported) and Node 22.22.3+, 24.15+, or 26+ are required.
 
 ## References
 
