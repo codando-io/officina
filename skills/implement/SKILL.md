@@ -27,7 +27,8 @@ adds the procedure.
 1. **Find the pattern to copy.** For each new piece (endpoint, handler,
    component, query, test), locate the nearest existing example in this
    repository and follow its structure, naming, error handling, and test style.
-   Name the example you followed.
+   Skip examples that are themselves workarounds (policy, *Scope*). Name the
+   example you followed.
 2. **Search before creating.** Before adding a helper, service, interface, base
    class, or utility, search for one that already does the job. Add a new
    abstraction only when two concrete uses need it now, or the plan says why.
@@ -42,7 +43,8 @@ adds the procedure.
 6. **Security and telemetry as you go.** Parameterize queries, validate input at
    boundaries, add the telemetry the plan lists (`$HARNESS/core/security.md`,
    `$HARNESS/core/observability.md`).
-7. **Finish clean.** No debug output, unused imports, or temporary files.
+7. **Finish clean.** No debug output, unused imports, or temporary files. Run
+   the comment pass (`references/comment-pass.md`) on the diff.
 
 ## Check the diff against the plan
 

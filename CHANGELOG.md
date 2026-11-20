@@ -9,6 +9,50 @@ steps: what to rename, move, or decide.
 
 ## [Unreleased]
 
+Practices from Lauren Tan's talk "All Code Is Slop (Except Mine)": a codebase
+that enforces its own rules lets agents ship at volume.
+
+### Added
+
+- `core/policy.md` has *Fix at the highest layer*: a mistake that repeats is
+  fixed in structure, then types and lint, then verification, and only last in
+  prose. Memory entries need a fourth criterion (no check could hold the fact)
+  and an *Encoding* section.
+- Profiles have an optional `## Guardrails to encode` section with starter
+  lint rules, analyzers, and architecture tests for Angular, .NET, Node, and
+  the .NET + Angular contract.
+- `test` has runtime verification (`references/runtime-verification.md`: probes
+  that print one assertable line) and, for R2 changes, invariants
+  (`references/invariants.md`: property-based tests, TLA+ model checks,
+  proofs).
+- The `AGENTS.md` template has a *Feature map* section, filled by `adopt`, so
+  agents, tests, and people name features the same way.
+- Eval case `recurring-fix-becomes-guardrail`.
+- Procedures adapted from pstack (credited in `NOTICE`): a comment pass
+  (`skills/implement/references/comment-pass.md`) run by `implement` and
+  `review`; `skills/review/references/blast-radius.md` with a proof ladder for
+  the one fact a change is safe because of; `lead-judgment.md` for R2 reviews
+  with several reviewers on different models; and, in `skills/test/references/`,
+  `formal-verification.md` and `verification-skill.md` for generating and
+  maintaining project-local verify skills.
+- The formal-verification and verification-skill references include the upstream
+  upkeep loops (outcomes in sync, updated, bug, blocked; clean, changed,
+  blocked), launch from an empty data directory, and stand-in disclosure.
+  `lead-judgment.md` has the proof-by-run adversary brief.
+- `bin/verify-drift` lists verify skills whose covered files changed after
+  their recorded sync commit; the `adopt` check mode runs it.
+
+### Changed
+
+- *Scope* in the policy says not to copy a workaround or known debt even when
+  it is the nearest pattern, and that a comment never justifies a workaround.
+  `implement` skips such examples.
+- `plan` writes the verification before the steps and, for R2, lists the
+  invariants and how each is checked. `core/lifecycle.md` adds "Encode the
+  second occurrence".
+- `test` steps are renumbered: runtime check (6) and invariants (7) come
+  before mutation testing (8).
+
 ## [0.3.3] - 2026-11-13
 
 Review practices from the Claude Code team's account of its own code review

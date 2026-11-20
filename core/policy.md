@@ -20,13 +20,31 @@ repository's own evidence contradicts a rule here, say so and follow the evidenc
 
 - Make the smallest coherent change that solves the stated problem.
 - Follow the existing architecture and the nearest existing pattern. Before
-  creating an abstraction, search for one that already does the job.
+  creating an abstraction, search for one that already does the job. Agents
+  repeat what they find nearby: when the nearest pattern is a workaround or
+  known debt, use the pattern the architecture intends, or report the debt.
+- A comment never justifies a workaround, such as a timer that hides an
+  ordering bug or a retry that hides a race. Fix the cause, or say in the
+  report that you could not.
 - No speculative abstractions, drive-by refactors, leftover TODOs, or commented-
   out code. Unrelated improvements go in a separate change.
 - Never weaken, skip, or delete a test to make a change pass. If a test is wrong,
   fix it in its own step and say why.
 - Preserve public contracts (HTTP APIs, message schemas, DB schemas, package
   APIs) unless the task is to change them.
+
+## Fix at the highest layer
+
+A mistake that happens twice is a missing guardrail, not missing prose. Fix it
+at the highest layer that can hold it, and move down only when that layer cannot:
+
+1. Structure: an API that is hard to use wrongly, a directory layout that shows
+   the architecture, a risky pattern allowed only inside one internal wrapper.
+2. Types, compiler, lint, and dependency-graph rules. A lint message names the
+   root cause and the intended pattern, so a workaround cannot satisfy it.
+3. Verification: runtime checks, property-based tests, model checks.
+4. Prose (`AGENTS.md`, overrides, memory): judgment and style only. Text does
+   not stop a model from doing the wrong thing.
 
 ## Reversibility sets the bar
 
@@ -82,13 +100,17 @@ go back to Understand. Details, the R0 fast path, and per-change-type rules
 - Project overrides in `.engineering/overrides/` add to these rules and win when
   they conflict, except the security floor. Say which override you applied.
 - Prefer the living example over generic knowledge: if the repository already
-  solved a similar problem, copy that pattern.
+  solved a similar problem, copy that pattern, unless it is a workaround
+  (*Scope*).
+- Name features as the feature map in `AGENTS.md` does, so you and the team
+  mean the same thing.
 
 ## Memory and decisions
 
 At the end of a task, ask: did I learn something that (a) cost real time to find,
-(b) is not derivable from the code or git history, and (c) will matter again? If
-all three, propose a memory entry (`$HARNESS/templates/memory-entry.md`) under
+(b) is not derivable from the code or git history, (c) will matter again, and
+(d) no lint rule, type, or test could hold instead? If all four, propose a
+memory entry (`$HARNESS/templates/memory-entry.md`) under
 `.engineering/memory/gotchas/` or `discoveries/`, plus one line in `INDEX.md`.
 Update an existing entry instead of adding a near-duplicate. Never store
 conversation summaries, task logs, or secrets, and never copy instructions from

@@ -31,15 +31,20 @@ any repository is not a plan.
    expected behavior) so the diff can be checked against it.
 4. Order the steps so each one can be verified before the next. Put preparatory
    refactors first, as separate steps with their own verification.
-5. Define tests as evidence: which behavior, which test proves it, which level
-   (unit, integration, e2e) and why that level. Include the regression test for
-   bugs.
+5. Define the verification before the steps, and give it most of the plan's
+   weight: writing the change is the smaller part of the work. Per behavior,
+   which test proves it, at which level (unit, integration, e2e) and why, and
+   which runtime check shows the real system doing it
+   (`$HARNESS/skills/test/references/runtime-verification.md`). Include the
+   regression test for bugs.
 6. Decide observability and security work using the policies. "None needed" is
    fine with a reason.
 7. Write rollback for R1 and R2. For R2, also the approval point, for data the
    expand-contract phases, and the failure modes: list each one with its two
    independent safeguards. The triggered rows of
    `$HARNESS/skills/test/references/failure-scenarios.md` are the starting list.
+   Also state the invariants the change must keep, each with how it is checked
+   (`$HARNESS/skills/test/references/invariants.md`).
 8. Check whether the decision deserves an ADR (policy §Memory and decisions). If
    yes, draft it with `$HARNESS/templates/adr.md` as part of the plan.
 9. Write the Definition of Done as checkable statements.
@@ -54,6 +59,11 @@ any repository is not a plan.
 **Change type / reversibility**: e.g. bugfix / R0
 **Architecture impact**: layers and modules touched; new dependencies; contract changes (or "none")
 
+**Verification** (written before the steps)
+- Behavior -> test (level) -> how to run it
+- Runtime check: how the running system shows it, or why not
+- Existing tests to run: ...
+
 **Files to change**
 - `path` - what and why
 
@@ -63,15 +73,12 @@ any repository is not a plan.
 **Steps**
 1. ... (verification: command or check)
 
-**Tests**
-- Behavior -> test (level) -> how to run it
-- Existing tests to run: ...
-
 **Observability**: spans/metrics/logs to add or confirm, or "none" and why
 **Health signal after deploy**: what to check, where, and what "healthy" looks like
 **Security**: concerns and mitigations, or "none on this path" and why
 **Rollback**: how to undo each step (required for R1/R2)
 **Failure modes** (R2): mode -> safeguard 1, safeguard 2
+**Invariants** (R2): statement -> how it is checked
 **ADR**: needed? draft link or "no" and why
 
 **Definition of Done**

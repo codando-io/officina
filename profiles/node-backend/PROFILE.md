@@ -65,6 +65,15 @@ They yield to `AGENTS.md`, to the file being edited, and to pinned versions.
   `noUncheckedIndexedAccess`; built-ins (`fetch`, `node:test`, `--env-file`).
 - Edge schemas that reject unknown keys; config validated once at startup.
 
+## Guardrails to encode
+
+- Banned calls and imports (`new Date()` in domain code, `child_process`
+  outside one module): ESLint `no-restricted-syntax` and `no-restricted-imports`.
+- Layering: dependency-cruiser rules in CI, one per boundary the architecture
+  names.
+- Promises and types: `@typescript-eslint/no-floating-promises` and strict
+  compiler options, so a workaround fails the typecheck rung.
+
 ## Pitfalls
 
 Runtime:

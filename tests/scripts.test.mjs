@@ -334,3 +334,44 @@ test('ui-gif refuses an incomplete command with its usage', () => {
   assert.equal(partial.code, 2);
   assert.match(partial.err, /missing --out/);
 });
+
+test('verify-drift reports covered files that changed after the sync commit', () => {
+  const dir = realpathSync(mkdtempSync(join(tmpdir(), 'eng-drift-')));
+  const git = (...args) => spawnSync('git', ['-C', dir, '-c', 'user.email=t@example.com', '-c', 'user.name=t', '-c', 'commit.gpgsign=false', ...args], { encoding: 'utf8' });
+  const write = (rel, text) => {
+    mkdirSync(dirname(join(dir, rel)), { recursive: true });
+    writeFileSync(join(dir, rel), text);
+  };
+  git('init', '-q');
+  write('src/ledger.ts', 'v1\n');
+  write('src/other.ts', 'v1\n');
+  git('add', '-A');
+  git('commit', '-qm', 'init');
+  const sync = git('rev-parse', '--short', 'HEAD').stdout.trim();
+  write('.claude/skills/verify-ledger/SKILL.md', `---\nname: verify-ledger\ndescription: x\n---\nCovers: src/ledger.ts, src/missing/\nSync commit: ${sync}\n`);
+  write('.claude/skills/verify-plain/SKILL.md', '---\nname: verify-plain\ndescription: x\n---\nNo drift lines.\n');
+  git('add', '-A');
+  git('commit', '-qm', 'add skills');
+
+  let result = run('bin/verify-drift', ['--check', dir]);
+  assert.equal(result.code, 0, result.out);
+  assert.ok(result.out.includes('`verify-ledger`: no covered file changed'));
+  assert.ok(!result.out.includes('verify-plain'));
+
+  write('src/other.ts', 'v2\n');
+  git('commit', '-qam', 'unrelated');
+  assert.equal(run('bin/verify-drift', ['--check', dir]).code, 0);
+
+  write('src/ledger.ts', 'v2\n');
+  git('commit', '-qam', 'change covered file');
+  result = run('bin/verify-drift', ['--check', dir]);
+  assert.equal(result.code, 1);
+  assert.ok(result.out.includes('covered files changed'));
+  assert.ok(result.out.includes('src/ledger.ts'));
+  assert.equal(run('bin/verify-drift', [dir]).code, 0, 'without --check drift is reported, not failed');
+
+  write('.claude/skills/verify-ledger/SKILL.md', '---\nname: verify-ledger\ndescription: x\n---\nCovers: src/ledger.ts\nSync commit: deadbeef\n');
+  result = run('bin/verify-drift', ['--check', dir]);
+  assert.equal(result.code, 1);
+  assert.ok(result.out.includes('sync commit `deadbeef` does not exist'));
+});

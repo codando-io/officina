@@ -19,8 +19,9 @@ fail if this change were wrong, and did it run?".
 ## Procedure
 
 1. **Name the behavior that changed.** One line per behavior, from the user's or
-   caller's point of view (input → observable result). If you cannot name it,
-   you do not know what to test. Then open `references/failure-scenarios.md`,
+   caller's point of view (input → observable result), using the feature names
+   in the `AGENTS.md` feature map. If you cannot name it, you do not know what
+   to test. Then open `references/failure-scenarios.md`,
    find the rows whose *Mandatory when* matches this change (a new consumer, a
    new editable entity, a migration, a retry policy...), and add each one as a
    behavior. A triggered scenario you do not test needs a one-line reason.
@@ -42,16 +43,26 @@ fail if this change were wrong, and did it run?".
 5. **Run in order of cost**: the new tests, then the tests of the touched module,
    then the full suite or the CI-equivalent command. Record each command and its
    result summary.
-6. **Test the tests on risky logic.** For an R1 or R2 change to branching
+6. **Run the real system** when a behavior depends on wiring that unit and
+   integration tests cannot see (startup, configuration, the browser, several
+   processes): start it, drive it, and record what it printed
+   (`references/runtime-verification.md`). A project that needs this often gets
+   a skill for it (`references/verification-skill.md`).
+7. **Check invariants on R2.** State each invariant the change must keep in one
+   sentence and check it with a property-based test, or a model check for
+   concurrency and multi-step protocols (`references/invariants.md`). Where a
+   bug costs the most and these cannot reach it, offer a verify skill
+   (`references/formal-verification.md`).
+8. **Test the tests on risky logic.** For an R1 or R2 change to branching
    logic (money, permissions, state machines, parsing), run mutation testing on
    the changed code only, with the tool in the active profile's
    `references/failure-testing.md`. A mutant that survives in changed code is a
    missing assertion: add it, or say why the mutant is equivalent.
-7. **Show what users see.** When the diff changes rendered UI, record the same
+9. **Show what users see.** When the diff changes rendered UI, record the same
    journey on the base and on the branch as GIFs, read their frames, and keep
    them for the pull request (`references/ui-evidence.md`). Identical before and
    after frames are a finding, not evidence.
-8. **Check what is not covered.** Name any behavior you could not test and why,
+10. **Check what is not covered.** Name any behavior you could not test and why,
    and what manual or runtime check stands in for it.
 
 ## Rules
@@ -75,6 +86,8 @@ fail if this change were wrong, and did it run?".
 - `<command>` -> <summary: N passed, 0 failed, duration>
 
 **Failure scenarios**: triggered catalog rows, each tested or not applicable (why)
+**Runtime check**: command or probe and what it printed, or why none
+**Invariants** (R2): statement -> check and result
 **Before and after**: GIF paths and what each shows, or why there are none (no UI change, capture impossible)
 **Not covered**: behavior, why, and what stands in for it
 **Verdict**: verified / partially verified / not verified

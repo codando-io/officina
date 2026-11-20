@@ -25,7 +25,9 @@ to verify. "Fixed." is not evidence.
 - Depth follows the risk class. R1: this procedure, one reviewer. R2: also run
   two or more reviewers as parallel subagents, each on a different slice of the
   dimensions (correctness and regressions; security and API compatibility;
-  tests and failure scenarios), and merge what they find.
+  tests and failure scenarios), and merge what they find
+  (`references/lead-judgment.md`). A change whose safety rests on a claim about
+  existing code also gets `references/blast-radius.md`.
 
 ## Procedure
 
@@ -57,7 +59,8 @@ to verify. "Fixed." is not evidence.
    - **API compatibility**: HTTP routes, DTO shapes, enum values, DB schema,
      events, config keys, package public API. Breaking = R2.
    - **Maintainability**: naming, duplication of existing helpers, dead code,
-     TODOs, commented-out code.
+     TODOs, commented-out code, and comments that justify workarounds
+     (`$HARNESS/skills/implement/references/comment-pass.md`).
    - **Scope creep**: changes unrelated to the stated purpose.
 3. **Walk both catalogs.** Open
    `$HARNESS/skills/test/references/failure-scenarios.md`, select every row

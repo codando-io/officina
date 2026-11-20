@@ -52,6 +52,9 @@ If the working tree has uncommitted changes, stop and ask before starting.
      unusual sources (`$HARNESS/core/security.md` §3-4) and ask if anything
      looks odd. If a command needs infrastructure you do not have (Docker, a
      database), record it as `(unverified)` instead of guessing;
+   - fill the feature map from routes, screens, and public endpoints, using the
+     names the UI and docs already use; mark a row `(unverified)` when you did
+     not see it run;
    - name two or three reference implementations (the best existing examples of
      an endpoint, a component, a test) as file paths;
    - describe the actual architecture, not an ideal one;
@@ -74,6 +77,9 @@ If the working tree has uncommitted changes, stop and ask before starting.
    Offer `$HARNESS/templates/harness-check.yml` as a CI workflow, so a broken
    `harness.yaml` or an orphaned override fails the pull request instead of the
    next session.
+   If the app has a surface an agent can drive (web UI, CLI, API), offer a
+   verification skill for it (`$HARNESS/skills/test/references/verification-skill.md`);
+   it is generated only when the user accepts.
    If the repository has paths where a mistake is expensive (auth, billing,
    money, CI and release workflows, installers), offer
    `.engineering/overrides/review.md` naming them and what failure means
@@ -104,6 +110,12 @@ Report, without changing anything:
 - `AGENTS.md` commands that no longer work (run them);
 - overrides that reference skills or sections that no longer exist;
 - memory entries whose evidence (files, commands) no longer exists;
+- `$HARNESS/bin/verify-drift` output: verification skills whose covered files
+  changed after their sync commit, to re-confirm with
+  `$HARNESS/skills/test/references/formal-verification.md`; for a
+  `verify-<app>` skill, run the maintenance pass in
+  `$HARNESS/skills/test/references/verification-skill.md` when its feature map
+  looks stale;
 - `CLAUDE.md` or `.claude/settings.json` drifted from
   `$HARNESS/docs/claude-code.md`, section *Project setup*.
 

@@ -43,6 +43,13 @@ Angular app calls an ASP.NET Core API owned by the same team.
 - Deployment shape: the SPA served by the API, or separately behind a proxy or
   CDN, and what that means for CORS.
 
+## Guardrails to encode
+
+Starting point when the two sides drift (policy, *Fix at the highest layer*):
+generate the client and its types from the API's OpenAPI document and fail CI
+when the generated output differs from what is committed, so a contract change
+is a compile error in the frontend.
+
 ## Pitfalls
 
 - A backend DTO changes without the TypeScript model or generated client.

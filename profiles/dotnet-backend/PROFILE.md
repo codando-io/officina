@@ -89,6 +89,16 @@ Defaults:
   (`TngTech.ArchUnitNET.xUnit`, or its MSTest and NUnit packages) asserting
   which assemblies and namespaces may depend on which.
 
+## Guardrails to encode
+
+- Banned calls (`DateTime.Now`, `Task.Result`, `new HttpClient()`):
+  `Microsoft.CodeAnalysis.BannedApiAnalyzers` with `BannedSymbols.txt`, the
+  diagnostic raised to `error` in `.editorconfig`.
+- Layering: architecture tests (NetArchTest or ArchUnitNET) that fail when a
+  project or namespace references one it must not.
+- Nullability and analyzer warnings as errors in `Directory.Build.props`, so a
+  workaround cannot ship as a warning.
+
 ## Pitfalls
 
 Runtime and API:
