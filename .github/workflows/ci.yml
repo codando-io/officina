@@ -11,13 +11,20 @@ permissions:
 jobs:
   test:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 24
       - name: Install what ui-gif records with
+        timeout-minutes: 8
         run: |
-          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+          # apt mirrors occasionally hang; bound each attempt and retry.
+          for attempt in 1 2 3; do
+            timeout 120 sudo apt-get update -qq && timeout 180 sudo apt-get install -y -qq ffmpeg && break
+            [ "$attempt" = 3 ] && exit 1
+            sleep 5
+          done
           npm install --prefix "$HOME/.cache/officina/ui-gif" --save-exact --ignore-scripts --no-audit --no-fund playwright-core@1.64.1
       - run: node --test tests/*.test.mjs
