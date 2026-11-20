@@ -11,7 +11,7 @@ que vem depois. O porquê de cada decisão está em [ARCHITECTURE.md](ARCHITECTU
 | `skills/` | `investigate`, `design`, `plan`, `implement`, `test`, `review`, `security-audit`, `architecture-audit`, `dependency-update`, `observability`, `release`, `adopt` | 12 skills, 10 invocáveis pelo modelo |
 | `profiles/` | `dotnet-backend` (C# 14/15, EF Core 10, plataforma .NET 10), `angular` (APIs por versão, componentes e design system), `dotnet-angular` (só a integração), `node-backend` (Node 26 LTS, NestJS 12, servidores MCP) | 4 profiles |
 | `bin/stack-report` | Inventário de .NET, npm/Angular, Docker e CI, online ou `--offline` | |
-| `bin/ui-gif` | Grava uma jornada no Chrome como GIF de antes e depois para o PR; anexa GIFs a PRs do Forgejo | |
+| `bin/ui-gif` | Grava uma jornada no Chrome como GIF de antes e depois para o PR; para o PR do GitHub | |
 | `templates/` | `AGENTS.md`, `CLAUDE.md`, `harness.yaml`, `claude-settings.json`, `adr.md`, `memory-entry.md`, `memory-index.md`, `override.md` | 8 arquivos |
 | `bin/eng-context` | Context loader, POSIX sh | ~150 linhas |
 | Plugin do Claude Code | `.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json`, `hooks/hooks.json`, `docs/claude-code.md` | Implementado |
@@ -280,7 +280,7 @@ marcados `(unverified)`. Há regra para um `CLAUDE.md` que já tem conteúdo e p
 árvore de trabalho suja. A verificação usa `--check`. O marketplace sai da fonte
 registrada na máquina, com o aviso de que caminho local não serve para colegas.
 O bloqueio desta fase — enquanto o harness não estiver num git remoto, só esta
-máquina consegue usá-lo — caiu em 2026-09-28, com o repositório no Forgejo.
+máquina consegue usá-lo — caiu em 2026-09-28, com o repositório num git remoto.
 Desde 2026-10-20 ele é público no GitHub.
 
 **O harness consegue evoluir sem quebrar projetos?** Em parte. SemVer, a seção

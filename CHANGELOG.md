@@ -55,6 +55,13 @@ that enforces its own rules lets agents ship at volume.
 - `test` steps are renumbered: runtime check (6) and invariants (7) come
   before mutation testing (8).
 
+### Removed
+
+- Forgejo and Gitea support: `bin/ui-gif forgejo-attach` and `FORGEJO_TOKEN`,
+  the `.forgejo` and `.gitea` workflow inventory in `bin/stack-report`, and
+  the Forgejo paths in `adopt`, `templates/harness-check.yml`, and
+  `skills/test/references/ui-evidence.md`. The harness now targets GitHub only.
+
 ### Migration
 
 1. Set `harness: "0.4"` in `.engineering/harness.yaml`.
@@ -67,6 +74,8 @@ that enforces its own rules lets agents ship at volume.
 4. Ask the user whether to generate a verification skill for the app's main
    surface (`skills/test/references/verification-skill.md`). Skip it when they
    decline.
+5. A project hosted on Forgejo or Gitea attaches before and after GIFs by hand,
+   and keeps its pull request template and workflows in its own host's paths.
 
 On each machine: `claude plugin marketplace update engineering-harness`, then
 `claude plugin update eng@engineering-harness` for each scope where it is

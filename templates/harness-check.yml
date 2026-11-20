@@ -1,7 +1,7 @@
 # Checks this project's engineering-harness files on every pull request that
 # touches them: a valid .engineering/harness.yaml, overrides that name existing
 # skills, and a harness line that a released harness version serves.
-# Copy to .github/workflows/ (GitHub) or .forgejo/workflows/ (Forgejo).
+# Copy to .github/workflows/.
 name: engineering-harness
 on:
   pull_request:

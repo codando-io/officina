@@ -66,9 +66,8 @@ If the working tree has uncommitted changes, stop and ask before starting.
    *Project setup*.
 6. **Ignore working files**: add `.engineering/work/` to `.gitignore`.
    If the repository has no pull request template, offer to install
-   `$HARNESS/templates/pull-request.md` as `.github/pull_request_template.md`
-   (GitHub) or `.forgejo/pull_request_template.md` (Forgejo), so pull requests
-   opened by hand follow the same structure. If the project has no commit
+   `$HARNESS/templates/pull-request.md` as `.github/pull_request_template.md`,
+   so pull requests opened by hand follow the same structure. If the project has no commit
    message check (commitlint, a `commit-msg` hook), offer
    `$HARNESS/bin/check-commit-msg` as the local `commit-msg` hook, with
    `--summary-only` when the project's commits are one line.
@@ -83,7 +82,7 @@ If the working tree has uncommitted changes, stop and ask before starting.
    If the repository has paths where a mistake is expensive (auth, billing,
    money, CI and release workflows, installers), offer
    `.engineering/overrides/review.md` naming them and what failure means
-   there, so `review` weighs them; for the forge side, suggest CODEOWNERS on
+   there, so `review` weighs them; suggest GitHub CODEOWNERS on
    the same paths.
 7. **Verify.** Run `$HARNESS/bin/eng-context --check` from the repository root
    and show its output. It must exit 0 and list the right version, profiles, and

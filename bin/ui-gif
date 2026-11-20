@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Records a browser journey as a GIF for a pull request's before and after
-// block, and uploads a body's local images to a Forgejo pull request.
+// block.
 // Procedure: skills/test/references/ui-evidence.md.
 'use strict';
 
@@ -18,8 +18,7 @@ const cacheDir = path.join(process.env.XDG_CACHE_HOME || path.join(os.homedir(),
 const usage = `usage:
   ui-gif record --url <base url> --out <file.gif> [--journey <file.mjs>] [--path /]
                 [--viewport 1280x800] [--width 960] [--fps 10]
-                [--color-scheme light|dark] [--browser chrome|chromium]
-  ui-gif forgejo-attach --repo https://<host>/<owner>/<repo> --pr <number> --body-file <file.md>`;
+                [--color-scheme light|dark] [--browser chrome|chromium]`;
 
 function fail(message, code = 1) {
   process.stderr.write(`ui-gif: ${message}\n`);
@@ -141,43 +140,10 @@ async function record(parsed) {
   process.stdout.write(`${JSON.stringify({ gif: out, bytes, seconds: Number((count / fps).toFixed(1)), frames }, null, 2)}\n`);
 }
 
-const MIME = { '.gif': 'image/gif', '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.webp': 'image/webp', '.mp4': 'video/mp4', '.webm': 'video/webm' };
-
-async function forgejoAttach(parsed) {
-  required(parsed, ['repo', 'pr', 'body-file']);
-  const token = process.env.FORGEJO_TOKEN;
-  if (!token) fail('FORGEJO_TOKEN is not set. Create a token with the write:issue scope in the forge user settings and export it, or attach the files by hand.', 3);
-  const repo = parsed.repo.match(/^(https?:\/\/[^/]+)\/([^/]+)\/([^/]+?)(?:\.git)?\/?$/);
-  if (!repo) fail('--repo must look like https://<host>/<owner>/<repo>', 2);
-  const [, origin, owner, name] = repo;
-  const bodyFile = path.resolve(parsed['body-file']);
-  let body = fs.readFileSync(bodyFile, 'utf8');
-
-  const local = [...body.matchAll(/!\[[^\]]*\]\(([^)\s]+)\)/g)]
-    .map((m) => m[1])
-    .filter((target) => !/^[a-z][a-z0-9+.-]*:/i.test(target) && !target.startsWith('/') && !target.startsWith('#'));
-  for (const target of new Set(local)) {
-    const file = path.resolve(path.dirname(bodyFile), target);
-    if (!fs.existsSync(file)) fail(`${target} is referenced in the body but ${file} does not exist`);
-    const form = new FormData();
-    form.append('attachment', new Blob([fs.readFileSync(file)], { type: MIME[path.extname(file).toLowerCase()] || 'application/octet-stream' }), path.basename(file));
-    const response = await fetch(`${origin}/api/v1/repos/${owner}/${name}/issues/${parsed.pr}/assets`, {
-      method: 'POST',
-      headers: { Authorization: `token ${token}`, Accept: 'application/json' },
-      body: form,
-    });
-    if (!response.ok) fail(`uploading ${target} failed: ${response.status} ${(await response.text()).slice(0, 300)}`);
-    const { browser_download_url: url } = await response.json();
-    body = body.split(`](${target})`).join(`](${url})`);
-  }
-  process.stdout.write(body);
-}
-
 async function main() {
   if (Number(process.versions.node.split('.')[0]) < 20) fail(`needs Node 20 or newer, found ${process.versions.node}`, 3);
   const [command, ...rest] = process.argv.slice(2);
   if (command === 'record') return record(options(rest));
-  if (command === 'forgejo-attach') return forgejoAttach(options(rest));
   fail(usage, 2);
 }
 
