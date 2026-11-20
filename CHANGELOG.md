@@ -9,6 +9,20 @@ steps: what to rename, move, or decide.
 
 ## [Unreleased]
 
+## [0.5.2] - 2026-11-20
+
+### Fixed
+
+- The `start` evals (`start-asks-before-acting`, `start-security-gate-blocks-sql-concat`)
+  now load in `claude plugin eval`: `tags`, `runs`, `max_turns`, and
+  `allowed_tools` live in the `prompt.md` frontmatter, as in the other cases.
+  Until now neither case loaded. `start-asks-before-acting` passes 3 of 3 runs;
+  the SQL case needs Bash and has not run yet.
+
+### Migration
+
+None.
+
 ## [0.5.1] - 2026-11-20
 
 Fewer tokens per session and an injection hook that stops flagging the harness's
