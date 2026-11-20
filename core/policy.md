@@ -30,6 +30,9 @@ repository's own evidence contradicts a rule here, say so and follow the evidenc
   out code. Unrelated improvements go in a separate change.
 - Preserve public contracts (HTTP APIs, message schemas, DB schemas, package
   APIs) unless the task is to change them.
+- Data rules go in the database when it can enforce them: PostgreSQL by default,
+  enumerated types, side tables for multi-value fields, constraints, triggers,
+  views. Details: `$HARNESS/core/database.md`.
 
 ## Fix at the highest layer
 

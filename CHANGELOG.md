@@ -9,6 +9,30 @@ steps: what to rename, move, or decide.
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-11-20
+
+### Added
+
+- `core/database.md`: PostgreSQL by default, native enumerated types for closed sets, side tables for multi-value fields that cannot be enums, and constraints, triggers, and views (aggregate and materialized) suggested before the same rule is written in application code. `core/policy.md` points to it in one bullet.
+- Data access is hand-written SQL, not an ORM: `core/database.md` says new queries use a thin driver with bound parameters and migrations are plain SQL files. Projects that already use an ORM keep it for existing code. The `dotnet-backend` default moves from EF Core to Dapper, and the examples are in `dotnet-backend/references/efcore.md` and the new `node-backend/references/database.md`.
+- The `start` best-practices gate now checks the diff against `core/policy.md`.
+
+### Changed
+
+- The `dotnet-backend` profile's default for new data access moves from EF Core to hand-written SQL (Dapper). EF Core stays for code that already uses it.
+
+### Migration
+
+1. Set `harness: "0.6"` in `.engineering/harness.yaml`.
+2. Nothing else is required. The database rules arrive with the plugin update,
+   and no existing code has to change. A project with an ORM keeps it for the
+   code that exists; record the split in `AGENTS.md`. A project that wants a
+   different rule adds `.engineering/overrides/` for the skill concerned.
+
+On each machine: `claude plugin marketplace update engineering-harness`, then
+`claude plugin update eng@engineering-harness` for each scope where it is
+installed.
+
 ## [0.5.2] - 2026-11-20
 
 ### Fixed

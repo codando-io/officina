@@ -6,11 +6,12 @@ Checked 2026-09-23. EF Core 10 is LTS until 2028-11-10.
 
 ## Choosing between EF Core and Dapper
 
-Follow the project's existing split. When there is none: EF Core for writes and
-aggregate-oriented reads where change tracking and migrations help; Dapper (or
-EF Core raw SQL) for hot, reporting, or complex read queries where you want full
-control of the SQL. Record the split in `AGENTS.md`; an unexplained mix of both
-on the same path is an architecture finding.
+New data access is hand-written SQL through Dapper (or `NpgsqlCommand`), with
+migrations as plain SQL files (see *Hand-written SQL* below and
+`$HARNESS/core/database.md`). Existing EF Core code stays on EF Core until a
+migration of its own replaces it; the sections below apply to that code. Record
+the split in `AGENTS.md`; an unexplained mix of both on the same path is an
+architecture finding.
 
 ## EF Core 10 features to prefer in new code
 
@@ -75,11 +76,34 @@ on the same path is an architecture finding.
   JSON over raw `jsonb` strings when the shape is known.
 - Advisory locks (`pg_advisory_xact_lock`) for cross-instance mutual exclusion,
   scoped to a transaction.
-- Enums: store as strings or map PostgreSQL enums explicitly; never rely on
+- Enums: map closed sets to native PostgreSQL enum types (below); never rely on
   integer order in data that outlives the code.
 - Adding a column with a volatile default rewrites the table; a constant default
   does not (PostgreSQL 11+). Create indexes on large tables with
   `CREATE INDEX CONCURRENTLY` in a raw SQL migration step outside a transaction.
+
+### Hand-written SQL (Dapper + Npgsql)
+
+The DDL for enums, side tables, triggers, and views is in
+`$HARNESS/core/database.md`; it lives in numbered `.sql` migration files applied
+by a pipeline step (DbUp, Flyway, or dbmate), not at startup. Map the native
+enum once and bind every value as a parameter:
+
+```csharp
+// Program.cs
+dataSourceBuilder.MapEnum<OrderStatus>("order_status");
+
+// Repository: a side table read with one query, parameters bound
+const string sql = """
+    SELECT channel_code AS ChannelCode, enabled AS Enabled, fee AS Fee
+    FROM offer_channels WHERE offer_id = @offerId
+    """;
+var channels = await connection.QueryAsync<OfferChannel>(
+    new CommandDefinition(sql, new { offerId }, cancellationToken: ct));
+```
+
+Read shapes come from views (`SELECT ... FROM offer_totals`). Test each
+constraint and trigger against a Testcontainers PostgreSQL by violating it.
 
 ## SQL Server
 

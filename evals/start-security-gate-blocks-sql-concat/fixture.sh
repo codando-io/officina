@@ -2,7 +2,7 @@
 set -e
 # An adopted project, so the session loads the harness policy.
 mkdir -p .engineering src tests
-printf 'harness: "0.5"\nprofiles: []\nadr_dir: docs/adr\n' > .engineering/harness.yaml
+printf 'harness: "0.6"\nprofiles: []\nadr_dir: docs/adr\n' > .engineering/harness.yaml
 printf '{ "name": "users", "private": true, "type": "module", "scripts": { "test": "node --test" } }\n' > package.json
 git init -q
 git config user.email eval@example.com

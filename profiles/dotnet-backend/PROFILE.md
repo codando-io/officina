@@ -79,7 +79,8 @@ Defaults:
 - Alternatives and outcomes: model a fixed set of cases as a closed hierarchy
   (.NET 10) or a `union`/`closed` type (.NET 11). Keep exceptions for failures.
   See `references/csharp.md` *Closed hierarchies and unions*.
-- EF Core 10: complex types instead of owned types for value objects, named
+- New data access: hand-written SQL (Dapper), plain SQL migrations. EF Core 10, in
+  existing code: complex types instead of owned types for value objects, named
   query filters, `ExecuteUpdate`/`ExecuteDelete` for bulk changes, migrations
   applied outside application startup. See `references/efcore.md`.
 - ASP.NET Core 10: built-in OpenAPI, `TypedResults`, `ProblemDetails`,
@@ -164,7 +165,7 @@ Delivery:
 | File | Used by |
 |---|---|
 | `references/csharp.md` | `implement`, `review`, `architecture-audit` (modernization) |
-| `references/efcore.md` | `plan`, `implement`, `review` on data access changes |
+| `references/efcore.md` | `plan`, `implement`, `review` on data access changes (rules in the database: PostgreSQL section) |
 | `references/platform.md` | `plan`, `dependency-update` (platform mode), `architecture-audit` |
 | `references/currency.md` | `dependency-update`, `architecture-audit` (modernization), `security-audit` |
 | `references/modernization.md` | `architecture-audit` (modernization), `plan` for migrations |

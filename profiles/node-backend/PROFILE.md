@@ -150,6 +150,7 @@ MCP servers (details in `references/mcp-servers.md`):
 |---|---|
 | `references/nestjs.md` | `plan`, `implement`, `review` on NestJS code |
 | `references/mcp-servers.md` | `plan`, `implement`, `review`, `security-audit` on MCP servers |
+| `references/database.md` | `plan`, `implement`, `review` on data access and schema changes |
 | `references/currency.md` | `dependency-update`, `architecture-audit` (modernization), `security-audit` |
 | `references/modernization.md` | `architecture-audit` (modernization), `plan` for migrations |
 | `references/observability.md` | `observability` |

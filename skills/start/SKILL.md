@@ -82,8 +82,8 @@ open and why it cannot be closed here. Never ship around it.
 
 ### 5. Best-practices gate (always)
 
-Check the diff against the active profiles' conventions and the project's
-overrides and `AGENTS.md`. Name the existing pattern each new piece followed.
+Check the diff against `$HARNESS/core/policy.md` (engineering rules), the
+active profiles' conventions, and the project's overrides and `AGENTS.md`. Name the existing pattern each new piece followed.
 Anything that deviates is either fixed or listed in the report with the
 reason. Run the comment pass (`$HARNESS/skills/implement/references/comment-pass.md`).
 
